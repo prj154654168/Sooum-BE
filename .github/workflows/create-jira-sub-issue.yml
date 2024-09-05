@@ -60,15 +60,16 @@ jobs:
       - name: Log created issue
         run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
 
-      - name: Checkout develop code
+      - name: Checkout parent code
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ steps.create.outputs.issue }}
 
       - name: Create branch with Ticket number
         run: |
-          git checkout -b ${{ steps.create.outputs.issue }}
-          git push origin ${{ steps.create.outputs.issue }}
+          git checkout 
+          git checkout -b "${{ steps.issue-parser.outputs.issueparser_parentKey }}-${{ steps.issue-parser.outputs.issueparser_summary }}"
+          git push origin "${{ steps.issue-parser.outputs.issueparser_parentKey }}-${{ steps.issue-parser.outputs.issueparser_summary }}"
 
       - name: Update issue title
         uses: actions-cool/issues-helper@v3
