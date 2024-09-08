@@ -18,3 +18,11 @@ spring:
 jasypt:
   encryptor:
     bean: jasyptEncryptor
+
+---
+
+## jang-199 local settings
+spring:
+  config:
+    activate:
+      on-profile: jang-199
