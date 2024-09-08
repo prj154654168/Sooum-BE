@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: ENC(LalOhCSsky8l9zpDmE8FHVrR+0OBcyUstdN0o0vtUAxjKUVjC5r9CTTNSiPh54wR828GQb0Sd2wYj3ECvHbCKGmLJZaAJJvTv6x+TgBXA7X9TE86JADdkg==)
+    username: ENC(rG6jURq0AWAGb1iQ3A7d1g==)
+    password: ENC(7ep7OZBBx26h5C1rIUQaTtQQv7h4oFRj)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  jackson:
+    time-zone: Asia/Seoul
+
+#JASYPT
+jasypt:
+  encryptor:
+    bean: jasyptEncryptor
