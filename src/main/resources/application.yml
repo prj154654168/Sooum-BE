@@ -21,7 +21,7 @@ jasypt:
 
 ---
 
-## jang-199 local settings
+## jang-199 local setting
 spring:
   config:
     activate:
