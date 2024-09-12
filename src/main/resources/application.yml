@@ -20,7 +20,7 @@ jasypt:
     bean: jasyptEncryptor
 
 ---
-#jang-199 setting
+#jang-199 settings
 spring:
   config:
     activate:
