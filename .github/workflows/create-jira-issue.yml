@@ -28,7 +28,7 @@ jobs:
           template-path: .github/ISSUE_TEMPLATE/issue-form.yml
 
       - name: Check issueparser_parentKey
-        if: steps.issue-parser.outputs.issueparser_parentKey == null
+        if: steps.issue-parser.outputs.issueparser_parentKey != null
         run: |
           exit 1
 
