@@ -27,6 +27,11 @@ jobs:
         with:
           template-path: .github/ISSUE_TEMPLATE/issue-form.yml
 
+      - name: Check issueparser_parentKey
+        if: steps.issue-parser.outputs.issueparser_parentKey == null
+        run: |
+          exit 1
+
       - name: Log Issue Parser
         run: |
           echo '${{ steps.issue-parser.outputs.jsonString }}'
