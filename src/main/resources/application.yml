@@ -18,3 +18,9 @@ spring:
 jasypt:
   encryptor:
     bean: jasyptEncryptor
+
+sooum:
+  server:
+    ip: ENC(B3AKEJ5apUu9nlZiYl54E01X3kQFjNBrhdbGCjKqjkmo0b/per9I/Q==)
+    img:
+      path: ENC(s+DbwTmG8YHfsht5xkidQCbcWtU7hLglmmBKRO8Lb7Q6548wTTKiVA==)
