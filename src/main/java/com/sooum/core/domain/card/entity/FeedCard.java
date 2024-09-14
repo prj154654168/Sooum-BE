@@ -1,8 +1,8 @@
 package com.sooum.core.domain.card.entity;
 
-import com.sooum.core.domain.card.font.Font;
-import com.sooum.core.domain.card.fontsize.FontSize;
-import com.sooum.core.domain.card.imgtype.ImgType;
+import com.sooum.core.domain.card.entity.font.Font;
+import com.sooum.core.domain.card.entity.fontsize.FontSize;
+import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.common.entity.BaseEntity;
 import com.sooum.core.domain.member.entity.Member;
 import io.hypersistence.utils.hibernate.id.Tsid;

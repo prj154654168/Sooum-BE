@@ -4,7 +4,7 @@ import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.common.entity.BaseEntity;
 import com.sooum.core.domain.member.entity.Member;
-import com.sooum.core.domain.notification.notificationtype.NotificationType;
+import com.sooum.core.domain.notification.entity.notificationtype.NotificationType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

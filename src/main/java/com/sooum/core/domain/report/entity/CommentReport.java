@@ -2,7 +2,7 @@ package com.sooum.core.domain.report.entity;
 
 import com.sooum.core.domain.common.entity.BaseEntity;
 import com.sooum.core.domain.member.entity.Member;
-import com.sooum.core.domain.report.reporttype.ReportType;
+import com.sooum.core.domain.report.entity.reporttype.ReportType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

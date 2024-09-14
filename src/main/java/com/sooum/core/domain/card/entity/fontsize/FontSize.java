@@ -1,4 +1,4 @@
-package com.sooum.core.domain.card.fontsize;
+package com.sooum.core.domain.card.entity.fontsize;
 
 public enum FontSize {
     BIG(300),
