@@ -1,4 +1,4 @@
-package com.sooum.core.domain.report.reporttype;
+package com.sooum.core.domain.report.entity.reporttype;
 
 public enum ReportType {
     DEFAMATION_AND_ABUSE("비방 및 욕설"),

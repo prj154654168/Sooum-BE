@@ -1,15 +1,14 @@
 package com.sooum.core.domain.card.entity;
 
-import com.sooum.core.domain.card.font.Font;
-import com.sooum.core.domain.card.fontsize.FontSize;
-import com.sooum.core.domain.card.imgtype.ImgType;
+import com.sooum.core.domain.card.entity.font.Font;
+import com.sooum.core.domain.card.entity.fontsize.FontSize;
+import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.common.entity.BaseEntity;
 import com.sooum.core.domain.member.entity.Member;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -58,7 +57,12 @@ public class CommentCard extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private FeedCard parentCard;
 
-    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, FeedCard parentCard) {
+    @NotNull
+    @JoinColumn(name = "MASTER_CARD")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private FeedCard masterCard;
+
+    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, FeedCard parentCard, FeedCard masterCard) {
         this.content = content;
         this.fontSize = fontSize;
         this.font = font;
@@ -69,5 +73,6 @@ public class CommentCard extends BaseEntity {
         this.isStory = isStory;
         this.writer = writer;
         this.parentCard = parentCard;
+        this.masterCard = masterCard;
     }
 }

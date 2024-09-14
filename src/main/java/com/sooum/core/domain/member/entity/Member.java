@@ -2,7 +2,7 @@ package com.sooum.core.domain.member.entity;
 
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.common.entity.BaseEntity;
-import com.sooum.core.domain.member.devicetype.DeviceType;
+import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
