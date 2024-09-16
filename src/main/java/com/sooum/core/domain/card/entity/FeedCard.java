@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
+import java.util.Objects;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,6 +54,19 @@ public class FeedCard extends BaseEntity {
     @JoinColumn(name = "WRITER")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member writer;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FeedCard feedCard = (FeedCard) o;
+        return Objects.equals(pk, feedCard.pk);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(pk);
+    }
 
     @Builder
     public FeedCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer) {
