@@ -95,28 +95,24 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        Claims claims = getToken(token);
+        Claims claims = getClaims(token);
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
         return new UsernamePasswordAuthenticationToken(new User(String.valueOf(claims.get(ID_CLAIM, Long.class)), "", authorities), token, authorities);
     }
 
-    private Claims getToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
     public Optional<Long> getId(String accessToken) {
         try {
-            return Optional.ofNullable(Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)))
-                    .build()
-                    .parseClaimsJws(accessToken)
-                    .getBody()
-                    .get(ID_CLAIM, Long.class));
+            return Optional.ofNullable(getClaims(accessToken).get(ID_CLAIM, Long.class));
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }
