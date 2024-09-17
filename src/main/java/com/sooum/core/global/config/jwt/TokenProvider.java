@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
@@ -96,7 +97,7 @@ public class TokenProvider {
     public Authentication getAuthentication(String token) {
         Claims claims = getToken(token);
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UsernamePasswordAuthenticationToken(new User(claims.get(ID_CLAIM, String.class), "", authorities), token, authorities);
+        return new UsernamePasswordAuthenticationToken(new User(String.valueOf(claims.get(ID_CLAIM, Long.class)), "", authorities), token, authorities);
     }
 
     private Claims getToken(String token) {
@@ -104,5 +105,18 @@ public class TokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Optional<Long> getId(String accessToken) {
+        try {
+            return Optional.ofNullable(Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)))
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody()
+                    .get(ID_CLAIM, Long.class));
+        } catch (Exception e) {
+            log.error("액세스 토큰이 유효하지 않습니다.");
+            return Optional.empty();
+        }
     }
 }
