@@ -1,11 +1,13 @@
 package com.sooum.core.domain.member.dto;
 
 import com.sooum.core.domain.member.entity.devicetype.DeviceType;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public class AuthDTO {
 
     public record Login(
-            String deviceId
+            @NotEmpty String deviceId
     ) {}
 
     public record LoginResponse(
@@ -14,12 +16,12 @@ public class AuthDTO {
     ) {}
 
     public record SignUp(
-            String deviceId,
-            DeviceType deviceType,
-            String firebaseToken,
-            Boolean isAllowTermOne,
-            Boolean isAllowTermTwo,
-            Boolean isAllowTermThree
+            @NotEmpty String deviceId,
+            @NotNull DeviceType deviceType,
+            @NotEmpty String firebaseToken,
+            @NotNull Boolean isAllowTermOne,
+            @NotNull Boolean isAllowTermTwo,
+            @NotNull Boolean isAllowTermThree
     ) {
         public boolean checkAllPolicyIsTrue() {
             return isAllowTermOne && isAllowTermTwo && isAllowTermThree;
@@ -33,11 +35,5 @@ public class AuthDTO {
     public record Token(
             String accessToken,
             String refreshToken
-    ) {}
-
-    public record Policy(
-            Boolean isAllowTermOne,
-            Boolean isAllowTermTwo,
-            Boolean isAllowTermThree
     ) {}
 }
