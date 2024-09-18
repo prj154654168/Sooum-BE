@@ -15,4 +15,8 @@ public class MemberGetService {
         return memberRepository.findByDeviceId(deviceId)
                 .orElseThrow(MemberNotFoundException::new);
     }
+
+    public boolean isAlreadySignUp(String deviceId) {
+        return memberRepository.existsByDeviceId(deviceId);
+    }
 }
