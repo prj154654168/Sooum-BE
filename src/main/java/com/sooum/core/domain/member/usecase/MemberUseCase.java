@@ -4,7 +4,6 @@ import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.PolicyTerm;
 import com.sooum.core.domain.member.exception.MemberNotFoundException;
 import com.sooum.core.domain.member.exception.PolicyNotAllowException;
-import com.sooum.core.domain.member.repository.RefreshTokenRepository;
 import com.sooum.core.domain.member.service.MemberGetService;
 import com.sooum.core.domain.member.service.MemberSaveService;
 import com.sooum.core.domain.member.service.PolicySaveService;
