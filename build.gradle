@@ -69,4 +69,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 	systemProperty "jasypt.encryptor.password", project.getProperty("jasypt.encryptor.password")
+	systemProperty "jwt.key", project.getProperty("jwt.key")
+	systemProperty "jwt.refresh.expiration", project.getProperty("jwt.refresh.expiration")
+	systemProperty "jwt.access.expiration", project.getProperty("jwt.access.expiration")
 }
