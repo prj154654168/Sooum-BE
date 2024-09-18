@@ -33,7 +33,8 @@ public class AuthDTO {
     public record MemberInfo(
             @NotEmpty String deviceId,
             @NotNull DeviceType deviceType,
-            @NotEmpty String firebaseToken
+            @NotEmpty String firebaseToken,
+            @NotNull Boolean isAllowNotify
     ) {}
 
     public record Policy(
