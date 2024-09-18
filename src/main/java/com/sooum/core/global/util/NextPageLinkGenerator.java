@@ -8,8 +8,10 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.List;
 
-public class NextPageLinkGenerator<E extends FeedCardDto> {
-    public Link generateNextPageLink  (List<E> feedCardInfoList) {
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+public abstract class NextPageLinkGenerator {
+    public static <E extends FeedCardDto> Link generateNextPageLink  (List<E> feedCardInfoList) {
         if (feedCardInfoList.isEmpty()) {
             return Link.of("Not found");
         }
@@ -17,13 +19,13 @@ public class NextPageLinkGenerator<E extends FeedCardDto> {
         long lastCardIdx = feedCardInfoList.get(lastIdx).getId();
         if (feedCardInfoList.get(0) instanceof LatestFeedCardDto) {
             return WebMvcLinkBuilder.linkTo(
-                    WebMvcLinkBuilder.methodOn(LatestFeedController.class).getClass()
+                    methodOn(LatestFeedController.class).getClass()
             ).slash("/latest/"+lastCardIdx).withRel("next");
         }
         return Link.of("Not found");
     }
 
-    public List<E> appendEachCardDetailLink(List<E> feedCardInfoList) {
+    public static <E extends FeedCardDto> List<E> appendEachCardDetailLink(List<E> feedCardInfoList) {
         if (feedCardInfoList.isEmpty()) {
             return feedCardInfoList;
         }

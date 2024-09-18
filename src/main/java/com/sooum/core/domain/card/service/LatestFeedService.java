@@ -6,6 +6,7 @@ import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
 import com.sooum.core.global.util.DistanceUtils;
+import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class LatestFeedService extends FeedService {
     private final FeedCardService feedCardService;
     private final FeedLikeService feedLikeService;
-    private final com.sooum.core.domain.card.service.commentCardService commentCardService;
+    private final CommentCardService commentCardService;
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 50;
 
@@ -27,7 +28,8 @@ public class LatestFeedService extends FeedService {
 
         List<FeedLike> feedLikeList = feedLikeService.findByTargetList(filteredLatestFeed);
         List<CommentCard> commentCardList = commentCardService.findByTargetList(filteredLatestFeed);
-        return filteredLatestFeed.stream()
+
+        return NextPageLinkGenerator.appendEachCardDetailLink(filteredLatestFeed.stream()
                 .map(feedCard -> LatestFeedCardDto.builder()
                         .id(feedCard.getPk())
                         .font(feedCard.getFont())
@@ -44,7 +46,7 @@ public class LatestFeedService extends FeedService {
                         .commentCnt(countComments(feedCard, commentCardList))
                         .build()
                 )
-                .toList();
+                .toList());
     }
 
 
@@ -73,7 +75,7 @@ public class LatestFeedService extends FeedService {
         return byLastId.size() < MAX_PAGE_SIZE;
     }
 
-    public LatestFeedService(BlockMemberService blockMemberService, FeedCardService feedCardService, FeedLikeService feedLikeService, com.sooum.core.domain.card.service.commentCardService commentCardService) {
+    public LatestFeedService(BlockMemberService blockMemberService, FeedCardService feedCardService, FeedLikeService feedLikeService, CommentCardService commentCardService) {
         super(blockMemberService);
         this.feedCardService = feedCardService;
         this.feedLikeService = feedLikeService;

@@ -15,10 +15,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,10 +31,10 @@ public class LatestFeedController {
     private final LatestFeedService latestFeedService;
     private final MemberRepository memberRepository;
 
-    @GetMapping(value = {"/latest","/latest/{last}","/latest/{last}/{latitude}/{longitude}"})
+    @GetMapping(value = {"/latest","/latest/{last}"})
     public ResponseEntity<?> getLatestFeed(@PathVariable(required = false, value = "last") Optional<Long> last,
-                                           @PathVariable(required = false, value = "latitude") Optional<Double> latitude,
-                                           @PathVariable(required = false, value = "longitude") Optional<Double> longitude) { //todo memberId 추가해야함
+                                           @RequestParam(required = false, value = "latitude") Optional<Double> latitude,
+                                           @RequestParam(required = false, value = "longitude") Optional<Double> longitude) { //todo memberId 추가해야함
 
         List<Member> all = memberRepository.findAll();//todo param memberId 추가되면 삭제
 
@@ -47,18 +44,14 @@ public class LatestFeedController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        ResponseStatus status = ResponseStatus.builder().httpStatus(HttpStatus.OK).httpCode(HttpStatus.OK.value()).responseMessage("Retrieve latest feed data").build();
-
-
-        Link nextPageLink = new NextPageLinkGenerator<LatestFeedCardDto>().generateNextPageLink(latestFeedInfo);
-
-        List<LatestFeedCardDto> latestFeedCardDtos = new NextPageLinkGenerator<LatestFeedCardDto>().appendEachCardDetailLink(latestFeedInfo);
-
-        ResponseEntityModel<LatestFeedCardDto> build = ResponseEntityModel.<LatestFeedCardDto>builder().status(status).content(latestFeedCardDtos).build();
-        build.add(nextPageLink);
-
-        return ResponseEntity.ok(build);
+        return ResponseEntity.ok(ResponseEntityModel.<LatestFeedCardDto>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("Retrieve latest feed data")
+                        .build()
+                ).content(latestFeedInfo)
+                .build()
+                .add(NextPageLinkGenerator.generateNextPageLink(latestFeedInfo)));
     }
-
-
 }

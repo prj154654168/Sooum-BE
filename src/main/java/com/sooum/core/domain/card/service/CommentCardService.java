@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class commentCardService {
+public class CommentCardService {
     private final CommentCardRepository commentCardRepository;
 
 
