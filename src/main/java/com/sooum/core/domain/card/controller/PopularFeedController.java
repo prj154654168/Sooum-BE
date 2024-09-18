@@ -3,6 +3,7 @@ package com.sooum.core.domain.card.controller;
 import com.sooum.core.domain.card.dto.PopularCardDto;
 import com.sooum.core.domain.card.service.PopularFeedService;
 import com.sooum.core.domain.member.repository.MemberRepository;
+import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cards")
@@ -26,8 +25,8 @@ public class PopularFeedController {
 
     @GetMapping(value = {"/home/popular", "/home/popular/{latitude}/{longitude}"})
     public ResponseEntity<?> findHomePopularFeeds(@RequestParam(required = false, value = "latitude") Optional<Double> latitude,
-                                                  @RequestParam(required = false, value = "longitude") Optional<Double> longitude) {
-        Long memberPk = memberRepository.findAll().stream().findFirst().get().getPk(); //todo memberPk 변경
+                                                  @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
+                                                  @CurrentUser Long memberPk) {
         List<PopularCardDto.PopularCardRetrieve> popularFeeds = popularFeedService.findHomePopularFeeds(latitude, longitude, memberPk);
 
         if (popularFeeds.isEmpty()) {
