@@ -4,9 +4,11 @@ import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.PolicyTerm;
 import com.sooum.core.domain.member.exception.MemberNotFoundException;
 import com.sooum.core.domain.member.exception.PolicyNotAllowException;
+import com.sooum.core.domain.member.repository.RefreshTokenRepository;
 import com.sooum.core.domain.member.service.MemberGetService;
 import com.sooum.core.domain.member.service.MemberSaveService;
 import com.sooum.core.domain.member.service.PolicySaveService;
+import com.sooum.core.domain.member.service.RefreshTokenSaveService;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ public class MemberUseCase {
     private final TokenProvider tokenProvider;
     private final MemberSaveService memberSaveService;
     private final PolicySaveService policySaveService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenSaveService refreshTokenSaveService;
 
     public LoginResponse login(Login dto) {
         // DeviceID RSA Decode
@@ -41,7 +45,8 @@ public class MemberUseCase {
 
         Member member = memberSaveService.save(dto);
         PolicyTerm policyTerm = policySaveService.save(dto, member);
-
-        return new SignUpResponse(tokenProvider.createToken(policyTerm.getPk()));
+        Token token = tokenProvider.createToken(policyTerm.getPk());
+        refreshTokenSaveService.save(token.refreshToken(), member);
+        return new SignUpResponse(token);
     }
 }
