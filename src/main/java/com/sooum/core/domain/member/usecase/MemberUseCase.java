@@ -12,6 +12,7 @@ import com.sooum.core.domain.member.service.RefreshTokenSaveService;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.sooum.core.domain.member.dto.AuthDTO.*;
 
@@ -36,6 +37,7 @@ public class MemberUseCase {
         }
     }
 
+    @Transactional
     public SignUpResponse signUp(SignUp dto) {
         if(!dto.policy().checkAllPolicyIsTrue())
             throw new PolicyNotAllowException();

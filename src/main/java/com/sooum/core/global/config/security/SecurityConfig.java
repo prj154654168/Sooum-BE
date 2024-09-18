@@ -28,8 +28,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         // 모든 요청 HTTPS 강제
-        http.requiresChannel(channelRequestMatcherRegistry ->
-                channelRequestMatcherRegistry.anyRequest().requiresSecure());
+//        http.requiresChannel(channelRequestMatcherRegistry ->
+//                channelRequestMatcherRegistry.anyRequest().requiresSecure());
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
