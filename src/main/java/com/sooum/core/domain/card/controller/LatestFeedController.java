@@ -28,9 +28,9 @@ public class LatestFeedController {
     public ResponseEntity<?> getLatestFeed(@PathVariable(required = false, value = "last") Optional<Long> last,
                                            @RequestParam(required = false, value = "latitude") Optional<Double> latitude,
                                            @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
-                                           @CurrentUser Long memberId) {
+                                           @CurrentUser Long memberPk) {
 
-        List<LatestFeedCardDto> latestFeedInfo = latestFeedService.createLatestFeedInfo(last.orElse(0L), memberId, latitude, longitude);
+        List<LatestFeedCardDto> latestFeedInfo = latestFeedService.createLatestFeedInfo(last.orElse(0L), memberPk, latitude, longitude);
 
         if (latestFeedInfo.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

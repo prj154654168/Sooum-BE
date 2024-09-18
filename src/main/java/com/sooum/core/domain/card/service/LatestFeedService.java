@@ -21,8 +21,8 @@ public class LatestFeedService extends FeedService {
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 50;
 
-    public List<LatestFeedCardDto> createLatestFeedInfo(Long lastCardId, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
-        List<FeedCard> filteredLatestFeed = findFilteredLatestFeed(lastCardId, memberPk);
+    public List<LatestFeedCardDto> createLatestFeedInfo(Long lastCardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+        List<FeedCard> filteredLatestFeed = findFilteredLatestFeed(lastCardPk, memberPk);
 
         List<FeedLike> feedLikeList = feedLikeService.findByTargetList(filteredLatestFeed);
         List<CommentCard> commentCardList = commentCardService.findByTargetList(filteredLatestFeed);
