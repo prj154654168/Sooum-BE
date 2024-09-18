@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class LatestFeedCardDto extends FeedCardDto{
 
-    private Double distance;
+    private final Double distance;
     @Builder
     public LatestFeedCardDto(long id, boolean isStory, LocalDateTime storyExpirationTime, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance) {
         super(id, isStory, storyExpirationTime, content, createdAt, likeCnt, isLiked, commentCnt, isCommentWritten, backgroundImgUrl, font, fontSize);
