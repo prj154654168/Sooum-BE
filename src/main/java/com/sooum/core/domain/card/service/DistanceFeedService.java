@@ -21,9 +21,9 @@ public class DistanceFeedService extends FeedService {
     private final GeometryFactory geometryFactory = new GeometryFactory();
     private final FeedCardService feedCardService;
     private final FeedLikeService feedLikeService;
-    private final commentCardService commentCardService;
+    private final CommentCardService commentCardService;
 
-    public DistanceFeedService(BlockMemberService blockMemberService, FeedCardService feedCardService, FeedLikeService feedLikeService, commentCardService commentCardService) {
+    public DistanceFeedService(BlockMemberService blockMemberService, FeedCardService feedCardService, FeedLikeService feedLikeService, CommentCardService commentCardService) {
         super(blockMemberService);
         this.feedCardService = feedCardService;
         this.feedLikeService = feedLikeService;
