@@ -2,21 +2,21 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.block.service.BlockMemberService;
 import com.sooum.core.domain.card.dto.DistanceCardDto;
-import com.sooum.core.domain.card.dto.LatestFeedCardDto;
 import com.sooum.core.domain.card.dto.distancefilter.DistanceFilter;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
 import com.sooum.core.global.util.DistanceUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class DistanceFeedService extends FeedService {
     private final GeometryFactory geometryFactory = new GeometryFactory();
     private final FeedCardService feedCardService;
@@ -30,14 +30,12 @@ public class DistanceFeedService extends FeedService {
         this.commentCardService = commentCardService;
     }
 
-
     public List<DistanceCardDto> findDistanceFeeds(Long lastId, Long memberPk,
                                                    Double latitude, Double longitude, DistanceFilter distanceFilter) {
-
         Point userLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
 
-        int minDistance = distanceFilter.getMinDistance();
-        int maxDistance = distanceFilter.getMaxDistance();
+        double minDistance = distanceFilter.getMinDistance();
+        double maxDistance = distanceFilter.getMaxDistance();
 
         List<FeedCard> feedsByDistance = feedCardService.findFeedsByDistance(userLocation, lastId, minDistance, maxDistance);
 
@@ -55,7 +53,7 @@ public class DistanceFeedService extends FeedService {
                         .isStory(feedCard.isStory())
                         .storyExpirationTime(feedCard.getCreatedAt().plusDays(1L))
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
-                        .backgroundImgUrl(null)//todo
+                        .backgroundImgUrl(null)
                         .createdAt(feedCard.getCreatedAt())
                         .isCommentWritten(isWrittenCommentCard(commentCardList, memberPk))
                         .isLiked(isLiked(feedCard, feedLikeList))
@@ -64,6 +62,5 @@ public class DistanceFeedService extends FeedService {
                         .build()
                 )
                 .toList();
-
     }
 }
