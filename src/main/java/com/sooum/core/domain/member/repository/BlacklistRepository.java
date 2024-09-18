@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BlacklistRepository extends JpaRepository<Blacklist, Long> {
 
-    Boolean existsByMember_Pk(Long pk);
+    Boolean existsByAccessToken(String accessToken);
 }
