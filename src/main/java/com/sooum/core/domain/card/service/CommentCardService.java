@@ -18,4 +18,8 @@ public class CommentCardService {
     public List<CommentCard> findByMasterCards(List<FeedCard> masterCards) {
         return commentCardRepository.findByMasterCardIn(masterCards);
     }
+
+    public List<CommentCard> findByTargetList(List<FeedCard> targetList) {
+        return commentCardRepository.findByTargetList(targetList);
+    }
 }

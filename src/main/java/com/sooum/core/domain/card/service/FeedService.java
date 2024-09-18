@@ -5,26 +5,29 @@ import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FeedService {
 
     private final BlockMemberService blockMemberService;
 
-/*    public List<LatestFeedCardDto.LatestFeedCardInfo> filterBlockedMembers(List<LatestFeedCardDto.LatestFeedCardInfo> feedCards, Long memberPk) {
-        List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberPk);
-        feedCards.removeIf(feedCard -> allBlockToPk.contains(feedCard.getId()));
-        return feedCards;
-    }*/
-
     protected List<FeedCard> filterByBlockedMembers(List<FeedCard> feeds, Long memberPk) {
         List<Long> blockedMembersPk = blockMemberService.findAllBlockToPk(memberPk);
         return feeds.stream()
                 .filter(feedCard -> !blockedMembersPk.contains(memberPk))
+                .toList();
+    }
+
+    public List<FeedCard> filterBlockedMembers(List<FeedCard> feedCards, Long memberPk) {
+        List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberPk);
+        return feedCards.stream()
+                .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
                 .toList();
     }
 

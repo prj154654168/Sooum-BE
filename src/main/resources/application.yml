@@ -7,9 +7,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
 
   jackson:
     time-zone: Asia/Seoul
@@ -24,3 +25,10 @@ sooum:
     ip: ENC(ZfeH1keK52DdFhGsUNevFE4r42IODteaG1oR4+J+UjO+NRkqJiVBcw==ø)
     img:
       path: ENC(s+DbwTmG8YHfsht5xkidQCbcWtU7hLglmmBKRO8Lb7Q6548wTTKiVA==)
+
+jwt:
+  key: ${JWT_KEY}
+  access:
+    expiration: ${ACCESS_EXP}
+  refresh:
+    expiration: ${REFRESH_EXP}

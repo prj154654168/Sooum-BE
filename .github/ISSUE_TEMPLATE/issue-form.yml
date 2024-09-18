@@ -1,7 +1,6 @@
 name: 'Sooum 이슈 생성'
-description: 'Sooum Repo에 이슈를 생성하며, 생성된 이슈는 Jira와 연동됩니다.'
-labels: [order]
-title: '이슈 이름을 작성해주세요 (띄어쓰기 X, 언더바로 대체)'
+description: 'Sooum 이슈 템플릿'
+title: '이슈 이름을 작성해주세요'
 body:
   - type: input
     id: description
@@ -27,7 +26,7 @@ body:
       label: '체크리스트(Tasks)'
       description: '해당 이슈에 대해 필요한 작업목록을 작성해주세요'
       value: |
-        - [ ] Task1
-        - [ ] Task2
+        - [ ] Assignees 설정
+        - [ ] Label 설정
     validations:
       required: false

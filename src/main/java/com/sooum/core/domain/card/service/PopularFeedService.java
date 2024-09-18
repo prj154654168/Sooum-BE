@@ -11,7 +11,6 @@ import com.sooum.core.domain.card.entity.PopularFeed;
 import com.sooum.core.domain.card.repository.PopularFeedRepository;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.Link;
@@ -27,13 +26,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Service
 @Transactional(readOnly = true)
 @Slf4j
-@RequiredArgsConstructor
-public class PopularFeedService {
+public class PopularFeedService extends FeedService{
     private final PopularFeedRepository popularFeedRepository;
     private final ImgService imgService;
     private final FeedLikeService feedLikeService;
     private final CommentCardService commentCardService;
-    private final FeedService feedService;
     private static final int MAX_SIZE = 200;
 
     public List<PopularCardDto.PopularCardRetrieve> findHomePopularFeeds(final Optional<Double> latitude,
@@ -42,7 +39,7 @@ public class PopularFeedService {
         PageRequest pageRequest = PageRequest.of(0, MAX_SIZE);
         List<PopularFeed> popularFeeds = popularFeedRepository.findPopularFeeds(pageRequest);
         List<FeedCard> feeds = popularFeeds.stream().map(PopularFeed::getPopularCard).toList();
-        List<FeedCard> filteredFeeds = feedService.filterByBlockedMembers(feeds, memberPk);
+        List<FeedCard> filteredFeeds = filterByBlockedMembers(feeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
         List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);
@@ -56,10 +53,10 @@ public class PopularFeedService {
                 .fontSize(feed.getFontSize())
                 .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))
                 .createdAt(feed.getCreatedAt())
-                .isLiked(FeedService.isLiked(feed, feedLikes))
-                .likeCnt(FeedService.countLikes(feed, feedLikes))
-                .isCommentWritten(FeedService.isWrittenCommentCard(comments, memberPk))
-                .commentCnt(FeedService.countComments(feed, comments))
+                .isLiked(isLiked(feed, feedLikes))
+                .likeCnt(countLikes(feed, feedLikes))
+                .isCommentWritten(isWrittenCommentCard(comments, memberPk))
+                .commentCnt(countComments(feed, comments))
                 .popularityType(findPopularityType(feed, popularFeeds))
                 .build()
                         .add(linkTo(methodOn(FeedCardController.class).findFeedCardInfo(feed.getPk())).withRel("detail")))
@@ -68,5 +65,13 @@ public class PopularFeedService {
 
     private PopularityType findPopularityType(FeedCard feed, List<PopularFeed> popularFeeds) {
         return popularFeeds.stream().filter(popularFeed -> popularFeed.getPopularCard().equals(feed)).findFirst().get().getPopularityType();
+    }
+
+    public PopularFeedService(BlockMemberService blockMemberService, PopularFeedRepository popularFeedRepository, ImgService imgService, FeedLikeService feedLikeService, CommentCardService commentCardService) {
+        super(blockMemberService);
+        this.popularFeedRepository = popularFeedRepository;
+        this.imgService = imgService;
+        this.feedLikeService = feedLikeService;
+        this.commentCardService = commentCardService;
     }
 }

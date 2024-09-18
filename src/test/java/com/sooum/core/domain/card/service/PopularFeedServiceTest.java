@@ -39,9 +39,7 @@ class PopularFeedServiceTest {
     @Mock
     CommentCardService commentCardService;
     @Mock
-    FeedService feedService;
-//    @Mock
-//    BlockMemberService blockMemberService;
+    BlockMemberService blockMemberService;
     @InjectMocks
     PopularFeedService popularFeedService;
     private static final int MEMBER_SIZE = 2;
@@ -53,9 +51,9 @@ class PopularFeedServiceTest {
         List<Member> members = createMembers();
         List<FeedCard> feedCards = createFeedCards(members);
         given(popularFeedRepository.findPopularFeeds(any())).willReturn(createPopularFeedCards(feedCards));
+        given(blockMemberService.findAllBlockToPk(any())).willReturn(List.of());
         given(feedLikeService.findByTargetCards(any())).willReturn(createFeedLikes(feedCards, members));
         given(commentCardService.findByMasterCards(any())).willReturn(createCommentCards(feedCards, members));
-        given(feedService.filterByBlockedMembers(any(), any())).willReturn(feedCards);
         given(localImgService.findImgUrl(any(), any())).willReturn("dummyUrl");
 
         // when
