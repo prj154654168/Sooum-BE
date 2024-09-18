@@ -3,6 +3,7 @@ package com.sooum.core.global.config.jwt;
 import com.sooum.core.domain.member.dto.AuthDTO.Token;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +26,10 @@ public class TokenProvider {
     private final JwtProperties jwtProperties;
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
+    private static final String ACCESS_TOKEN_HEADER = "Authorization";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
+    private static final String REFRESH_TOKEN_HEADER = "Authorization-refresh";
+    private static final String BEARER = "Bearer ";
     private static final String ID_CLAIM = "id";
 
     public Token createToken(Long id) {
@@ -107,6 +111,18 @@ public class TokenProvider {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
+    }
+
+    public Optional<String> getAccessToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(ACCESS_TOKEN_HEADER))
+                .filter(refreshToken -> refreshToken.startsWith(BEARER))
+                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+    }
+
+    public Optional<String> getRefreshToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(REFRESH_TOKEN_HEADER))
+                .filter(refreshToken -> refreshToken.startsWith(BEARER))
+                .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
     private Claims getClaims(String token) {
