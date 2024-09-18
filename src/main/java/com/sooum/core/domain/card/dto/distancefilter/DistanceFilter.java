@@ -1,25 +1,25 @@
 package com.sooum.core.domain.card.dto.distancefilter;
 
 public enum DistanceFilter {
-    UNDER_1(0, 1000),
-    UNDER_5(1000, 5000),
-    UNDER_10(5000, 10000),
-    UNDER_20(10000, 20000),
-    UNDER_50(20000, 50000);
+    UNDER_1(0, 0.01),
+    UNDER_5(0.01, 0.05),
+    UNDER_10(0.05, 0.1),
+    UNDER_20(0.1, 0.2),
+    UNDER_50(0.2, 0.5);
 
-    private final int minDistance;
-    private final int maxDistance;
+    private final double minDistance;
+    private final double maxDistance;
 
-    DistanceFilter(int minDistance, int maxDistance) {
+    DistanceFilter(double minDistance, double maxDistance) {
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
     }
 
-    public int getMinDistance() {
+    public double getMinDistance() {
         return minDistance;
     }
 
-    public int getMaxDistance() {
+    public double getMaxDistance() {
         return maxDistance;
     }
 }
