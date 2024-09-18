@@ -8,7 +8,6 @@ import com.sooum.core.global.responseform.ResponseStatus;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,13 +41,10 @@ public class DistanceCardController {
                 .httpCode(HttpStatus.OK.value())
                 .responseMessage("Success").build();
 
-        Link nextLink = new NextPageLinkGenerator<DistanceCardDto>().generateNextPageLink(distanceFeeds);
-        List<DistanceCardDto> distanceCardDtos = new NextPageLinkGenerator<DistanceCardDto>().appendEachCardDetailLink(distanceFeeds);
-
         ResponseEntityModel<DistanceCardDto> response = ResponseEntityModel.<DistanceCardDto>builder()
                 .status(status)
-                .content(distanceCardDtos).build();
-        response.add(nextLink);
+                .content(NextPageLinkGenerator.appendEachCardDetailLink(distanceFeeds)).build();
+        response.add(NextPageLinkGenerator.generateNextPageLink(distanceFeeds));
 
         return ResponseEntity.ok(response);
     }
