@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface PopularFeedRepository extends JpaRepository<PopularFeed, Long> {
-    @Query("select pc from PopularFeed pc join fetch pc.popularCard where pc.pk < :last")
-    List<PopularFeed> findPopularFeeds(@Param("last") Long last, Pageable pageable);
+    @Query("select pc from PopularFeed pc join fetch pc.popularCard order by pc.pk desc")
+    List<PopularFeed> findPopularFeeds(Pageable pageable);
 }

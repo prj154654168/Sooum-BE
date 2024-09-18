@@ -4,17 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
 public class PopularCardDto {
     @Getter
+    @Setter
     @NoArgsConstructor
-    public static class PopularCardRetrieve {
+    public static class PopularCardRetrieve extends RepresentationModel<PopularCardRetrieve> {
         private long id;
         private String contents;
         @JsonProperty(value = "isStory")

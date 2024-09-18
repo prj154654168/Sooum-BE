@@ -19,10 +19,11 @@ public class LocalImgService implements ImgService{
 
     @Override
     public String findImgUrl(ImgType imgType, String imgName) {
-        return serverIp + "/imgs/" + imgType.getImgPath() + "/" + imgType;
+        return serverIp + "/imgs/" + imgName + "/" + imgType.getImgPath();
     }
 
     public UrlResource findImg(ImgType imgType, String imgName) throws MalformedURLException {
-        return new UrlResource("file:" + serverImgPath + "/" + imgType.getImgPath() + "/" + imgName);
+        String imgPath = imgType.equals(ImgType.DEFAULT) ? DEFAULT_IMG_PATH : USER_IMG_PATH;
+        return new UrlResource("file:" + serverImgPath + "/" + imgPath + "/" + imgName + ".jpg");
     }
 }

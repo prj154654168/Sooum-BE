@@ -20,19 +20,19 @@ import java.net.MalformedURLException;
 public class ImgController {
     private final ImgService imgService;
 
-    @GetMapping("/user/{imgName}")
+    @GetMapping("/{imgName}/user")
     public ResponseEntity<Resource> findUserImg(@PathVariable String imgName) throws MalformedURLException {
         LocalImgService localImgService = (LocalImgService) imgService;
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + ".jpg" + "\"")
                 .body(localImgService.findImg(ImgType.USER, imgName));
     }
 
-    @GetMapping("/default/{imgName}")
+    @GetMapping("/{imgName}/default")
     public ResponseEntity<Resource> findDefaultImg(@PathVariable String imgName) throws MalformedURLException {
         LocalImgService localImgService = (LocalImgService) imgService;
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + ".jpg" + "\"")
                 .body(localImgService.findImg(ImgType.DEFAULT, imgName));
     }
 }

@@ -9,6 +9,7 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -62,6 +63,7 @@ public class CommentCard extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private FeedCard masterCard;
 
+    @Builder
     public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, FeedCard parentCard, FeedCard masterCard) {
         this.content = content;
         this.fontSize = fontSize;
