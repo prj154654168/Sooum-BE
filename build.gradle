@@ -67,8 +67,13 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-	systemProperty "jasypt.encryptor.password", project.getProperty("jasypt.encryptor.password")
 	systemProperty "jwt.key", project.getProperty("jwt.key")
 	systemProperty "jwt.refresh.expiration", project.getProperty("jwt.refresh.expiration")
 	systemProperty "jwt.access.expiration", project.getProperty("jwt.access.expiration")
+	systemProperty 'spring.datasource.url', project.getProperty("spring.datasource.url")
+	systemProperty 'spring.datasource.username', project.getProperty("spring.datasource.username")
+	systemProperty 'spring.datasource.password', project.getProperty("spring.datasource.password")
+	systemProperty 'spring.datasource.password', project.getProperty("spring.datasource.password")
+	systemProperty 'sooum.server.ip', project.getProperty("sooum.server.ip")
+	systemProperty 'sooum.server.img.path', project.getProperty("sooum.server.img.path")
 }
