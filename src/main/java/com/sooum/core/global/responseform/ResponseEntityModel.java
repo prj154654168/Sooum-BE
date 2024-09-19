@@ -16,3 +16,4 @@ public class ResponseEntityModel<T> extends CollectionModel<T> {
         this.status = status;
     }
 }
+

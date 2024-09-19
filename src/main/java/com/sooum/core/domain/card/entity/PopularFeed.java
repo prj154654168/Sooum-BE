@@ -1,5 +1,6 @@
 package com.sooum.core.domain.card.entity;
 
+import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
 import com.sooum.core.domain.common.entity.BaseEntity;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PopularCard extends BaseEntity {
+public class PopularFeed extends BaseEntity {
     @Id @Tsid
     private Long pk;
 
@@ -21,8 +22,13 @@ public class PopularCard extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private FeedCard popularCard;
 
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private PopularityType popularityType;
+
     @Builder
-    public PopularCard(FeedCard popularCard) {
+    public PopularFeed(FeedCard popularCard, PopularityType popularityType) {
         this.popularCard = popularCard;
+        this.popularityType = popularityType;
     }
 }

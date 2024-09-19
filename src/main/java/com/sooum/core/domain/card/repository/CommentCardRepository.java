@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CommentCardRepository extends JpaRepository<CommentCard, Long> {
+    List<CommentCard> findByMasterCardIn(List<FeedCard> masterCards);
     @Query("select cc from CommentCard cc where cc.parentCard in :targetList")
     List<CommentCard> findByTargetList(@Param("targetList") List<FeedCard> targetList);
 }

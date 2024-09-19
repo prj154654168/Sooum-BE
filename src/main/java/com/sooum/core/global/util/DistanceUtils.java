@@ -16,7 +16,7 @@ public abstract class DistanceUtils {
         Coordinate coordinate = new Coordinate(longitude.get(), latitude.get());
         Point targetPoint = geometry.createPoint(coordinate);
 
-        return cardLocation.distance(targetPoint);
+        return cardLocation.distance(targetPoint) * 100;
     }
 
     private static boolean isInValidLocationInfo(Point cardLocation, Optional<Double> latitude, Optional<Double> longitude) {

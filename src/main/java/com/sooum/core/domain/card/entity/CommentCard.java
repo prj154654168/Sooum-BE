@@ -63,7 +63,6 @@ public class CommentCard extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private FeedCard masterCard;
 
-
     @Builder
     public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, FeedCard parentCard, FeedCard masterCard) {
         this.content = content;

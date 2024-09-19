@@ -20,6 +20,12 @@ jasypt:
   encryptor:
     bean: jasyptEncryptor
 
+sooum:
+  server:
+    ip: ENC(ZfeH1keK52DdFhGsUNevFE4r42IODteaG1oR4+J+UjO+NRkqJiVBcw==ø)
+    img:
+      path: ENC(s+DbwTmG8YHfsht5xkidQCbcWtU7hLglmmBKRO8Lb7Q6548wTTKiVA==)
+
 jwt:
   key: ${JWT_KEY}
   access:
