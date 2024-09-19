@@ -36,16 +36,13 @@ public class DistanceCardController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        ResponseStatus status = ResponseStatus.builder()
-                .httpStatus(HttpStatus.OK)
-                .httpCode(HttpStatus.OK.value())
-                .responseMessage("Success").build();
-
         ResponseEntityModel<DistanceCardDto> response = ResponseEntityModel.<DistanceCardDto>builder()
-                .status(status)
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("Success").build())
                 .content(NextPageLinkGenerator.appendEachCardDetailLink(distanceFeeds)).build();
         response.add(NextPageLinkGenerator.generateNextPageLink(distanceFeeds));
-
         return ResponseEntity.ok(response);
     }
 }
