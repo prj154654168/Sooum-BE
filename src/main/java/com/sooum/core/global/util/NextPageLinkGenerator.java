@@ -1,6 +1,8 @@
 package com.sooum.core.global.util;
 
+import com.sooum.core.domain.card.controller.DistanceCardController;
 import com.sooum.core.domain.card.controller.LatestFeedController;
+import com.sooum.core.domain.card.dto.DistanceCardDto;
 import com.sooum.core.domain.card.dto.FeedCardDto;
 import com.sooum.core.domain.card.dto.LatestFeedCardDto;
 import org.springframework.hateoas.Link;
@@ -22,6 +24,10 @@ public abstract class NextPageLinkGenerator {
                     methodOn(LatestFeedController.class).getClass()
             ).slash("/latest/"+lastCardIdx).withRel("next");
         }
+        if (feedCardInfoList.get(0) instanceof DistanceCardDto) {
+            return WebMvcLinkBuilder.linkTo(methodOn(DistanceCardController.class).getClass()
+            ).slash("/"+lastCardIdx).withRel("next");
+        }
         return Link.of("Not found");
     }
 
@@ -33,6 +39,12 @@ public abstract class NextPageLinkGenerator {
             return feedCardInfoList.stream()
                     .peek(feedCard -> feedCard.add(WebMvcLinkBuilder.linkTo(LatestFeedController.class)
                             .slash("/detail/" + feedCard.getId())
+                            .withRel("detail"))).toList();
+        }
+        if (feedCardInfoList.get(0) instanceof DistanceCardDto) {
+            return feedCardInfoList.stream()
+                    .peek(feedCard -> feedCard.add(WebMvcLinkBuilder.linkTo(DistanceCardController.class)
+                            .slash("/" + feedCard.getId())
                             .withRel("detail"))).toList();
         }
         return feedCardInfoList;
