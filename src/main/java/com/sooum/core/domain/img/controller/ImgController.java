@@ -21,7 +21,7 @@ public class ImgController {
     private final ImgService imgService;
 
     @GetMapping("/{imgName}/user")
-    public ResponseEntity<Resource> findUserImg(@PathVariable String imgName) throws MalformedURLException {
+    public ResponseEntity<Resource> findUserImg(@PathVariable(value = "imgName") String imgName) throws MalformedURLException {
         LocalImgService localImgService = (LocalImgService) imgService;
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + ".jpg" + "\"")
@@ -29,7 +29,7 @@ public class ImgController {
     }
 
     @GetMapping("/{imgName}/default")
-    public ResponseEntity<Resource> findDefaultImg(@PathVariable String imgName) throws MalformedURLException {
+    public ResponseEntity<Resource> findDefaultImg(@PathVariable(value = "imgName") String imgName) throws MalformedURLException {
         LocalImgService localImgService = (LocalImgService) imgService;
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + ".jpg" + "\"")
