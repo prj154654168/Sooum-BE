@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class PopularFeedServiceTest {
@@ -50,7 +51,7 @@ class PopularFeedServiceTest {
         /// given
         List<Member> members = createMembers();
         List<FeedCard> feedCards = createFeedCards(members);
-        given(popularFeedRepository.findPopularFeeds(any())).willReturn(createPopularFeedCards(feedCards));
+        given(popularFeedRepository.findPopularFeeds(any(), any())).willReturn(createPopularFeedCards(feedCards));
         given(blockMemberService.findAllBlockToPk(any())).willReturn(List.of());
         given(feedLikeService.findByTargetCards(any())).willReturn(createFeedLikes(feedCards, members));
         given(commentCardService.findByMasterCards(any())).willReturn(createCommentCards(feedCards, members));

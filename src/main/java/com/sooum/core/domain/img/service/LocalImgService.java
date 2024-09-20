@@ -2,7 +2,6 @@ package com.sooum.core.domain.img.service;
 
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 

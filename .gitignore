@@ -38,3 +38,5 @@ out/
 
 #### jang-199 ####
 **/main/java/com/sooum/core/global/config/init/PostConstruct123.java
+**/main/generated
+**/test/generated_tests
