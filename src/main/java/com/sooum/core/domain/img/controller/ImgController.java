@@ -24,7 +24,7 @@ public class ImgController {
     public ResponseEntity<Resource> findUserImg(@PathVariable(value = "imgName") String imgName) throws MalformedURLException {
         LocalImgService localImgService = (LocalImgService) imgService;
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + ".jpg" + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + "\"")
                 .body(localImgService.findImg(ImgType.USER, imgName));
     }
 
@@ -32,7 +32,7 @@ public class ImgController {
     public ResponseEntity<Resource> findDefaultImg(@PathVariable(value = "imgName") String imgName) throws MalformedURLException {
         LocalImgService localImgService = (LocalImgService) imgService;
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + ".jpg" + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imgName + "\"")
                 .body(localImgService.findImg(ImgType.DEFAULT, imgName));
     }
 }
