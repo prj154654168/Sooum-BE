@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenSaveService {
+public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
