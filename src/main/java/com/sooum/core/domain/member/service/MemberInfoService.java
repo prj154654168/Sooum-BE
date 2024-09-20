@@ -18,14 +18,14 @@ public class MemberInfoService {
     private final PolicyService policySaveService;
     private final RefreshTokenService refreshTokenSaveService;
     private final TokenProvider tokenProvider;
-    private final MemberService memberInfoService;
+    private final MemberService memberService;
 
 
     public AuthDTO.LoginResponse login(AuthDTO.Login dto) {
         // DeviceID RSA Decode
 
         try {
-            Member member = memberInfoService.findByDeviceId(dto.deviceId());
+            Member member = memberService.findByDeviceId(dto.deviceId());
             return new AuthDTO.LoginResponse(true, tokenProvider.createToken(member.getPk()));
         } catch (MemberNotFoundException e) {
             return new AuthDTO.LoginResponse(false, null);
@@ -37,10 +37,10 @@ public class MemberInfoService {
         if(!dto.policy().checkAllPolicyIsTrue())
             throw new PolicyNotAllowException();
 
-        if(memberInfoService.isAlreadySignUp(dto.member().deviceId()))
+        if(memberService.isAlreadySignUp(dto.member().deviceId()))
             throw new DuplicateSignUpException();
 
-        Member member = memberInfoService.save(dto.member());
+        Member member = memberService.save(dto.member());
         PolicyTerm policyTerm = policySaveService.save(dto.policy(), member);
         AuthDTO.Token token = tokenProvider.createToken(policyTerm.getPk());
         refreshTokenSaveService.save(token.refreshToken(), member);

@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class MemberAuthController {
 
-    private final MemberInfoService memberService;
+    private final MemberInfoService memberInfoService;
 
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid Login dto) {
-        return ResponseEntity.ok(memberService.login(dto)); // Hateoas
+        return ResponseEntity.ok(memberInfoService.login(dto)); // Hateoas
     }
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUp dto) {
-        return ResponseEntity.ok(memberService.signUp(dto));
+        return ResponseEntity.ok(memberInfoService.signUp(dto));
     }
 }
