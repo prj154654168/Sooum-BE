@@ -1,6 +1,8 @@
 package com.sooum.core.domain.member.service;
 
 import com.sooum.core.domain.member.dto.AuthDTO;
+import com.sooum.core.domain.member.dto.AuthDTO.LoginResponse;
+import com.sooum.core.domain.member.dto.AuthDTO.SignUpResponse;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.PolicyTerm;
 import com.sooum.core.domain.member.exception.DuplicateSignUpException;
@@ -21,19 +23,19 @@ public class MemberInfoService {
     private final MemberService memberService;
 
 
-    public AuthDTO.LoginResponse login(AuthDTO.Login dto) {
+    public LoginResponse login(AuthDTO.Login dto) {
         // DeviceID RSA Decode
 
         try {
             Member member = memberService.findByDeviceId(dto.deviceId());
-            return new AuthDTO.LoginResponse(true, tokenProvider.createToken(member.getPk()));
+            return new LoginResponse(true, tokenProvider.createToken(member.getPk()));
         } catch (MemberNotFoundException e) {
-            return new AuthDTO.LoginResponse(false, null);
+            return new LoginResponse(false, null);
         }
     }
 
     @Transactional
-    public AuthDTO.SignUpResponse signUp(AuthDTO.SignUp dto) {
+    public SignUpResponse signUp(AuthDTO.SignUp dto) {
         if(!dto.policy().checkAllPolicyIsTrue())
             throw new PolicyNotAllowException();
 
@@ -44,6 +46,6 @@ public class MemberInfoService {
         PolicyTerm policyTerm = policySaveService.save(dto.policy(), member);
         AuthDTO.Token token = tokenProvider.createToken(policyTerm.getPk());
         refreshTokenSaveService.save(token.refreshToken(), member);
-        return new AuthDTO.SignUpResponse(token);
+        return new SignUpResponse(token);
     }
 }

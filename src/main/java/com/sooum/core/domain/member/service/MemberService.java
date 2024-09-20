@@ -1,6 +1,5 @@
 package com.sooum.core.domain.member.service;
 
-import com.sooum.core.domain.member.dto.AuthDTO;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.mapper.MemberMapper;
 import com.sooum.core.domain.member.repository.MemberRepository;
@@ -8,6 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.sooum.core.domain.member.dto.AuthDTO.MemberInfo;
 import static com.sooum.core.global.exceptionmessage.ExceptionMessage.MEMBER_NOT_FOUND;
 
 @Service
@@ -31,7 +31,7 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND.getMessage()));
     }
 
-    public Member save(AuthDTO.MemberInfo dto) {
+    public Member save(MemberInfo dto) {
         return memberRepository.save(memberMapper.from(dto));
     }
 }
