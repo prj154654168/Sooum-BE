@@ -41,7 +41,7 @@ public class PopularFeedService extends FeedService{
         LocalDateTime storyExpiredTime = LocalDateTime.now().minusDays(1L);
         List<PopularFeed> popularFeeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
         List<FeedCard> feeds = popularFeeds.stream().map(PopularFeed::getPopularCard).toList();
-        List<FeedCard> filteredFeeds = filterByBlockedMembers(feeds, memberPk);
+        List<FeedCard> filteredFeeds = filterBlockedMembers(feeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
         List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);

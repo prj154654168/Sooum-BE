@@ -27,7 +27,7 @@ public class LatestFeedService extends FeedService {
     public List<LatestFeedCardDto> createLatestFeedInfo(Long lastCardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
         List<FeedCard> filteredLatestFeed = findFilteredLatestFeed(lastCardPk, memberPk);
 
-        List<FeedLike> feedLikeList = feedLikeService.findByTargetList(filteredLatestFeed);
+        List<FeedLike> feedLikeList = feedLikeService.findByTargetCards(filteredLatestFeed);
         List<CommentCard> commentCardList = commentCardService.findByTargetList(filteredLatestFeed);
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredLatestFeed.stream()

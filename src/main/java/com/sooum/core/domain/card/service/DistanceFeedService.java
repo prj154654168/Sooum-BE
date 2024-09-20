@@ -41,7 +41,7 @@ public class DistanceFeedService extends FeedService {
 
         List<FeedCard> filteredDistanceFeeds= filterBlockedMembers(feedsByDistance, memberPk);
 
-        List<FeedLike> feedLikeList = feedLikeService.findByTargetList(filteredDistanceFeeds);
+        List<FeedLike> feedLikeList = feedLikeService.findByTargetCards(filteredDistanceFeeds);
         List<CommentCard> commentCardList = commentCardService.findByTargetList(filteredDistanceFeeds);
 
         return filteredDistanceFeeds.stream()

@@ -3,6 +3,7 @@ package com.sooum.core.domain.card.controller;
 import com.sooum.core.domain.card.dto.DistanceCardDto;
 import com.sooum.core.domain.card.dto.distancefilter.DistanceFilter;
 import com.sooum.core.domain.card.service.DistanceFeedService;
+import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import com.sooum.core.global.util.NextPageLinkGenerator;
@@ -23,14 +24,12 @@ public class DistanceCardController {
 
     @GetMapping(value = { "","/{last}"})
     ResponseEntity<ResponseEntityModel<DistanceCardDto>> getFeedsByDistance(
-            @PathVariable(required = false) Optional<Long> last,
-            @RequestParam @NotNull Double latitude,
-            @RequestParam @NotNull Double longitude,
-            @RequestParam(defaultValue = "UNDER_1") DistanceFilter distanceFilter) {
-
-        Long mockMemberPk = 1L;
-
-        List<DistanceCardDto> distanceFeeds = distanceFeedService.findDistanceFeeds(last.orElse(0L), mockMemberPk, latitude, longitude, distanceFilter);
+            @PathVariable(required = false, value = "last") Optional<Long> last,
+            @RequestParam(value = "latitude") @NotNull Double latitude,
+            @RequestParam(value = "longitude") @NotNull Double longitude,
+            @RequestParam(defaultValue = "UNDER_1", value = "distanceFilter") DistanceFilter distanceFilter,
+            @CurrentUser Long memberPk) {
+        List<DistanceCardDto> distanceFeeds = distanceFeedService.findDistanceFeeds(last.orElse(0L), memberPk, latitude, longitude, distanceFilter);
 
         if (distanceFeeds.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
