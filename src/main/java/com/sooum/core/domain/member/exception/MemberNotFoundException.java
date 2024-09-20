@@ -2,8 +2,10 @@ package com.sooum.core.domain.member.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import static com.sooum.core.global.exceptionmessage.ExceptionMessage.MEMBER_NOT_FOUND;
+
 public class MemberNotFoundException extends EntityNotFoundException {
     public MemberNotFoundException() {
-        super("존재하지 않는 유저입니다.");
+        super(MEMBER_NOT_FOUND.getMessage());
     }
 }
