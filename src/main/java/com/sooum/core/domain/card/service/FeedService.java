@@ -17,13 +17,6 @@ public class FeedService {
 
     private final BlockMemberService blockMemberService;
 
-    protected List<FeedCard> filterByBlockedMembers(List<FeedCard> feeds, Long memberPk) {
-        List<Long> blockedMembersPk = blockMemberService.findAllBlockToPk(memberPk);
-        return feeds.stream()
-                .filter(feedCard -> !blockedMembersPk.contains(memberPk))
-                .toList();
-    }
-
     public List<FeedCard> filterBlockedMembers(List<FeedCard> feedCards, Long memberPk) {
         List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberPk);
         return feedCards.stream()

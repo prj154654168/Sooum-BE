@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
-    List<FeedLike> findByTargetCardIn(List<FeedCard> targetCards);
     @Query("select fl from FeedLike fl where fl.targetCard in :targetList")
     List<FeedLike> findByTargetList(@Param("targetList") List<FeedCard> targetList);
 }

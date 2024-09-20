@@ -16,10 +16,6 @@ public class FeedLikeService {
     private final FeedLikeRepository feedLikeRepository;
 
     public List<FeedLike> findByTargetCards(List<FeedCard> targetCards) {
-        return feedLikeRepository.findByTargetCardIn(targetCards);
-    }
-
-    public List<FeedLike> findByTargetList(List<FeedCard> targetList){
-        return feedLikeRepository.findByTargetList(targetList);
+        return feedLikeRepository.findByTargetList(targetCards);
     }
 }
