@@ -91,7 +91,6 @@ class PopularFeedControllerTest {
                     .likeCnt(10)
                     .isCommentWritten(false)
                     .commentCnt(10)
-                    .popularityType(PopularityType.LIKE)
                     .build()
                     .add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(FeedCardController.class).findFeedCardInfo((long) i)).withRel("detail"));
             responses.add(dto);
