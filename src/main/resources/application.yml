@@ -15,7 +15,7 @@ spring:
   jackson:
     time-zone: Asia/Seoul
 
-#JASYPT#
+#JASYPT
 jasypt:
   encryptor:
     bean: jasyptEncryptor
