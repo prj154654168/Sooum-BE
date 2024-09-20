@@ -15,11 +15,6 @@ spring:
   jackson:
     time-zone: Asia/Seoul
 
-#JASYPT
-jasypt:
-  encryptor:
-    bean: jasyptEncryptor
-
 sooum:
   server:
     ip: ${IP}
