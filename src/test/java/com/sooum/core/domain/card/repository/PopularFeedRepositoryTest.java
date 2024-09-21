@@ -41,7 +41,7 @@ class PopularFeedRepositoryTest {
         List<PopularFeed> popularFeeds = popularFeedRepository.saveAll(createPopularFeedCards(feedCards));
 
         // when
-        List<PopularFeed> findPopularFeeds = popularFeedRepository.findPopularFeeds(LocalDateTime.now().minusDays(1L), PageRequest.of(0, MAX_SIZE));
+        List<FeedCard> findPopularFeeds = popularFeedRepository.findPopularFeeds(LocalDateTime.now().minusDays(1L), PageRequest.of(0, MAX_SIZE));
 
         // then
         int isNotStoryCardCnt = popularFeeds.stream()

@@ -39,9 +39,8 @@ public class PopularFeedService extends FeedService{
                                                                          final Long memberPk) {
         PageRequest pageRequest = PageRequest.of(0, MAX_SIZE);
         LocalDateTime storyExpiredTime = LocalDateTime.now().minusDays(1L);
-        List<PopularFeed> popularFeeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
-        List<FeedCard> feeds = popularFeeds.stream().map(PopularFeed::getPopularCard).toList();
-        List<FeedCard> filteredFeeds = filterBlockedMembers(feeds, memberPk);
+        List<FeedCard> popularFeeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
+        List<FeedCard> filteredFeeds = filterBlockedMembers(popularFeeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
         List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);
@@ -59,7 +58,6 @@ public class PopularFeedService extends FeedService{
                 .likeCnt(countLikes(feed, feedLikes))
                 .isCommentWritten(isWrittenCommentCard(comments, memberPk))
                 .commentCnt(countComments(feed, comments))
-                .popularityType(findPopularityType(feed, popularFeeds))
                 .build()
                         .add(linkTo(methodOn(FeedCardController.class).findFeedCardInfo(feed.getPk())).withRel("detail")))
                 .toList();
