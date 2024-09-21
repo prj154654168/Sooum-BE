@@ -32,6 +32,6 @@ public abstract class DistanceUtils {
         Coordinate coordinate = new Coordinate(longitude, latitude);
         Point targetPoint = geometry.createPoint(coordinate);
 
-        return cardLocation.distance(targetPoint);
+        return cardLocation.distance(targetPoint) * 100;
     }
 }
