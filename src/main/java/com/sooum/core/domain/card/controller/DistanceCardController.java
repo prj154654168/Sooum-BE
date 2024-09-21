@@ -23,7 +23,7 @@ public class DistanceCardController {
     private final DistanceFeedService distanceFeedService;
 
     @GetMapping(value = { "","/{last}"})
-    ResponseEntity<ResponseEntityModel<DistanceCardDto>> getFeedsByDistance(
+    ResponseEntity<?> getFeedsByDistance(
             @PathVariable(required = false, value = "last") Optional<Long> last,
             @RequestParam(value = "latitude") @NotNull Double latitude,
             @RequestParam(value = "longitude") @NotNull Double longitude,
@@ -35,13 +35,15 @@ public class DistanceCardController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        ResponseEntityModel<DistanceCardDto> response = ResponseEntityModel.<DistanceCardDto>builder()
+        return ResponseEntity.ok(ResponseEntityModel.<DistanceCardDto>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
                         .httpCode(HttpStatus.OK.value())
-                        .responseMessage("Success").build())
-                .content(NextPageLinkGenerator.appendEachCardDetailLink(distanceFeeds)).build();
-        response.add(NextPageLinkGenerator.generateNextPageLink(distanceFeeds));
-        return ResponseEntity.ok(response);
+                        .responseMessage("Nearby feeds retrieved successfully")
+                        .build()
+                ).content(distanceFeeds)
+                .build()
+                .add(NextPageLinkGenerator.generateNextPageLink(distanceFeeds))
+        );
     }
 }
