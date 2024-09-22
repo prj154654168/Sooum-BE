@@ -37,6 +37,6 @@ public class FeedService {
     }
 
     public static int countComments(FeedCard feed, List<CommentCard> comments) {
-        return (int) comments.stream().filter(comment -> comment.getParentCard().getPk().equals(feed.getPk())).count();
+        return (int) comments.stream().filter(comment -> comment.getParentCardPk().equals(feed.getPk())).count();
     }
 }

@@ -7,10 +7,19 @@ import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.service.PopularFeedService;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
+import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -27,7 +36,7 @@ import java.util.List;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
-@WebMvcTest(PopularFeedControllerTest.class)
+@WebMvcTest(PopularFeedController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @MockBean(JwtBlacklistInterceptor.class)
 @MockBean(TokenProvider.class)
@@ -36,7 +45,7 @@ class PopularFeedControllerTest {
     MockMvc mockMvc;
     @MockBean
     PopularFeedService popularFeedService;
-    private static final String ACCESS_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjY3NzIyOTUsImV4cCI6MTcyNjc3MzI5NSwic3ViIjoiUmVmcmVzaFRva2VuIiwiaWQiOjYyNDY4MDc0NTU1MDc1ODUyMn0.4Ehm0097eiEl9ShS3FVvOlNjnl_5RYcX1ExCWeTNmoU";
+    private static final String ACCESS_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjY5Mjk0MzMsImV4cCI6MTAxNzI2OTI5NDMzLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlkIjo2MjUwNDc5NzMyNTA1MTUxNTMsInJvbGUiOiJVU0VSIn0.aL4Tr3FaSwvu9hOQISAvGJfCHBGCV9jRo_BfTQkBssU";
 
     @Test
     @WithMockUser
