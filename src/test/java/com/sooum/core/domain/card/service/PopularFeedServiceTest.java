@@ -109,7 +109,7 @@ class PopularFeedServiceTest {
                     .isStory(false)
                     .writer(members.get(i % MEMBER_SIZE))
                     .masterCard(feedCards.get(i))
-                    .parentCard(feedCards.get(i % (CARD_SIZE / 2)))
+//                    .parentCard(feedCards.get(i % (CARD_SIZE / 2)))
                     .build();
             commentCards.add(commentCard);
         }

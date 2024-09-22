@@ -2,6 +2,7 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.repository.FeedCardRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +18,6 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class FeedCardService {
     private final FeedCardRepository feedCardRepository;
-    private final PopularFeedService popularFeedService;
-    private final CommentCardService commentCardService;
     private static final int MAX_PAGE_SIZE = 100;
 
     List<FeedCard> findByLastId(Long lastId) {

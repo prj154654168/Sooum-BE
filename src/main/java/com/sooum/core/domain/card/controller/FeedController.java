@@ -1,7 +1,5 @@
 package com.sooum.core.domain.card.controller;
 
-import com.sooum.core.domain.card.service.CommentCardService;
-import com.sooum.core.domain.card.service.FeedCardService;
 import com.sooum.core.domain.card.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
@@ -11,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
-public class FeedCardController {
-    private final FeedCardService feedCardService;
+public class FeedController {
     private final FeedService feedService;
 
     @GetMapping("/{cardPk}")
