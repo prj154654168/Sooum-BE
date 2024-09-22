@@ -20,11 +20,6 @@ spring:
       port: ${REDIS_PORT}
       host: ${REDIS_HOST}
 
-#JASYPT#
-jasypt:
-  encryptor:
-    bean: jasyptEncryptor
-
 sooum:
   server:
     ip: ${IP}
