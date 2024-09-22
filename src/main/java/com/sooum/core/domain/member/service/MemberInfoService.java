@@ -8,7 +8,7 @@ import com.sooum.core.domain.member.entity.PolicyTerm;
 import com.sooum.core.domain.member.exception.DuplicateSignUpException;
 import com.sooum.core.domain.member.exception.MemberNotFoundException;
 import com.sooum.core.domain.member.exception.PolicyNotAllowException;
-import com.sooum.core.global.config.jwt.EmptyTokenException;
+import com.sooum.core.global.config.jwt.InvalidTokenException;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -57,9 +57,9 @@ public class MemberInfoService {
 
     public String reissueAccessToken(HttpServletRequest request) {
         String accessToken = tokenProvider.getAccessToken(request)
-                .orElseThrow(EmptyTokenException::new);
+                .orElseThrow(InvalidTokenException::new);
 
-        Member member = memberService.findByPk(tokenProvider.getId(accessToken).orElse(null));
+        Member member = memberService.findByPk(tokenProvider.getId(accessToken).orElseThrow(MemberNotFoundException::new));
         blacklistService.save(accessToken, Duration.between(LocalTime.now(), tokenProvider.getExpiration(accessToken)));
 
         return tokenProvider.createAccessToken(member.getPk(), member.getRole());

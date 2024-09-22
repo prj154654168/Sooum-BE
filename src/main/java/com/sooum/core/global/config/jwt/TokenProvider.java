@@ -107,7 +107,8 @@ public class TokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
-        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        Role role = getRole(token).orElse(USER);    // orElse를 타는 경우는 refreshToken일 경우이므로 USER로 설정
+        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role));
         return new UsernamePasswordAuthenticationToken(new User(String.valueOf(claims.get(ID_CLAIM, Long.class)), "", authorities), token, authorities);
     }
 
@@ -140,7 +141,7 @@ public class TokenProvider {
     }
 
     public Optional<Role> getRole(String token) {
-        return Optional.of(Role.valueOf(getClaims(token).get(ROLE_CLAIM, String.class)));
+        return Optional.of(Role.getRole(getClaims(token).get(ROLE_CLAIM, String.class)));
     }
 
     public LocalTime getExpiration(String token) {
