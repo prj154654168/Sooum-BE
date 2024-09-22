@@ -1,7 +1,6 @@
 package com.sooum.core.domain.member.entity;
 
 import com.sooum.core.domain.common.entity.BaseEntity;
-import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

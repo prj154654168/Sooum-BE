@@ -16,4 +16,8 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
     @CreatedDate
     private LocalDateTime createdAt;
+
+    public void updateCreatedAt(LocalDateTime localDateTime) {
+        this.createdAt = localDateTime;
+    }
 }

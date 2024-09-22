@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -31,10 +34,9 @@ public class PopularCardDto {
         @JsonProperty(value = "isCommentWritten")
         private boolean isCommentWritten;
         private int commentCnt;
-        private PopularityType popularityType;
 
         @Builder
-        public PopularCardRetrieve(long id, String contents, boolean isStory, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance, LocalDateTime createdAt, boolean isLiked, int likeCnt, boolean isCommentWritten, int commentCnt, PopularityType popularityType) {
+        public PopularCardRetrieve(long id, String contents, boolean isStory, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance, LocalDateTime createdAt, boolean isLiked, int likeCnt, boolean isCommentWritten, int commentCnt) {
             this.id = id;
             this.contents = contents;
             this.isStory = isStory;
@@ -48,7 +50,6 @@ public class PopularCardDto {
             this.likeCnt = likeCnt;
             this.isCommentWritten = isCommentWritten;
             this.commentCnt = commentCnt;
-            this.popularityType = popularityType;
         }
     }
 }

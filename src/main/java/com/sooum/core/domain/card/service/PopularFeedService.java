@@ -17,6 +17,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +38,9 @@ public class PopularFeedService extends FeedService{
                                                                          final Optional<Double> longitude,
                                                                          final Long memberPk) {
         PageRequest pageRequest = PageRequest.of(0, MAX_SIZE);
-        List<PopularFeed> popularFeeds = popularFeedRepository.findPopularFeeds(pageRequest);
-        List<FeedCard> feeds = popularFeeds.stream().map(PopularFeed::getPopularCard).toList();
-        List<FeedCard> filteredFeeds = filterByBlockedMembers(feeds, memberPk);
+        LocalDateTime storyExpiredTime = LocalDateTime.now().minusDays(1L);
+        List<FeedCard> popularFeeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
+        List<FeedCard> filteredFeeds = filterBlockedMembers(popularFeeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
         List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);
@@ -57,7 +58,6 @@ public class PopularFeedService extends FeedService{
                 .likeCnt(countLikes(feed, feedLikes))
                 .isCommentWritten(isWrittenCommentCard(comments, memberPk))
                 .commentCnt(countComments(feed, comments))
-                .popularityType(findPopularityType(feed, popularFeeds))
                 .build()
                         .add(linkTo(methodOn(FeedCardController.class).findFeedCardInfo(feed.getPk())).withRel("detail")))
                 .toList();

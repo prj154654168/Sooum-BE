@@ -10,6 +10,7 @@ import com.sooum.core.domain.card.entity.PopularFeed;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
+import com.sooum.core.domain.card.entity.parenttype.ParentType;
 import com.sooum.core.domain.card.repository.PopularFeedRepository;
 import com.sooum.core.domain.img.service.LocalImgService;
 import com.sooum.core.domain.member.entity.Member;
@@ -26,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class PopularFeedServiceTest {
@@ -50,7 +52,7 @@ class PopularFeedServiceTest {
         /// given
         List<Member> members = createMembers();
         List<FeedCard> feedCards = createFeedCards(members);
-        given(popularFeedRepository.findPopularFeeds(any())).willReturn(createPopularFeedCards(feedCards));
+        given(popularFeedRepository.findPopularFeeds(any(), any())).willReturn(feedCards);
         given(blockMemberService.findAllBlockToPk(any())).willReturn(List.of());
         given(feedLikeService.findByTargetCards(any())).willReturn(createFeedLikes(feedCards, members));
         given(commentCardService.findByMasterCards(any())).willReturn(createCommentCards(feedCards, members));
@@ -66,7 +68,6 @@ class PopularFeedServiceTest {
             Assertions.assertThat(popularFeeds.get(i).getFont()).isEqualTo(feedCards.get(i).getFont());
             Assertions.assertThat(popularFeeds.get(i).getFontSize()).isEqualTo(feedCards.get(i).getFontSize());
             Assertions.assertThat(popularFeeds.get(i).isStory()).isEqualTo(feedCards.get(i).isStory());
-            Assertions.assertThat(popularFeeds.get(i).getPopularityType()).isEqualTo(i % 2 == 1 ? PopularityType.LIKE : PopularityType.COMMENT);
         }
     }
 
@@ -80,18 +81,6 @@ class PopularFeedServiceTest {
             feedLikes.add(feedLike);
         }
         return feedLikes;
-    }
-
-    private List<PopularFeed> createPopularFeedCards(List<FeedCard> feedCards) {
-        ArrayList<PopularFeed> popularFeedCards = new ArrayList<>();
-        for (int i = 0; i < CARD_SIZE; i++) {
-            PopularFeed popularFeed = PopularFeed.builder()
-                    .popularCard(feedCards.get(i))
-                    .popularityType(i % 2 == 1 ? PopularityType.LIKE : PopularityType.COMMENT)
-                    .build();
-            popularFeedCards.add(popularFeed);
-        }
-        return popularFeedCards;
     }
 
     private List<CommentCard> createCommentCards(List<FeedCard> feedCards, List<Member> members) {
@@ -108,7 +97,8 @@ class PopularFeedServiceTest {
                     .isStory(false)
                     .writer(members.get(i % MEMBER_SIZE))
                     .masterCard(feedCards.get(i))
-                    .parentCard(feedCards.get(i % (CARD_SIZE / 2)))
+                    .parentCardType(ParentType.FEED_CARD)
+                    .parentCardPk(feedCards.get(i % (CARD_SIZE / 2)).getPk())
                     .build();
             commentCards.add(commentCard);
         }

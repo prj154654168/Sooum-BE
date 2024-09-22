@@ -1,8 +1,8 @@
 package com.sooum.core.domain.card.service;
 
-import com.sooum.core.domain.card.entity.FeedCard;
-import com.sooum.core.domain.card.entity.FeedLike;
-import com.sooum.core.domain.card.repository.FeedLikeRepository;
+import com.sooum.core.domain.card.entity.CommentCard;
+import com.sooum.core.domain.card.entity.CommentLike;
+import com.sooum.core.domain.card.repository.CommentLikeRepository;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
@@ -12,30 +12,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class FeedLikeService {
+public class CommentLikeService {
     private final MemberService memberService;
-    private final FeedCardService feedCardService;
-    private final FeedLikeRepository feedLikeRepository;
-
-    public List<FeedLike> findByTargetCards(List<FeedCard> targetCards) {
-        return feedLikeRepository.findByTargetList(targetCards);
-    }
+    private final CommentCardService commentCardService;
+    private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public void createFeedLike(Long targetFeedCardPk, Long requesterPk) {
-        if (feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(targetFeedCardPk, requesterPk)) {
+    public void createCommentLike(Long targetCommentCardPk, Long requesterPk) {
+        if (commentLikeRepository.existsByTargetCardPkAndLikedMemberPk(targetCommentCardPk, requesterPk)) {
             throw new EntityExistsException(ExceptionMessage.ALREADY_CARD_LIKED.getMessage());
         }
 
         Member likedMember = memberService.findByPk(requesterPk);
-        FeedCard targetCard = feedCardService.findByPk(targetFeedCardPk);
-        feedLikeRepository.save(
-                FeedLike.builder()
+        CommentCard targetCard = commentCardService.findByPk(targetCommentCardPk);
+        commentLikeRepository.save(
+                CommentLike.builder()
                         .likedMember(likedMember)
                         .targetCard(targetCard)
                         .build()
@@ -43,9 +37,9 @@ public class FeedLikeService {
     }
 
     @Transactional
-    public void deleteFeedLike(Long likedFeedCardPk, Long likedMemberPk) {
-        FeedLike feedLiked = feedLikeRepository.findFeedLiked(likedFeedCardPk, likedMemberPk)
+    public void deleteCommentLike(Long likedFeedCardPk, Long likedMemberPk) {
+        CommentLike feedLiked = commentLikeRepository.findCommentLiked(likedFeedCardPk, likedMemberPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
-        feedLikeRepository.delete(feedLiked);
+        commentLikeRepository.delete(feedLiked);
     }
 }

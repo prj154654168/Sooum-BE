@@ -6,27 +6,30 @@ import com.sooum.core.domain.card.dto.distancefilter.DistanceFilter;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
+import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
-import lombok.extern.slf4j.Slf4j;
+import com.sooum.core.global.util.NextPageLinkGenerator;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Slf4j
 public class DistanceFeedService extends FeedService {
     private final GeometryFactory geometryFactory = new GeometryFactory();
     private final FeedCardService feedCardService;
     private final FeedLikeService feedLikeService;
+    private final ImgService imgService;
     private final CommentCardService commentCardService;
 
-    public DistanceFeedService(BlockMemberService blockMemberService, FeedCardService feedCardService, FeedLikeService feedLikeService, CommentCardService commentCardService) {
+    public DistanceFeedService(BlockMemberService blockMemberService, FeedCardService feedCardService, FeedLikeService feedLikeService, ImgService imgService, CommentCardService commentCardService) {
         super(blockMemberService);
         this.feedCardService = feedCardService;
         this.feedLikeService = feedLikeService;
+        this.imgService = imgService;
         this.commentCardService = commentCardService;
     }
 
@@ -41,10 +44,10 @@ public class DistanceFeedService extends FeedService {
 
         List<FeedCard> filteredDistanceFeeds= filterBlockedMembers(feedsByDistance, memberPk);
 
-        List<FeedLike> feedLikeList = feedLikeService.findByTargetList(filteredDistanceFeeds);
+        List<FeedLike> feedLikeList = feedLikeService.findByTargetCards(filteredDistanceFeeds);
         List<CommentCard> commentCardList = commentCardService.findByTargetList(filteredDistanceFeeds);
 
-        return filteredDistanceFeeds.stream()
+        return NextPageLinkGenerator.appendEachCardDetailLink(filteredDistanceFeeds.stream()
                 .map(feedCard -> DistanceCardDto.builder()
                         .id(feedCard.getPk())
                         .font(feedCard.getFont())
@@ -53,7 +56,7 @@ public class DistanceFeedService extends FeedService {
                         .isStory(feedCard.isStory())
                         .storyExpirationTime(feedCard.getCreatedAt().plusDays(1L))
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
-                        .backgroundImgUrl(null)
+                        .backgroundImgUrl(Link.of(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName())))
                         .createdAt(feedCard.getCreatedAt())
                         .isCommentWritten(isWrittenCommentCard(commentCardList, memberPk))
                         .isLiked(isLiked(feedCard, feedLikeList))
@@ -61,6 +64,6 @@ public class DistanceFeedService extends FeedService {
                         .commentCnt(countComments(feedCard, commentCardList))
                         .build()
                 )
-                .toList();
+                .toList());
     }
 }

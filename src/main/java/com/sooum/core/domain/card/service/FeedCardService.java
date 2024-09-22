@@ -2,16 +2,20 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.repository.FeedCardRepository;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FeedCardService {
     private final FeedCardRepository feedCardRepository;
     private static final int MAX_PAGE_SIZE = 100;
@@ -30,5 +34,10 @@ public class FeedCardService {
             return feedCardRepository.findFirstByDistance(userLocation, minDist, maxDist, pageRequest);
         }
         return feedCardRepository.findNextByDistance(userLocation, lastId, minDist, maxDist, pageRequest);
+    }
+
+    public FeedCard findByPk(Long feedCardPk) {
+        return feedCardRepository.findById(feedCardPk)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
     }
 }

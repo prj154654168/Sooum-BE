@@ -3,6 +3,7 @@ package com.sooum.core.domain.card.entity;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
+import com.sooum.core.domain.card.entity.parenttype.ParentType;
 import com.sooum.core.domain.common.entity.BaseEntity;
 import com.sooum.core.domain.member.entity.Member;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -54,9 +55,13 @@ public class CommentCard extends BaseEntity {
     private Member writer;
 
     @NotNull
-    @JoinColumn(name = "PARENT_CARD")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private FeedCard parentCard;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "PARENT_CARD_TYPE")
+    private ParentType parentCardType;
+
+    @NotNull
+    @Column(name = "PARENT_CARD_PK")
+    private Long parentCardPk;
 
     @NotNull
     @JoinColumn(name = "MASTER_CARD")
@@ -64,7 +69,7 @@ public class CommentCard extends BaseEntity {
     private FeedCard masterCard;
 
     @Builder
-    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, FeedCard parentCard, FeedCard masterCard) {
+    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, ParentType parentCardType, Long parentCardPk, FeedCard masterCard) {
         this.content = content;
         this.fontSize = fontSize;
         this.font = font;
@@ -74,7 +79,8 @@ public class CommentCard extends BaseEntity {
         this.isPublic = isPublic;
         this.isStory = isStory;
         this.writer = writer;
-        this.parentCard = parentCard;
+        this.parentCardType = parentCardType;
+        this.parentCardPk = parentCardPk;
         this.masterCard = masterCard;
     }
 }
