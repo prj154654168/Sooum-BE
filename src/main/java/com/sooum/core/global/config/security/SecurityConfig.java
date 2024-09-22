@@ -40,7 +40,8 @@ public class SecurityConfig {
                 // No Auth
                 .requestMatchers(HttpMethod.POST, "/users/sign-up").permitAll()  // 회원가입
                 .requestMatchers(HttpMethod.GET, "/users/login").permitAll()  // 로그인
-                .requestMatchers(HttpMethod.GET, "/users/test").permitAll()
+//                .requestMatchers(HttpMethod.POST, "/cards/...").hasRole("USER")   // 글 쓰기
+                .requestMatchers(HttpMethod.POST, "/users/token").hasRole("USER") // 토큰 재발급
 
                 // Authenticated
                 .anyRequest().authenticated()

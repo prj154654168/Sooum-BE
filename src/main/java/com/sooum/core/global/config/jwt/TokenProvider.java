@@ -1,9 +1,7 @@
 package com.sooum.core.global.config.jwt;
 
 import com.sooum.core.domain.member.dto.AuthDTO.Token;
-import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.Role;
-import com.sooum.core.domain.member.service.MemberService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +13,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
@@ -28,7 +29,6 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 public class TokenProvider {
 
     private final JwtProperties jwtProperties;
-    private final MemberService memberService;
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String ACCESS_TOKEN_HEADER = "Authorization";
@@ -143,12 +143,8 @@ public class TokenProvider {
         return Optional.of(Role.valueOf(getClaims(token).get(ROLE_CLAIM, String.class)));
     }
 
-    public String reissueAccessToken(HttpServletRequest request) {
-        String refreshToken = getRefreshToken(request)
-                .orElseThrow(EmptyTokenException::new);
-
-        Member member = memberService.findByPk(getId(refreshToken).orElse(null));
-
-        return createAccessToken(member.getPk(), member.getRole());
+    public LocalTime getExpiration(String token) {
+        return LocalDateTime.ofInstant(getClaims(token).getExpiration().toInstant(),
+                ZoneId.systemDefault()).toLocalTime();
     }
 }

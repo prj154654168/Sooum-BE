@@ -8,10 +8,15 @@ import com.sooum.core.domain.member.entity.PolicyTerm;
 import com.sooum.core.domain.member.exception.DuplicateSignUpException;
 import com.sooum.core.domain.member.exception.MemberNotFoundException;
 import com.sooum.core.domain.member.exception.PolicyNotAllowException;
+import com.sooum.core.global.config.jwt.EmptyTokenException;
 import com.sooum.core.global.config.jwt.TokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,7 @@ public class MemberInfoService {
     private final RefreshTokenService refreshTokenSaveService;
     private final TokenProvider tokenProvider;
     private final MemberService memberService;
+    private final BlacklistService blacklistService;
 
 
     public LoginResponse login(AuthDTO.Login dto) {
@@ -47,5 +53,15 @@ public class MemberInfoService {
         AuthDTO.Token token = tokenProvider.createToken(policyTerm.getPk());
         refreshTokenSaveService.save(token.refreshToken(), member);
         return new SignUpResponse(token);
+    }
+
+    public String reissueAccessToken(HttpServletRequest request) {
+        String accessToken = tokenProvider.getAccessToken(request)
+                .orElseThrow(EmptyTokenException::new);
+
+        Member member = memberService.findByPk(tokenProvider.getId(accessToken).orElse(null));
+        blacklistService.save(accessToken, Duration.between(LocalTime.now(), tokenProvider.getExpiration(accessToken)));
+
+        return tokenProvider.createAccessToken(member.getPk(), member.getRole());
     }
 }

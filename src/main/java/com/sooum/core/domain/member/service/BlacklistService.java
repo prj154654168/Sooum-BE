@@ -1,5 +1,6 @@
 package com.sooum.core.domain.member.service;
 
+import com.sooum.core.domain.member.exception.MemberNotFoundException;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,7 +16,7 @@ public class BlacklistService {
     private final TokenProvider tokenProvider;
 
     public void save(String token, Duration timeout) {
-        redisTemplate.opsForValue().set(token, tokenProvider.getId(token));
+        redisTemplate.opsForValue().set(token, tokenProvider.getId(token).orElseThrow(MemberNotFoundException::new));
         redisTemplate.expire(token, timeout);
     }
 
