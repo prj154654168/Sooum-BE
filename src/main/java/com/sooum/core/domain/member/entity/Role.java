@@ -1,10 +1,19 @@
 package com.sooum.core.domain.member.entity;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 
+@Getter
 public enum Role {
-    USER,
-    BANNED;
+    USER("ROLE_USER"),
+    BANNED("ROLE_BANNED");
+
+    private final String field;
+
+    Role(String field) {
+        this.field = field;
+    }
 
     public static Role getRole(String s) {
         return Arrays.stream(values())
