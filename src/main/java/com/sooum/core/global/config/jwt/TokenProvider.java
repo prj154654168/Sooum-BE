@@ -1,6 +1,9 @@
 package com.sooum.core.global.config.jwt;
 
 import com.sooum.core.domain.member.dto.AuthDTO.Token;
+import com.sooum.core.domain.member.entity.Member;
+import com.sooum.core.domain.member.entity.Role;
+import com.sooum.core.domain.member.service.MemberService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +20,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.sooum.core.domain.member.entity.Role.USER;
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
@@ -24,6 +28,7 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 public class TokenProvider {
 
     private final JwtProperties jwtProperties;
+    private final MemberService memberService;
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String ACCESS_TOKEN_HEADER = "Authorization";
@@ -31,15 +36,16 @@ public class TokenProvider {
     private static final String REFRESH_TOKEN_HEADER = "Authorization-refresh";
     private static final String BEARER = "Bearer ";
     private static final String ID_CLAIM = "id";
+    private static final String ROLE_CLAIM = "role";
 
     public Token createToken(Long id) {
         return new Token(
-                createAccessToken(id),
+                createAccessToken(id, USER),
                 createRefreshToken(id)
         );
     }
 
-    public String createAccessToken(Long id) {
+    public String createAccessToken(Long id, Role role) {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -47,6 +53,7 @@ public class TokenProvider {
                 .setExpiration(new Date(now.getTime() + jwtProperties.getAccessTokenExpirationPeriod()))
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 .claim(ID_CLAIM, id)
+                .claim(ROLE_CLAIM, role)
                 .signWith(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -104,9 +111,9 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(new User(String.valueOf(claims.get(ID_CLAIM, Long.class)), "", authorities), token, authorities);
     }
 
-    public Optional<Long> getId(String accessToken) {
+    public Optional<Long> getId(String token) {
         try {
-            return Optional.ofNullable(getClaims(accessToken).get(ID_CLAIM, Long.class));
+            return Optional.ofNullable(getClaims(token).get(ID_CLAIM, Long.class));
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
@@ -130,5 +137,18 @@ public class TokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Optional<Role> getRole(String token) {
+        return Optional.of(Role.valueOf(getClaims(token).get(ROLE_CLAIM, String.class)));
+    }
+
+    public String reissueAccessToken(HttpServletRequest request) {
+        String refreshToken = getRefreshToken(request)
+                .orElseThrow(EmptyTokenException::new);
+
+        Member member = memberService.findByPk(getId(refreshToken).orElse(null));
+
+        return createAccessToken(member.getPk(), member.getRole());
     }
 }
