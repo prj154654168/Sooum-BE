@@ -1,6 +1,5 @@
 package com.sooum.core.global.config.jwt;
 
-import com.sooum.core.domain.member.entity.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
