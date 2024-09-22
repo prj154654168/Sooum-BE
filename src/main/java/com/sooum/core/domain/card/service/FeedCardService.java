@@ -7,13 +7,18 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FeedCardService {
     private final FeedCardRepository feedCardRepository;
+    private final PopularFeedService popularFeedService;
+    private final CommentCardService commentCardService;
     private static final int MAX_PAGE_SIZE = 100;
 
     List<FeedCard> findByLastId(Long lastId) {
@@ -30,5 +35,13 @@ public class FeedCardService {
             return feedCardRepository.findFirstByDistance(userLocation, minDist, maxDist, pageRequest);
         }
         return feedCardRepository.findNextByDistance(userLocation, lastId, minDist, maxDist, pageRequest);
+    }
+
+    public void deleteFeedCard(Long feedCardPk) {
+        feedCardRepository.deleteById(feedCardPk);
+    }
+
+    public FeedCard findFeedCard(Long feedCardPk) {
+        return feedCardRepository.findById(feedCardPk).orElseThrow(NoSuchElementException::new);
     }
 }

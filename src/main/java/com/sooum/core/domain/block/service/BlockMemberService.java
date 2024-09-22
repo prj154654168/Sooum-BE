@@ -1,6 +1,7 @@
 package com.sooum.core.domain.block.service;
 
 import com.sooum.core.domain.block.repository.BlockRepository;
+import com.sooum.core.domain.card.entity.FeedCard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +14,12 @@ public class BlockMemberService {
 
     public List<Long> findAllBlockToPk(Long memberPk) {
         return blockRepository.findAllBlockToPk(memberPk);
+    }
+
+    public List<FeedCard> filterBlockedMembers(List<FeedCard> feedCards, Long memberPk) {
+        List<Long> allBlockToPk = blockRepository.findAllBlockToPk(memberPk);
+        return feedCards.stream()
+                .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
+                .toList();
     }
 }

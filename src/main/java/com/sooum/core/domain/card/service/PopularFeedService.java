@@ -11,7 +11,7 @@ import com.sooum.core.domain.card.entity.PopularFeed;
 import com.sooum.core.domain.card.repository.PopularFeedRepository;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
@@ -21,18 +21,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sooum.core.domain.card.service.FeedService.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @Transactional(readOnly = true)
-@Slf4j
-public class PopularFeedService extends FeedService{
+@RequiredArgsConstructor
+public class PopularFeedService {
     private final PopularFeedRepository popularFeedRepository;
     private final ImgService imgService;
     private final FeedLikeService feedLikeService;
     private final CommentCardService commentCardService;
+    private final BlockMemberService blockMemberService;
     private static final int MAX_SIZE = 200;
+
+    public void deletePopularCard(Long cardId) {
+        popularFeedRepository.deletePopularCard(cardId);
+    }
 
     public List<PopularCardDto.PopularCardRetrieve> findHomePopularFeeds(final Optional<Double> latitude,
                                                                          final Optional<Double> longitude,
@@ -41,7 +47,7 @@ public class PopularFeedService extends FeedService{
         LocalDateTime storyExpiredTime = LocalDateTime.now().minusDays(1L);
         List<PopularFeed> popularFeeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
         List<FeedCard> feeds = popularFeeds.stream().map(PopularFeed::getPopularCard).toList();
-        List<FeedCard> filteredFeeds = filterBlockedMembers(feeds, memberPk);
+        List<FeedCard> filteredFeeds = blockMemberService.filterBlockedMembers(feeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
         List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);
@@ -67,13 +73,5 @@ public class PopularFeedService extends FeedService{
 
     private PopularityType findPopularityType(FeedCard feed, List<PopularFeed> popularFeeds) {
         return popularFeeds.stream().filter(popularFeed -> popularFeed.getPopularCard().equals(feed)).findFirst().get().getPopularityType();
-    }
-
-    public PopularFeedService(BlockMemberService blockMemberService, PopularFeedRepository popularFeedRepository, ImgService imgService, FeedLikeService feedLikeService, CommentCardService commentCardService) {
-        super(blockMemberService);
-        this.popularFeedRepository = popularFeedRepository;
-        this.imgService = imgService;
-        this.feedLikeService = feedLikeService;
-        this.commentCardService = commentCardService;
     }
 }
