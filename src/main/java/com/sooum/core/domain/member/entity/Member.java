@@ -56,11 +56,6 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private FeedCard profileCard;
 
-    @PrePersist
-    public void initRole() {
-        this.role = Role.USER;
-    }
-
     @Builder
     public Member(String deviceId, DeviceType deviceType, String firebaseToken, String nickname, boolean isAllowNotify) {
         this.deviceId = deviceId;
@@ -72,5 +67,6 @@ public class Member extends BaseEntity {
         this.deletedAt = null;
         this.untilBan = null;
         this.profileCard = null;
+        this.role = Role.USER;
     }
 }
