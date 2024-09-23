@@ -27,7 +27,7 @@ public class BlockController {
                 .body(ResponseStatus.builder()
                         .httpCode(HttpStatus.CREATED.value())
                         .httpStatus(HttpStatus.CREATED)
-                        .responseMessage("blocks successfully")
+                        .responseMessage("Member blocked successfully")
                         .build());
     }
 }
