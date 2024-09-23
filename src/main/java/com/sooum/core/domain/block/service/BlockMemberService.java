@@ -6,7 +6,6 @@ import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class BlockMemberService {
 
     public void saveBlockMember(Long fromMemberPk, Long toMemberPk) {
         if(blockRepository.existsByFromMemberPkAndToMemberPk(fromMemberPk, toMemberPk)){
-            throw new EntityExistsException(ExceptionMessage.ALREDY_BLOCKD.getMessage());
+            throw new EntityExistsException(ExceptionMessage.ALREADY_BLOCKED.getMessage());
         }
 
         Member fromMember = memberService.findByPk(fromMemberPk);
