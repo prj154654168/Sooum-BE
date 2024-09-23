@@ -17,9 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.LocalTime;
-
 import static com.sooum.core.domain.member.dto.AuthDTO.SignUp;
 import static com.sooum.core.domain.member.dto.AuthDTO.Token;
 
@@ -69,7 +66,7 @@ public class MemberInfoService {
                 .orElseThrow(InvalidTokenException::new);
 
         Member member = memberService.findByPk(tokenProvider.getId(accessToken).orElseThrow(MemberNotFoundException::new));
-        blacklistService.save(accessToken, Duration.between(LocalTime.now(), tokenProvider.getExpiration(accessToken)));
+        blacklistService.save(accessToken, tokenProvider.getExpiration(accessToken));
 
         return tokenProvider.createAccessToken(member.getPk(), member.getRole());
     }

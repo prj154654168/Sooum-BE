@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -15,9 +15,8 @@ public class BlacklistService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final TokenProvider tokenProvider;
 
-    public void save(String token, Duration timeout) {
-        redisTemplate.opsForValue().set(token, tokenProvider.getId(token).orElseThrow(MemberNotFoundException::new));
-        redisTemplate.expire(token, timeout);
+    public void save(String token, Long timeout) {
+        redisTemplate.opsForValue().set(token, tokenProvider.getId(token).orElseThrow(MemberNotFoundException::new), timeout, TimeUnit.SECONDS);
     }
 
     public Boolean isExist(String token) {
