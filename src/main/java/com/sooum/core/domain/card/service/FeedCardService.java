@@ -12,10 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class FeedCardService {
     private final FeedCardRepository feedCardRepository;
     private static final int MAX_PAGE_SIZE = 100;
@@ -34,6 +35,14 @@ public class FeedCardService {
             return feedCardRepository.findFirstByDistance(userLocation, minDist, maxDist, pageRequest);
         }
         return feedCardRepository.findNextByDistance(userLocation, lastId, minDist, maxDist, pageRequest);
+    }
+
+    public void deleteFeedCard(Long feedCardPk) {
+        feedCardRepository.deleteById(feedCardPk);
+    }
+
+    public FeedCard findFeedCard(Long feedCardPk) {
+        return feedCardRepository.findById(feedCardPk).orElseThrow(NoSuchElementException::new);
     }
 
     public FeedCard findByPk(Long feedCardPk) {

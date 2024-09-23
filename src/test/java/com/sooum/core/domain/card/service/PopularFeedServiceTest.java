@@ -10,6 +10,7 @@ import com.sooum.core.domain.card.entity.PopularFeed;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
+import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.card.entity.parenttype.ParentType;
 import com.sooum.core.domain.card.repository.PopularFeedRepository;
 import com.sooum.core.domain.img.service.LocalImgService;
@@ -97,7 +98,7 @@ class PopularFeedServiceTest {
                     .isStory(false)
                     .writer(members.get(i % MEMBER_SIZE))
                     .masterCard(feedCards.get(i))
-                    .parentCardType(ParentType.FEED_CARD)
+                    .parentCardType(CardType.FEED_CARD)
                     .parentCardPk(feedCards.get(i % (CARD_SIZE / 2)).getPk())
                     .build();
             commentCards.add(commentCard);

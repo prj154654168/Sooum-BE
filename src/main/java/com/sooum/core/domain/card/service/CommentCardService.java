@@ -6,10 +6,12 @@ import com.sooum.core.domain.card.repository.CommentCardRepository;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,12 +19,40 @@ import java.util.List;
 public class CommentCardService {
     private final CommentCardRepository commentCardRepository;
 
+    public boolean isOnlyChildInDeletedState(Long commentCardPk) {
+        List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
+        return childCards.size() == 1 && childCards.get(0).isDeleted();
+    }
+
+    public void deleteOnlyChild(Long commentCardPk) {
+        List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
+        if (childCards.size() == 1 && childCards.get(0).isDeleted()) {
+            commentCardRepository.delete(childCards.get(0));
+        }
+    }
+
+    public boolean hasChildCard(Long parentCardPk) {
+        return !findChildCommentCardList(parentCardPk).isEmpty();
+    }
+
+    public List<CommentCard> findChildCommentCardList(Long parentCardPk) {
+        return commentCardRepository.findChildCards(parentCardPk);
+    }
+
+    public void deleteCommentCard(Long commentCardPk) {
+        commentCardRepository.deleteById(commentCardPk);
+    }
+
     public List<CommentCard> findByMasterCards(List<FeedCard> masterCards) {
         return commentCardRepository.findByMasterCardIn(masterCards);
     }
 
     public List<CommentCard> findByTargetList(List<FeedCard> targetList) {
         return commentCardRepository.findByTargetList(targetList);
+    }
+
+    public CommentCard findCommentCard(Long commentCardPk) {
+        return commentCardRepository.findCommentCard(commentCardPk).orElseThrow(NoSuchElementException::new);
     }
 
     public CommentCard findByPk(Long commentCardPk) {

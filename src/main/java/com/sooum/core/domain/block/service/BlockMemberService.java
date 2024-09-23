@@ -6,6 +6,7 @@ import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityExistsException;
+import com.sooum.core.domain.card.entity.FeedCard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,10 @@ public class BlockMemberService {
         blockRepository.save(Block.builder()
                 .toMember(toMember)
                 .fromMember(fromMember).build());
+    public List<FeedCard> filterBlockedMembers(List<FeedCard> feedCards, Long memberPk) {
+        List<Long> allBlockToPk = blockRepository.findAllBlockToPk(memberPk);
+        return feedCards.stream()
+                .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
+                .toList();
     }
 }

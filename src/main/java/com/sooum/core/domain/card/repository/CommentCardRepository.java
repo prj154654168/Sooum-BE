@@ -7,9 +7,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentCardRepository extends JpaRepository<CommentCard, Long> {
     List<CommentCard> findByMasterCardIn(List<FeedCard> masterCards);
+
     @Query("select cc from CommentCard cc where cc.masterCard in :targetList")
     List<CommentCard> findByTargetList(@Param("targetList") List<FeedCard> targetList);
+
+    @Query("select cc from CommentCard cc where cc.parentCardPk = :parentCardPk")
+    List<CommentCard> findChildCards(@Param("parentCardPk") Long parentCardPk);
+
+    @Query("select cc from CommentCard cc where cc.pk = :commentCardPk")
+    Optional<CommentCard> findCommentCard(@Param("commentCardPk") Long commentCardPk);
 }
