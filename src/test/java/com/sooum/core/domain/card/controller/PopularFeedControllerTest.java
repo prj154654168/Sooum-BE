@@ -1,25 +1,15 @@
 package com.sooum.core.domain.card.controller;
 
 import com.sooum.core.domain.card.dto.PopularCardDto;
-import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.service.PopularFeedService;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
-import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.security.test.context.support.WithMockUser;

@@ -50,6 +50,9 @@ public class FeedCard extends BaseEntity {
     @Column(name = "IS_STORY")
     private boolean isStory;
 
+    @Column(name = "IS_DELETED")
+    private boolean isDeleted;
+
     @NotNull
     @JoinColumn(name = "WRITER")
     @ManyToOne(fetch = FetchType.LAZY)
