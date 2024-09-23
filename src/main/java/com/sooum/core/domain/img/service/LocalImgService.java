@@ -23,6 +23,6 @@ public class LocalImgService implements ImgService{
 
     public UrlResource findImg(ImgType imgType, String imgName) throws MalformedURLException {
         String imgPath = imgType.equals(ImgType.DEFAULT) ? DEFAULT_IMG_PATH : USER_IMG_PATH;
-        return new UrlResource("file:" + serverImgPath + "/" + imgPath + "/" + imgName + ".jpg");
+        return new UrlResource("file:" + serverImgPath + imgPath + "/" + imgName);
     }
 }

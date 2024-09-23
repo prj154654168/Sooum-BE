@@ -1,7 +1,7 @@
 package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.block.service.BlockMemberService;
-import com.sooum.core.domain.card.controller.FeedController;
+import com.sooum.core.domain.card.controller.FeedCardController;
 import com.sooum.core.domain.card.dto.PopularCardDto;
 import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
 import com.sooum.core.domain.card.entity.CommentCard;
@@ -45,8 +45,7 @@ public class PopularFeedService {
                                                                          final Long memberPk) {
         PageRequest pageRequest = PageRequest.of(0, MAX_SIZE);
         LocalDateTime storyExpiredTime = LocalDateTime.now().minusDays(1L);
-        List<PopularFeed> popularFeeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
-        List<FeedCard> feeds = popularFeeds.stream().map(PopularFeed::getPopularCard).toList();
+        List<FeedCard> feeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
         List<FeedCard> filteredFeeds = blockMemberService.filterBlockedMembers(feeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
@@ -65,9 +64,8 @@ public class PopularFeedService {
                 .likeCnt(countLikes(feed, feedLikes))
                 .isCommentWritten(isWrittenCommentCard(comments, memberPk))
                 .commentCnt(countComments(feed, comments))
-                .popularityType(findPopularityType(feed, popularFeeds))
                 .build()
-                        .add(linkTo(methodOn(FeedController.class).findFeedCardInfo(feed.getPk())).withRel("detail")))
+                        .add(linkTo(methodOn(FeedCardController.class).findFeedCardInfo(feed.getPk())).withRel("detail")))
                 .toList();
     }
 

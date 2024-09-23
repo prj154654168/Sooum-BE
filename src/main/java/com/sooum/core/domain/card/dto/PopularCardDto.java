@@ -34,10 +34,9 @@ public class PopularCardDto {
         @JsonProperty(value = "isCommentWritten")
         private boolean isCommentWritten;
         private int commentCnt;
-        private PopularityType popularityType;
 
         @Builder
-        public PopularCardRetrieve(long id, String contents, boolean isStory, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance, LocalDateTime createdAt, boolean isLiked, int likeCnt, boolean isCommentWritten, int commentCnt, PopularityType popularityType) {
+        public PopularCardRetrieve(long id, String contents, boolean isStory, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance, LocalDateTime createdAt, boolean isLiked, int likeCnt, boolean isCommentWritten, int commentCnt) {
             this.id = id;
             this.contents = contents;
             this.isStory = isStory;
@@ -51,7 +50,6 @@ public class PopularCardDto {
             this.likeCnt = likeCnt;
             this.isCommentWritten = isCommentWritten;
             this.commentCnt = commentCnt;
-            this.popularityType = popularityType;
         }
     }
 }

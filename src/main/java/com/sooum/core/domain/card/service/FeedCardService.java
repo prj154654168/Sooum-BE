@@ -2,7 +2,8 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.repository.FeedCardRepository;
-import lombok.AllArgsConstructor;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.PageRequest;
@@ -42,5 +43,10 @@ public class FeedCardService {
 
     public FeedCard findFeedCard(Long feedCardPk) {
         return feedCardRepository.findById(feedCardPk).orElseThrow(NoSuchElementException::new);
+    }
+
+    public FeedCard findByPk(Long feedCardPk) {
+        return feedCardRepository.findById(feedCardPk)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
     }
 }

@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/users/sign-up").permitAll()  // 회원가입
                 .requestMatchers(HttpMethod.GET, "/users/login").permitAll()  // 로그인
                 .requestMatchers(HttpMethod.GET, "/users/test").permitAll()
+                .requestMatchers(HttpMethod.GET, "/imgs/**").permitAll()
 
                 // Authenticated
                 .anyRequest().authenticated()

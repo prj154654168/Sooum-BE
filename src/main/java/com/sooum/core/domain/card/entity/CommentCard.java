@@ -4,6 +4,7 @@ import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
+import com.sooum.core.domain.common.entity.BaseEntity;
 import com.sooum.core.domain.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
