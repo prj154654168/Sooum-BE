@@ -1,6 +1,6 @@
 package com.sooum.core.domain.member.service;
 
-import com.sooum.core.domain.member.dto.AuthDTO;
+import com.sooum.core.domain.member.dto.AuthDTO.Login;
 import com.sooum.core.domain.member.dto.AuthDTO.LoginResponse;
 import com.sooum.core.domain.member.dto.AuthDTO.SignUpResponse;
 import com.sooum.core.domain.member.entity.Member;
@@ -8,8 +8,10 @@ import com.sooum.core.domain.member.entity.PolicyTerm;
 import com.sooum.core.domain.member.exception.DuplicateSignUpException;
 import com.sooum.core.domain.member.exception.MemberNotFoundException;
 import com.sooum.core.domain.member.exception.PolicyNotAllowException;
+import com.sooum.core.domain.rsa.service.RsaService;
 import com.sooum.core.global.config.jwt.InvalidTokenException;
 import com.sooum.core.global.config.jwt.TokenProvider;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalTime;
+
+import static com.sooum.core.domain.member.dto.AuthDTO.SignUp;
+import static com.sooum.core.domain.member.dto.AuthDTO.Token;
 
 @Service
 @RequiredArgsConstructor
@@ -27,34 +32,38 @@ public class MemberInfoService {
     private final TokenProvider tokenProvider;
     private final MemberService memberService;
     private final BlacklistService blacklistService;
+    private final RsaService rsaService;
 
 
-    public LoginResponse login(AuthDTO.Login dto) {
-        // DeviceID RSA Decode
+    public LoginResponse login(Login dto) {
+        String deviceId = rsaService.decodeDeviceId(dto.encryptedDeviceId(), dto.publicKey());
 
         try {
-            Member member = memberService.findByDeviceId(dto.deviceId());
+            Member member = memberService.findByDeviceId(deviceId);
             return new LoginResponse(true, tokenProvider.createToken(member.getPk()));
-        } catch (MemberNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             return new LoginResponse(false, null);
         }
     }
 
     @Transactional
-    public SignUpResponse signUp(AuthDTO.SignUp dto) {
+    public SignUpResponse signUp(SignUp dto) {
         if(!dto.policy().checkAllPolicyIsTrue())
             throw new PolicyNotAllowException();
 
-        if(memberService.isAlreadySignUp(dto.member().deviceId()))
+        String deviceId = rsaService.decodeDeviceId(dto.member().encryptedDeviceId(), dto.member().publicKey());
+
+        if(memberService.isAlreadySignUp(deviceId))
             throw new DuplicateSignUpException();
 
-        Member member = memberService.save(dto.member());
+        Member member = memberService.save(dto.member(), deviceId);
         PolicyTerm policyTerm = policySaveService.save(dto.policy(), member);
-        AuthDTO.Token token = tokenProvider.createToken(policyTerm.getPk());
+        Token token = tokenProvider.createToken(policyTerm.getPk());
         refreshTokenSaveService.save(token.refreshToken(), member);
         return new SignUpResponse(token);
     }
 
+    @Transactional
     public String reissueAccessToken(HttpServletRequest request) {
         String accessToken = tokenProvider.getAccessToken(request)
                 .orElseThrow(InvalidTokenException::new);

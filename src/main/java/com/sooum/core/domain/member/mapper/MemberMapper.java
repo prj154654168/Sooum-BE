@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy;
 public interface MemberMapper {
 
     @Mapping(target = "nickname", expression = "java( getDefaultNickname() )")
-    Member from(MemberInfo dto);
+    Member from(MemberInfo dto, String deviceId);
 
     default String getDefaultNickname() {
         return "Sooum";

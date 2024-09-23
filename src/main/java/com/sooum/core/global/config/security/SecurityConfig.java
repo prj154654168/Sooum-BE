@@ -38,6 +38,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(request -> request
                 // No Auth
+                .requestMatchers(HttpMethod.GET, "/users/key").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/sign-up").permitAll()  // 회원가입
                 .requestMatchers(HttpMethod.GET, "/users/login").permitAll()  // 로그인
 //                .requestMatchers(HttpMethod.POST, "/cards/...").hasRole("USER")   // todo 글쓰기 API 완성 시 on
