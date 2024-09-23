@@ -26,6 +26,10 @@ public class FeedLikeService {
         return feedLikeRepository.findByTargetList(targetCards);
     }
 
+    public void deleteAllFeedLikes(Long feedCardPk) {
+        feedLikeRepository.deleteAllFeedLikes(feedCardPk);
+    }
+
     @Transactional
     public void createFeedLike(Long targetFeedCardPk, Long requesterPk) {
         if (feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(targetFeedCardPk, requesterPk)) {

@@ -8,6 +8,7 @@ import com.sooum.core.domain.card.entity.FeedLike;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
 import com.sooum.core.global.util.NextPageLinkGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sooum.core.domain.card.service.FeedService.*;
+
+@RequiredArgsConstructor
 @Service
-public class LatestFeedService extends FeedService {
+public class LatestFeedService {
     private final FeedCardService feedCardService;
     private final FeedLikeService feedLikeService;
     private final CommentCardService commentCardService;
     private final ImgService imgService;
+    private final BlockMemberService blockMemberService;
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 50;
 
@@ -62,7 +67,7 @@ public class LatestFeedService extends FeedService {
                 lastCardId = byLastId.get(byLastId.size() - 1).getPk();
             }
 
-            List<FeedCard> filteredFeedCards = filterBlockedMembers(byLastId, memberId);
+            List<FeedCard> filteredFeedCards = blockMemberService.filterBlockedMembers(byLastId, memberId);
             resultFeedCards.addAll(filteredFeedCards);
 
             if (isEndOfPage(byLastId)) {
@@ -74,13 +79,5 @@ public class LatestFeedService extends FeedService {
 
     private static boolean isEndOfPage(List<FeedCard> byLastId) {
         return byLastId.size() < MAX_PAGE_SIZE;
-    }
-
-    public LatestFeedService(BlockMemberService blockMemberService, FeedCardService feedCardService, FeedLikeService feedLikeService, CommentCardService commentCardService, ImgService imgService) {
-        super(blockMemberService);
-        this.feedCardService = feedCardService;
-        this.feedLikeService = feedLikeService;
-        this.commentCardService = commentCardService;
-        this.imgService = imgService;
     }
 }
