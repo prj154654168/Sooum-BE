@@ -31,7 +31,7 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_FOUND.getMessage()));
     }
 
-    public Member save(MemberInfo dto) {
-        return memberRepository.save(memberMapper.from(dto));
+    public Member save(MemberInfo dto, String deviceId) {
+        return memberRepository.save(memberMapper.from(dto, deviceId));
     }
 }
