@@ -1,29 +1,12 @@
 package com.sooum.core.domain.card.service;
 
-import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
-import com.sooum.core.domain.card.entity.font.Font;
-import com.sooum.core.domain.card.entity.fontsize.FontSize;
-import com.sooum.core.domain.card.entity.imgtype.ImgType;
-import com.sooum.core.domain.card.entity.parenttype.CardType;
-import com.sooum.core.domain.card.repository.CommentCardRepository;
-import com.sooum.core.domain.card.repository.FeedCardRepository;
-import com.sooum.core.domain.member.entity.Member;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.locationtech.jts.geom.Point;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.BDDMockito.*;
 
@@ -51,7 +34,7 @@ class FeedServiceTest {
         Long feedCardPk = 1L;
         FeedCard mockFeedCard = mock(FeedCard.class);
 
-        given(commentCardService.hasCommentCard(feedCardPk)).willReturn(true);
+        given(commentCardService.hasChildCard(feedCardPk)).willReturn(true);
         given(feedCardService.findFeedCard(feedCardPk)).willReturn(mockFeedCard);
 
         // when
@@ -68,7 +51,7 @@ class FeedServiceTest {
         // given
         Long feedCardPk = 1L;
 
-        given(commentCardService.hasCommentCard(feedCardPk)).willReturn(false);
+        given(commentCardService.hasChildCard(feedCardPk)).willReturn(false);
         willDoNothing().given(popularFeedService).deletePopularCard(feedCardPk);
         willDoNothing().given(feedLikeService).deleteAllFeedLikes(feedCardPk);
 

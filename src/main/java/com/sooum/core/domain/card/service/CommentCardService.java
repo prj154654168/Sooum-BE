@@ -18,7 +18,19 @@ import java.util.NoSuchElementException;
 public class CommentCardService {
     private final CommentCardRepository commentCardRepository;
 
-    public boolean hasCommentCard(Long parentCardPk) {
+    public boolean isOnlyChildInDeletedState(Long commentCardPk) {
+        List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
+        return childCards.size() == 1 && childCards.get(0).isDeleted();
+    }
+
+    public void deleteOnlyChild(Long commentCardPk) {
+        List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
+        if (childCards.size() == 1 && childCards.get(0).isDeleted()) {
+            commentCardRepository.delete(childCards.get(0));
+        }
+    }
+
+    public boolean hasChildCard(Long parentCardPk) {
         return !findChildCommentCardList(parentCardPk).isEmpty();
     }
 

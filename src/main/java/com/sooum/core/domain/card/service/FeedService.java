@@ -4,6 +4,7 @@ import com.sooum.core.domain.card.entity.Card;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
+import com.sooum.core.domain.card.entity.parenttype.CardType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,35 +22,55 @@ public class FeedService {
 
     @Transactional
     public void deleteCommentCard(Long commentCardPk) {
-        //댓글 카드가 있나? -> 없으면 완전 삭제 , 있으면 삭제 되었다고 변경
+
         CommentCard commentCard = commentCardService.findCommentCard(commentCardPk);
-        if (!commentCardService.hasCommentCard(commentCard.getPk())) { //자식 카드가 없을 때
+        commentCardService.deleteOnlyChild(commentCard.getPk());
+        if (!commentCardService.hasChildCard(commentCard.getPk())) {
 
-            if (hasParentCard(commentCard) && hasSingleChildCard(commentCard)) { //부모 카드가 있으며, 부모는 자식이 나뿐일 때
+            while (hasParentCard(commentCard) && isParentInDeletedState(commentCard) && isOnlyChild(commentCard)) {
 
-                commentCardService.deleteCommentCard(commentCardPk);
-                deleteParentCard(commentCard);
+                if (isParentCommentType(commentCard)) {
+                    CommentCard parent = commentCardService.findCommentCard(commentCard.getParentCardPk());
+                    commentCardService.deleteCommentCard(commentCard.getPk());
+                    commentCard = parent;
+                    continue;
+                }
+                if (isParentFeedType(commentCard)) {
+                    FeedCard parent = feedCardService.findFeedCard(commentCard.getParentCardPk());
+                    commentCardService.deleteCommentCard(commentCardPk);
+                    if (hasOnlyOneChild(parent)) {
+                        feedCardService.deleteFeedCard(parent.getPk());
+                    }
+                    break;
+                }
             }
-
-            commentCardService.deleteCommentCard(commentCardPk);
-        }else{
+        }else {
             commentCard.changeDeleteStatus();
         }
     }
 
-    private void deleteParentCard(Card card) {
+    private boolean isParentInDeletedState(Card card) {
         if (card instanceof CommentCard commentCard) {
-            commentCardService.deleteCommentCard(commentCard.getParentCardPk());
+            return commentCardService.findCommentCard(commentCard.getPk()).isDeleted();
         }
 
         if (card instanceof FeedCard feedCard) {
-            feedCardService.deleteFeedCard(feedCard.getPk());
+            return feedCardService.findFeedCard(feedCard.getPk()).isDeleted();
         }
+        return false;
+    }
+
+    private static boolean isParentFeedType(CommentCard commentCard) {
+        return commentCard.getParentCardType().equals(CardType.FEED_CARD);
+    }
+
+    private static boolean isParentCommentType(CommentCard commentCard) {
+        return commentCard.getParentCardType().equals(CardType.COMMENT_CARD);
     }
 
     @Transactional
     public void deleteFeedCard(Long feedCardPk) {
-        if (commentCardService.hasCommentCard(feedCardPk)) {
+        if (commentCardService.hasChildCard(feedCardPk)) {
             FeedCard feedCard = feedCardService.findFeedCard(feedCardPk);
             feedCard.changeDeleteStatus();
         }else{
@@ -66,7 +87,11 @@ public class FeedService {
         //todo userimg 추가되면 같이 삭제되도록 로직 추가
     }
 
-    private boolean hasSingleChildCard(Card card) {
+    private boolean hasOnlyOneChild(FeedCard parent) {
+        return commentCardService.findChildCommentCardList(parent.getPk()).size() == 1;
+    }
+
+    private boolean isOnlyChild(Card card) {
         if (card instanceof CommentCard commentCard) {
             return commentCardService.findChildCommentCardList(commentCard.getParentCardPk())
                     .size() == 1;
@@ -79,8 +104,8 @@ public class FeedService {
         return false;
     }
 
-    private static boolean hasParentCard(CommentCard childCard) {
-        return childCard.getParentCardPk() != null;
+    private static boolean hasParentCard(CommentCard commentCard) {
+        return commentCard.getParentCardPk() != null;
     }
 
 
