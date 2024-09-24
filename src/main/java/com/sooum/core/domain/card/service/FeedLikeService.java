@@ -49,7 +49,7 @@ public class FeedLikeService {
     @Transactional
     public void deleteFeedLike(Long likedFeedCardPk, Long likedMemberPk) {
         FeedLike feedLiked = feedLikeRepository.findFeedLiked(likedFeedCardPk, likedMemberPk)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.LIKE_NOT_FOUND.getMessage()));
         feedLikeRepository.delete(feedLiked);
     }
 }
