@@ -46,7 +46,8 @@ public class CommentCardService {
     }
 
     public CommentCard findCommentCard(Long commentCardPk) {
-        return commentCardRepository.findCommentCard(commentCardPk).orElseThrow(NoSuchElementException::new);
+        return commentCardRepository.findCommentCard(commentCardPk)
+                .orElseThrow(()->new NoSuchElementException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
     }
 
     public CommentCard findByPk(Long commentCardPk) {
