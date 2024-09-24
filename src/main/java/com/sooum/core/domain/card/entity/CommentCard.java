@@ -27,12 +27,11 @@ public class CommentCard extends Card {
     private Long parentCardPk;
 
     @NotNull
-    @JoinColumn(name = "MASTER_CARD")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private FeedCard masterCard;
+    @Column(name = "MASTER_CARD_PK")
+    private Long masterCard;
 
     @Builder
-    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, CardType parentCardType, Long parentCardPk, FeedCard masterCard) {
+    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, CardType parentCardType, Long parentCardPk, Long masterCard) {
         super(content, fontSize, font, location, imgType, imgName, isPublic, isStory, writer);
         this.parentCardType = parentCardType;
         this.parentCardPk = parentCardPk;

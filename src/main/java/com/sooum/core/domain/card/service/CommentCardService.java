@@ -6,7 +6,6 @@ import com.sooum.core.domain.card.repository.CommentCardRepository;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +18,7 @@ import java.util.NoSuchElementException;
 public class CommentCardService {
     private final CommentCardRepository commentCardRepository;
 
-    public boolean isOnlyChildInDeletedState(Long commentCardPk) {
-        List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
-        return childCards.size() == 1 && childCards.get(0).isDeleted();
-    }
-
-    public void deleteOnlyChild(Long commentCardPk) {
+    public void deleteOnlyDeletedChild(Long commentCardPk) {
         List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
         if (childCards.size() == 1 && childCards.get(0).isDeleted()) {
             commentCardRepository.delete(childCards.get(0));
@@ -58,5 +52,9 @@ public class CommentCardService {
     public CommentCard findByPk(Long commentCardPk) {
         return commentCardRepository.findById(commentCardPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
+    }
+
+    public boolean isExistCommentCard(Long commentCardPk) {
+        return commentCardRepository.existsById(commentCardPk);
     }
 }
