@@ -43,7 +43,7 @@ public class FeedCardService {
 
     public FeedCard findFeedCard(Long feedCardPk) {
         return feedCardRepository.findById(feedCardPk)
-                .orElseThrow(()->new NoSuchElementException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
+                .orElseThrow(()->new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
     }
 
     public boolean isExistFeedCard(Long feedCardPk) {
