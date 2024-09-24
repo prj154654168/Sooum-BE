@@ -1,27 +1,16 @@
 package com.sooum.core.domain.card.controller;
 
-import com.sooum.core.domain.card.dto.PopularCardDto;
-import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
+import com.sooum.core.domain.card.dto.PopularCardRetrieve;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.service.PopularFeedService;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
-import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -84,12 +73,12 @@ class PopularFeedControllerTest {
         resultActions.andDo(MockMvcResultHandlers.print());
     }
 
-    public List<PopularCardDto.PopularCardRetrieve> createPopularFeedsDto() {
-        ArrayList<PopularCardDto.PopularCardRetrieve> responses = new ArrayList<>();
+    public List<PopularCardRetrieve> createPopularFeedsDto() {
+        ArrayList<PopularCardRetrieve> responses = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            PopularCardDto.PopularCardRetrieve dto = PopularCardDto.PopularCardRetrieve.builder()
+            PopularCardRetrieve dto = PopularCardRetrieve.builder()
                     .id(i)
-                    .contents("내용" + i)
+                    .content("내용" + i)
                     .isStory(false)
                     .backgroundImgUrl(null)
                     .font(Font.DEFAULT)
@@ -100,8 +89,7 @@ class PopularFeedControllerTest {
                     .likeCnt(10)
                     .isCommentWritten(false)
                     .commentCnt(10)
-                    .build()
-                    .add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(FeedController.class).findFeedCardInfo((long) i)).withRel("detail"));
+                    .build();
             responses.add(dto);
         }
         return responses;

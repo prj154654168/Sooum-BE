@@ -1,16 +1,14 @@
 package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.block.service.BlockMemberService;
-import com.sooum.core.domain.card.controller.FeedCardController;
-import com.sooum.core.domain.card.dto.PopularCardDto;
-import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
+import com.sooum.core.domain.card.dto.PopularCardRetrieve;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
-import com.sooum.core.domain.card.entity.PopularFeed;
 import com.sooum.core.domain.card.repository.PopularFeedRepository;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
+import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.Link;
@@ -22,8 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.sooum.core.domain.card.service.FeedService.*;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,9 +36,9 @@ public class PopularFeedService {
         popularFeedRepository.deletePopularCard(cardId);
     }
 
-    public List<PopularCardDto.PopularCardRetrieve> findHomePopularFeeds(final Optional<Double> latitude,
-                                                                         final Optional<Double> longitude,
-                                                                         final Long memberPk) {
+    public List<PopularCardRetrieve> findHomePopularFeeds(final Optional<Double> latitude,
+                                                          final Optional<Double> longitude,
+                                                          final Long memberPk) {
         PageRequest pageRequest = PageRequest.of(0, MAX_SIZE);
         LocalDateTime storyExpiredTime = LocalDateTime.now().minusDays(1L);
         List<FeedCard> feeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
@@ -51,25 +47,22 @@ public class PopularFeedService {
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
         List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);
 
-        return filteredFeeds.stream().map(feed -> PopularCardDto.PopularCardRetrieve.builder()
-                .id(feed.getPk())
-                .contents(feed.getContent())
-                .isStory(feed.isStory())
-                .backgroundImgUrl(Link.of(imgService.findImgUrl(feed.getImgType(), feed.getImgName())))
-                .font(feed.getFont())
-                .fontSize(feed.getFontSize())
-                .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))
-                .createdAt(feed.getCreatedAt())
-                .isLiked(isLiked(feed, feedLikes))
-                .likeCnt(countLikes(feed, feedLikes))
-                .isCommentWritten(isWrittenCommentCard(comments, memberPk))
-                .commentCnt(countComments(feed, comments))
-                .build()
-                        .add(linkTo(methodOn(FeedCardController.class).findFeedCardInfo(feed.getPk())).withRel("detail")))
-                .toList();
-    }
-
-    private PopularityType findPopularityType(FeedCard feed, List<PopularFeed> popularFeeds) {
-        return popularFeeds.stream().filter(popularFeed -> popularFeed.getPopularCard().equals(feed)).findFirst().get().getPopularityType();
+        return NextPageLinkGenerator.appendEachCardDetailLink(filteredFeeds.stream()
+                .map(feed -> PopularCardRetrieve.builder()
+                        .id(feed.getPk())
+                        .content(feed.getContent())
+                        .isStory(feed.isStory())
+                        .backgroundImgUrl(Link.of(imgService.findImgUrl(feed.getImgType(), feed.getImgName())))
+                        .font(feed.getFont())
+                        .fontSize(feed.getFontSize())
+                        .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))
+                        .createdAt(feed.getCreatedAt())
+                        .isLiked(isLiked(feed, feedLikes))
+                        .likeCnt(countLikes(feed, feedLikes))
+                        .isCommentWritten(isWrittenCommentCard(comments, memberPk))
+                        .commentCnt(countComments(feed, comments))
+                        .build()
+                )
+                .toList());
     }
 }

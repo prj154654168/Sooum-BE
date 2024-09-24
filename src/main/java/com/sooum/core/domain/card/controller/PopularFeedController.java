@@ -1,9 +1,9 @@
 package com.sooum.core.domain.card.controller;
 
-import com.sooum.core.domain.card.dto.PopularCardDto;
+import com.sooum.core.domain.card.dto.PopularCardRetrieve;
 import com.sooum.core.domain.card.service.PopularFeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
-import com.sooum.core.global.responseform.ResponseEntityModel;
+import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,21 +26,21 @@ public class PopularFeedController {
     public ResponseEntity<?> findHomePopularFeeds(@RequestParam(required = false, value = "latitude") Optional<Double> latitude,
                                                   @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
                                                   @CurrentUser Long memberPk) {
-        List<PopularCardDto.PopularCardRetrieve> popularFeeds = popularFeedService.findHomePopularFeeds(latitude, longitude, memberPk);
+        List<PopularCardRetrieve> popularFeeds = popularFeedService.findHomePopularFeeds(latitude, longitude, memberPk);
 
         if (popularFeeds.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok().body(
-                ResponseEntityModel.<PopularCardDto.PopularCardRetrieve>builder()
-                        .status(ResponseStatus.builder()
-                                .httpCode(HttpStatus.OK.value())
-                                .httpStatus(HttpStatus.OK)
-                                .responseMessage("Popular feeds retrieve successfully")
-                                .build())
-                        .content(popularFeeds)
+        return ResponseEntity.ok(ResponseCollectionModel.<PopularCardRetrieve>builder()
+                .status(ResponseStatus.builder()
+                        .httpCode(HttpStatus.OK.value())
+                        .httpStatus(HttpStatus.OK)
+                        .responseMessage("Popular feeds retrieve successfully")
                         .build()
+                )
+                .content(popularFeeds)
+                .build()
         );
     }
 }

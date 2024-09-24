@@ -1,9 +1,6 @@
 package com.sooum.core.domain.card.service;
 
-import com.sooum.core.domain.card.entity.Card;
-import com.sooum.core.domain.card.entity.CommentCard;
-import com.sooum.core.domain.card.entity.FeedCard;
-import com.sooum.core.domain.card.entity.FeedLike;
+import com.sooum.core.domain.card.entity.*;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -118,11 +115,23 @@ public class FeedService {
         return feedLikes.stream().anyMatch(feedLike -> feedLike.getTargetCard().getPk().equals(feed.getPk()));
     }
 
+    public static boolean isLiked(CommentCard comment, List<CommentLike> commentLikes) {
+        return commentLikes.stream().anyMatch(commentLike -> commentLike.getTargetCard().getPk().equals(comment.getPk()));
+    }
+
     public static int countLikes(FeedCard feed, List<FeedLike> feedLikes) {
         return (int) feedLikes.stream().filter(feedLike -> feedLike.getTargetCard().getPk().equals(feed.getPk())).count();
     }
 
+    public static int countLikes(CommentCard comment, List<CommentLike> commentLikes) {
+        return (int) commentLikes.stream().filter(CommentLike -> CommentLike.getTargetCard().getPk().equals(comment.getPk())).count();
+    }
+
     public static int countComments(FeedCard feed, List<CommentCard> comments) {
         return (int) comments.stream().filter(comment -> comment.getParentCardPk().equals(feed.getPk())).count();
+    }
+
+    public static int countComments(CommentCard parentComment, List<CommentCard> comments) {
+        return (int) comments.stream().filter(comment -> comment.getParentCardPk().equals(parentComment.getPk())).count();
     }
 }

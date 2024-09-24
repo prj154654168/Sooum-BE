@@ -6,7 +6,7 @@ import com.sooum.core.domain.card.entity.FeedLike;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
-import com.sooum.core.domain.card.entity.parenttype.ParentType;
+import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.card.repository.FeedLikeRepository;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.devicetype.DeviceType;
@@ -114,7 +114,7 @@ class FeedLikeServiceTest {
                 .isPublic(true)
                 .isStory(false)
                 .writer(writer)
-                .parentCardType(ParentType.FEED_CARD)
+                .parentCardType(CardType.FEED_CARD)
                 .parentCardPk(feedCard.getPk())
                 .masterCard(feedCard)
                 .build();

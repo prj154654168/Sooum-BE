@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -41,5 +43,9 @@ public class CommentLikeService {
         CommentLike feedLiked = commentLikeRepository.findCommentLiked(likedFeedCardPk, likedMemberPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
         commentLikeRepository.delete(feedLiked);
+    }
+
+    public List<CommentLike> findByTargetCards(List<CommentCard> commentCards) {
+        return commentLikeRepository.findByTargetCardIn(commentCards);
     }
 }
