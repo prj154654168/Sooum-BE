@@ -126,7 +126,7 @@ public class FeedStaticServiceTest {
                 .imgName(1 + ".jpg")
                 .isPublic(true)
                 .writer(member)
-                .masterCard(feedCards.get(feedCards.size() % FEED_SIZE))
+                .masterCard(feedCards.get(feedCards.size() % FEED_SIZE).getPk())
                 .parentCardType(CardType.COMMENT_CARD)
                 .parentCardPk(feedCards.get(feedCards.size() % FEED_SIZE).getPk())
                 .build();
@@ -146,7 +146,7 @@ public class FeedStaticServiceTest {
                     .imgName(i + ".jpg")
                     .isPublic(true)
                     .writer(members.get(i % MEMBER_SIZE))
-                    .masterCard(feedCards.get(i % FEED_SIZE))
+                    .masterCard(feedCards.get(i % FEED_SIZE).getPk())
                     .parentCardType(i % 2 == 0 ? CardType.FEED_CARD : CardType.COMMENT_CARD)
                     .parentCardPk(feedCards.get(i % FEED_SIZE).getPk())
                     .build();

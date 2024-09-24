@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,7 +41,12 @@ public class FeedCardService {
     }
 
     public FeedCard findFeedCard(Long feedCardPk) {
-        return feedCardRepository.findById(feedCardPk).orElseThrow(NoSuchElementException::new);
+        return feedCardRepository.findById(feedCardPk)
+                .orElseThrow(()->new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
+    }
+
+    public boolean isExistFeedCard(Long feedCardPk) {
+        return feedCardRepository.existsById(feedCardPk);
     }
 
     public FeedCard findByPk(Long feedCardPk) {

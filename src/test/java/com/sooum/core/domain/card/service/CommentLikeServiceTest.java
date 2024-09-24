@@ -120,7 +120,7 @@ class CommentLikeServiceTest {
                 .writer(writer)
                 .parentCardType(CardType.FEED_CARD)
                 .parentCardPk(feedCard.getPk())
-                .masterCard(feedCard)
+                .masterCard(feedCard.getPk())
                 .build();
     }
 

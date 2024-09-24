@@ -75,4 +75,6 @@ tasks.named('test') {
 	systemProperty 'spring.datasource.password', project.getProperty("spring.datasource.password")
 	systemProperty 'sooum.server.ip', project.getProperty("sooum.server.ip")
 	systemProperty 'sooum.server.img.path', project.getProperty("sooum.server.img.path")
+	systemProperty 'spring.data.redis.port', project.getProperty("spring.data.redis.port")
+	systemProperty 'spring.data.redis.host', project.getProperty("spring.data.redis.host")
 }

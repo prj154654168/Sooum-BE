@@ -1,15 +1,12 @@
 package com.sooum.core.domain.card.controller;
 
 import com.sooum.core.domain.card.dto.PopularCardRetrieve;
-import com.sooum.core.domain.card.entity.font.Font;
-import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.service.PopularFeedService;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import com.sooum.core.global.config.mvc.WebMvcConfig;
 import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,8 +23,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.BDDMockito.*;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
 
 @WebMvcTest(PopularFeedController.class)
 @MockBean(JpaMetamodelMappingContext.class)

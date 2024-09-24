@@ -51,7 +51,7 @@ public class FeedCardController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/cards/{cardPk}")
+    @DeleteMapping("/{cardPk}")
     public ResponseEntity<Void> deleteFeedCardInfo(@PathVariable("cardPk") Long cardPk) {
         feedService.deleteFeedCard(cardPk);
         return ResponseEntity.noContent().build();

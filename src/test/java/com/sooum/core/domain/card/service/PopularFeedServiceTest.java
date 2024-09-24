@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
@@ -50,8 +51,8 @@ class PopularFeedServiceTest {
         /// given
         List<Member> members = createMembers();
         List<FeedCard> feedCards = createFeedCards(members);
-        given(popularFeedRepository.findPopularFeeds(any(), any())).willReturn(feedCards);
-        given(blockMemberService.findAllBlockToPk(any())).willReturn(List.of());
+        given(popularFeedRepository.findPopularFeeds(any())).willReturn(feedCards);
+        given(blockMemberService.filterBlockedMembers(eq(feedCards), any())).willReturn(feedCards);
         given(feedLikeService.findByTargetCards(any())).willReturn(createFeedLikes(feedCards, members));
         given(commentCardService.findByMasterCards(any())).willReturn(createCommentCards(feedCards, members));
         given(localImgService.findImgUrl(any(), any())).willReturn("dummyUrl");
@@ -93,7 +94,7 @@ class PopularFeedServiceTest {
                     .imgName(i + ".jpg")
                     .isPublic(true)
                     .writer(members.get(i % MEMBER_SIZE))
-                    .masterCard(feedCards.get(i))
+                    .masterCard(feedCards.get(i).getPk())
                     .parentCardType(CardType.FEED_CARD)
                     .parentCardPk(feedCards.get(i % (CARD_SIZE / 2)).getPk())
                     .build();

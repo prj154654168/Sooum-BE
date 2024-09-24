@@ -104,7 +104,7 @@ class CommentCardRepositoryTest {
                     .imgName(i + ".jpg")
                     .isPublic(true)
                     .writer(member)
-                    .masterCard(feedCard)
+                    .masterCard(feedCard.getPk())
                     .parentCardType(i % 2 == 0 ? CardType.FEED_CARD : CardType.COMMENT_CARD)
                     .parentCardPk(feedCard.getPk())
                     .build();

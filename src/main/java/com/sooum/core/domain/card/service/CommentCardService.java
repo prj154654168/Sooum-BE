@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -23,12 +22,7 @@ public class CommentCardService {
     private final CommentCardRepository commentCardRepository;
     private final static int MAX_PAGE_SIZE = 100;
 
-    public boolean isOnlyChildInDeletedState(Long commentCardPk) {
-        List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
-        return childCards.size() == 1 && childCards.get(0).isDeleted();
-    }
-
-    public void deleteOnlyChild(Long commentCardPk) {
+    public void deleteOnlyDeletedChild(Long commentCardPk) {
         List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
         if (childCards.size() == 1 && childCards.get(0).isDeleted()) {
             commentCardRepository.delete(childCards.get(0));
@@ -56,7 +50,8 @@ public class CommentCardService {
     }
 
     public CommentCard findCommentCard(Long commentCardPk) {
-        return commentCardRepository.findCommentCard(commentCardPk).orElseThrow(NoSuchElementException::new);
+        return commentCardRepository.findCommentCard(commentCardPk)
+                .orElseThrow(()->new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
     }
 
     public CommentCard findByPk(Long commentCardPk) {
@@ -80,5 +75,9 @@ public class CommentCardService {
     public List<CommentCard> findChildCommentsByParents(List<CommentCard> commentCards) {
         List<Long> commentCardsPk = commentCards.stream().map(CommentCard::getPk).toList();
         return commentCardRepository.findChildCards(commentCardsPk);
+    }
+
+    public boolean isExistCommentCard (Long commentCardPk){
+        return commentCardRepository.existsById(commentCardPk);
     }
 }

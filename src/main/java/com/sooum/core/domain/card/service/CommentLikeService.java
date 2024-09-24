@@ -41,7 +41,7 @@ public class CommentLikeService {
     @Transactional
     public void deleteCommentLike(Long likedFeedCardPk, Long likedMemberPk) {
         CommentLike feedLiked = commentLikeRepository.findCommentLiked(likedFeedCardPk, likedMemberPk)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.LIKE_NOT_FOUND.getMessage()));
         commentLikeRepository.delete(feedLiked);
     }
 
