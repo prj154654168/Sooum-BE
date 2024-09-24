@@ -1,6 +1,7 @@
 package com.sooum.core.domain.card.controller;
 
 import com.sooum.core.domain.card.service.CommentLikeService;
+import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.net.URI;
 @RequestMapping("/comments")
 public class CommentCardController {
     private final CommentLikeService commentLikeService;
+    private final FeedService feedService;
 
     @PostMapping("/{cardPk}/like")
     public ResponseEntity<ResponseStatus> createCommentLike(@PathVariable(value = "cardPk") Long cardPk,
@@ -38,6 +40,12 @@ public class CommentCardController {
                                                @CurrentUser Long memberPk) {
         commentLikeService.deleteCommentLike(cardPk, memberPk);
 
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/comments/{cardPk}")
+    public ResponseEntity<Void> deleteCommentCardInfo(@PathVariable("cardPk") Long cardPk) {
+        feedService.deleteCommentCard(cardPk);
         return ResponseEntity.noContent().build();
     }
 }

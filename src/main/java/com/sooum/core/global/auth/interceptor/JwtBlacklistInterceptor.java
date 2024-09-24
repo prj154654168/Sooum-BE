@@ -1,7 +1,8 @@
 package com.sooum.core.global.auth.interceptor;
 
-import com.sooum.core.domain.member.repository.BlacklistRepository;
+import com.sooum.core.domain.member.service.BlacklistService;
 import com.sooum.core.global.auth.interceptor.exception.JwtBlacklistException;
+import com.sooum.core.global.config.jwt.InvalidTokenException;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,15 +16,15 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 @RequiredArgsConstructor
 public class JwtBlacklistInterceptor implements HandlerInterceptor {
 
-    private final BlacklistRepository blacklistRepository;
     private final TokenProvider tokenProvider;
+    private final BlacklistService blacklistService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String accessToken = tokenProvider.getAccessToken(request)
-                .orElse(null);
+                .orElseThrow(InvalidTokenException::new);
 
-        if (blacklistRepository.existsByAccessToken(accessToken)) {
+        if (blacklistService.isExist(accessToken)) {
             response.setStatus(SC_UNAUTHORIZED);
             throw new JwtBlacklistException();
         }

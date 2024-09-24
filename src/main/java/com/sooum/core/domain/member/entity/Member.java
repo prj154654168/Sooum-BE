@@ -48,6 +48,10 @@ public class Member extends BaseEntity {
     @Column(name = "UNTIL_BAN")
     private LocalDateTime untilBan;
 
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "ROLE")
+    private Role role;
+
     @JoinColumn(name = "PROFILE_CARD")
     @OneToOne(fetch = FetchType.LAZY)
     private FeedCard profileCard;
@@ -63,5 +67,6 @@ public class Member extends BaseEntity {
         this.deletedAt = null;
         this.untilBan = null;
         this.profileCard = null;
+        this.role = Role.USER;
     }
 }
