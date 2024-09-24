@@ -4,6 +4,7 @@ import com.sooum.core.domain.block.service.BlockMemberService;
 import com.sooum.core.domain.card.dto.CommentDto;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.CommentLike;
+import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
@@ -27,6 +28,7 @@ public class CommentInfoService {
     private final ImgService imgService;
     private final CommentLikeService commentLikeService;
     private final CommentCardService commentCardService;
+    private static final int MAX_PAGE_SIZE = 100;
     private final static int DEFAULT_PAGE_SIZE = 50;
 
     public List<CommentDto.CommentCardsInfo> createCommentsInfo(Optional<Long> lastPk,
@@ -43,7 +45,6 @@ public class CommentInfoService {
                 .map(comment -> CommentDto.CommentCardsInfo.builder()
                         .id(comment.getPk())
                         .content(comment.getContent())
-                        .isStory(comment.isStory())
                         .backgroundImgUrl(Link.of(imgService.findImgUrl(comment.getImgType(), comment.getImgName())))
                         .font(comment.getFont())
                         .fontSize(comment.getFontSize())
@@ -62,17 +63,21 @@ public class CommentInfoService {
         ArrayList<CommentCard> resultCards = new ArrayList<>();
         while (resultCards.size() < DEFAULT_PAGE_SIZE) {
             List<CommentCard> findComments = commentCardService.findCommentsByLastPk(currentCardPk, lastPk, parentCardType);
-            if (findComments.isEmpty()) {
-                break;
-            }
-
             List<CommentCard> filteredComments = blockMemberService.filterBlockedMembers(findComments, memberPk);
             resultCards.addAll(filteredComments);
 
             if (!findComments.isEmpty()) {
                 lastPk = Optional.of(findComments.get(findComments.size() - 1).getPk());
             }
+
+            if (isEndOfPage(findComments)) {
+                break;
+            }
         }
         return resultCards.size() > DEFAULT_PAGE_SIZE ? resultCards.subList(0, DEFAULT_PAGE_SIZE) : resultCards;
+    }
+
+    private static boolean isEndOfPage(List<CommentCard> byLastId) {
+        return byLastId.size() < MAX_PAGE_SIZE;
     }
 }
