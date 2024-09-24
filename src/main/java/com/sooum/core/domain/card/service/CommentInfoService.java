@@ -4,7 +4,6 @@ import com.sooum.core.domain.block.service.BlockMemberService;
 import com.sooum.core.domain.card.dto.CommentDto;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.CommentLike;
-import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
@@ -17,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.sooum.core.domain.card.service.FeedService.isWrittenCommentCard;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +49,7 @@ public class CommentInfoService {
                         .createdAt(comment.getCreatedAt())
                         .isLiked(FeedService.isLiked(comment, commentLikes))
                         .likeCnt(FeedService.countLikes(comment, commentLikes))
-                        .isCommentWritten(isWrittenCommentCard(childComments, memberPk))
+                        .isCommentWritten(FeedService.isWrittenCommentCard(childComments, memberPk))
                         .commentCnt(FeedService.countComments(comment, childComments))
                         .cardType(CardType.COMMENT_CARD)
                         .build())
