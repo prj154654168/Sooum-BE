@@ -32,7 +32,6 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
 
     @Query("select cc from CommentCard cc where cc.parentCardType = :parentCardType and cc.isDeleted = false" +
             " and cc.parentCardPk = :parentCardPk" +
-            " and (cc.isStory = false or (cc.isStory = true and cc.createdAt > (current_timestamp - 1 day)))" +
             " order by cc.pk desc ")
     List<CommentCard> findCommentsInfo(@Param("parentCardPk") Long parentCardPk,
                                        @Param("parentCardType")CardType parentCardType,
@@ -40,7 +39,6 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
 
     @Query("select cc from CommentCard cc where cc.parentCardType = :parentCardType and cc.isDeleted = false" +
             " and cc.parentCardPk = :parentCardPk" +
-            " and (cc.isStory = false or (cc.isStory = true and cc.createdAt > (current_timestamp - 1 day)))" +
             " and cc.pk < :lastPk" +
             " order by cc.pk desc ")
     List<CommentCard> findCommentsInfoByLastPk(@Param("parentCardPk") Long parentCardPk,
