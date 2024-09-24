@@ -43,7 +43,7 @@ public class CommentCardController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/comments/{cardPk}")
+    @DeleteMapping("/{cardPk}")
     public ResponseEntity<Void> deleteCommentCardInfo(@PathVariable("cardPk") Long cardPk) {
         feedService.deleteCommentCard(cardPk);
         return ResponseEntity.noContent().build();
