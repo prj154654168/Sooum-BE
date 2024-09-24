@@ -23,7 +23,7 @@ public class BlockMemberService {
     }
 
     public void saveBlockMember(Long fromMemberPk, Long toMemberPk) {
-        if(blockRepository.existsByFromMemberPkAndToMemberPk(fromMemberPk, toMemberPk)){
+        if (blockRepository.existsByFromMemberPkAndToMemberPk(fromMemberPk, toMemberPk)) {
             throw new EntityExistsException(ExceptionMessage.ALREADY_BLOCKED.getMessage());
         }
 
@@ -33,6 +33,8 @@ public class BlockMemberService {
         blockRepository.save(Block.builder()
                 .toMember(toMember)
                 .fromMember(fromMember).build());
+    }
+
     public List<FeedCard> filterBlockedMembers(List<FeedCard> feedCards, Long memberPk) {
         List<Long> allBlockToPk = blockRepository.findAllBlockToPk(memberPk);
         return feedCards.stream()
