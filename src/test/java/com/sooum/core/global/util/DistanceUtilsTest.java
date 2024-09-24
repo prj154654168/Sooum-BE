@@ -23,7 +23,6 @@ class DistanceUtilsTest {
         Double latitudeAndLongitudeAreNull = DistanceUtils.calculate(point, Optional.empty(), Optional.empty());
         Double cardLocationIsNull = DistanceUtils.calculate(null, Optional.of(35.12), Optional.of(124.12));
         Double correctResult = DistanceUtils.calculate(point, Optional.of(37.55), Optional.of(127.12));
-        log.info("correctResult : {}", correctResult);
 
         Assertions.assertThat(latitudeIsNull).isNull();
         Assertions.assertThat(longitudeIsNull).isNull();
