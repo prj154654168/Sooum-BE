@@ -44,7 +44,7 @@ public class PopularFeedService {
                                                                          final Long memberPk) {
         PageRequest pageRequest = PageRequest.of(0, MAX_SIZE);
         List<FeedCard> popularFeeds = popularFeedRepository.findPopularFeeds(pageRequest);
-        List<FeedCard> filteredFeeds = filterBlockedMembers(popularFeeds, memberPk);
+        List<FeedCard> filteredFeeds = blockMemberService.filterBlockedMembers(popularFeeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
         List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);
