@@ -7,6 +7,11 @@ import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityExistsException;
+import com.sooum.core.domain.member.entity.Member;
+import com.sooum.core.domain.member.service.MemberService;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import jakarta.persistence.EntityExistsException;
+import com.sooum.core.domain.card.entity.FeedCard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

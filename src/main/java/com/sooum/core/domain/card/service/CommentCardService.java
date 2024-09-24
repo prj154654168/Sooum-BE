@@ -50,14 +50,18 @@ public class CommentCardService {
     }
 
     public CommentCard findCommentCard(Long commentCardPk) {
-        return commentCardRepository.findCommentCard(commentCardPk)
-                .orElseThrow(()->new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
+        return commentCardRepository.findCommentCard(commentCardPk).orElseThrow(EntityNotFoundException::new);
     }
 
     public CommentCard findByPk(Long commentCardPk) {
         return commentCardRepository.findById(commentCardPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
     }
+
+    public boolean isExistCommentCard(Long commentCardPk) {
+        return commentCardRepository.existsById(commentCardPk);
+    }
+
 
     public CommentDto.CommentCntRetrieve countCommentsByParentCard(Long parentCardPk, CardType parentCardType) {
         return CommentDto.CommentCntRetrieve.builder()
@@ -75,9 +79,5 @@ public class CommentCardService {
     public List<CommentCard> findChildCommentsByParents(List<CommentCard> commentCards) {
         List<Long> commentCardsPk = commentCards.stream().map(CommentCard::getPk).toList();
         return commentCardRepository.findChildCards(commentCardsPk);
-    }
-
-    public boolean isExistCommentCard (Long commentCardPk){
-        return commentCardRepository.existsById(commentCardPk);
     }
 }
