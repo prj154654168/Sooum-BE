@@ -4,6 +4,7 @@ import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.member.entity.Member;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,9 +17,12 @@ import org.locationtech.jts.geom.Point;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FeedCard extends Card {
+    @Column(name = "IS_STORY")
+    private boolean isStory;
 
     @Builder
     public FeedCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer) {
-        super(content, fontSize, font, location, imgType, imgName, isPublic, isStory, writer);
+        super(content, fontSize, font, location, imgType, imgName, isPublic, writer);
+        this.isStory = isStory();
     }
 }

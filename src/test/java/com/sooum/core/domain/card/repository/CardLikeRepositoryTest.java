@@ -143,7 +143,6 @@ class CardLikeRepositoryTest {
                 .imgType(ImgType.DEFAULT)
                 .imgName("1.jpg")
                 .isPublic(true)
-                .isStory(false)
                 .writer(writer)
                 .parentCardType(CardType.FEED_CARD)
                 .parentCardPk(feedCard.getPk())

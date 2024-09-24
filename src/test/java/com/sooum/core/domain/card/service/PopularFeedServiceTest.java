@@ -92,7 +92,6 @@ class PopularFeedServiceTest {
                     .imgType(ImgType.DEFAULT)
                     .imgName(i + ".jpg")
                     .isPublic(true)
-                    .isStory(false)
                     .writer(members.get(i % MEMBER_SIZE))
                     .masterCard(feedCards.get(i))
                     .parentCardType(CardType.FEED_CARD)

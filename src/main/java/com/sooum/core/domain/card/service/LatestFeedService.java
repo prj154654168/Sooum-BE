@@ -26,6 +26,7 @@ public class LatestFeedService {
     private final CommentCardService commentCardService;
     private final ImgService imgService;
     private final BlockMemberService blockMemberService;
+
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 50;
 
