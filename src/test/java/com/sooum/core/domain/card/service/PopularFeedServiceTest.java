@@ -2,11 +2,9 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.block.service.BlockMemberService;
 import com.sooum.core.domain.card.dto.PopularCardDto;
-import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
-import com.sooum.core.domain.card.entity.PopularFeed;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
@@ -53,7 +51,7 @@ class PopularFeedServiceTest {
         /// given
         List<Member> members = createMembers();
         List<FeedCard> feedCards = createFeedCards(members);
-        given(popularFeedRepository.findPopularFeeds(any(), any())).willReturn(feedCards);
+        given(popularFeedRepository.findPopularFeeds(any())).willReturn(feedCards);
         given(blockMemberService.findAllBlockToPk(any())).willReturn(List.of());
         given(feedLikeService.findByTargetCards(any())).willReturn(createFeedLikes(feedCards, members));
         given(commentCardService.findByMasterCards(any())).willReturn(createCommentCards(feedCards, members));

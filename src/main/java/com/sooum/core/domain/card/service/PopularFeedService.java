@@ -17,7 +17,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,9 +43,8 @@ public class PopularFeedService {
                                                                          final Optional<Double> longitude,
                                                                          final Long memberPk) {
         PageRequest pageRequest = PageRequest.of(0, MAX_SIZE);
-        LocalDateTime storyExpiredTime = LocalDateTime.now().minusDays(1L);
-        List<FeedCard> feeds = popularFeedRepository.findPopularFeeds(storyExpiredTime, pageRequest);
-        List<FeedCard> filteredFeeds = blockMemberService.filterBlockedMembers(feeds, memberPk);
+        List<FeedCard> popularFeeds = popularFeedRepository.findPopularFeeds(pageRequest);
+        List<FeedCard> filteredFeeds = filterBlockedMembers(popularFeeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
         List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);

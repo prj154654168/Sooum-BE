@@ -1,7 +1,6 @@
 package com.sooum.core.domain.card.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sooum.core.domain.card.dto.popularitytype.PopularityType;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import lombok.Builder;

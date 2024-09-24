@@ -38,17 +38,18 @@ class PopularFeedRepositoryTest {
         List<Member> members = memberRepository.saveAll(createMembers());
         List<FeedCard> feedCards = feedCardRepository.saveAll(createFeedCards(members));
         updateCreatedAt(feedCards);
-        List<PopularFeed> popularFeeds = popularFeedRepository.saveAll(createPopularFeedCards(feedCards));
+        List<FeedCard> popularFeeds = popularFeedRepository.saveAll(createPopularFeedCards(feedCards))
+                .stream().map(PopularFeed::getPopularCard).toList();
 
         // when
-        List<FeedCard> findPopularFeeds = popularFeedRepository.findPopularFeeds(LocalDateTime.now().minusDays(1L), PageRequest.of(0, MAX_SIZE));
+        List<FeedCard> findPopularFeeds = popularFeedRepository.findPopularFeeds(PageRequest.of(0, MAX_SIZE));
 
         // then
         int isNotStoryCardCnt = popularFeeds.stream()
-                .filter(feedCard -> !feedCard.getPopularCard().isStory())
+                .filter(feedCard -> !feedCard.isStory())
                 .toList().size();
         int isNotExpiredStoryCardCnt = popularFeeds.stream()
-                .filter(feedCard -> feedCard.getPopularCard().getCreatedAt().isAfter(LocalDateTime.now().minusDays(1)) && feedCard.getPopularCard().isStory())
+                .filter(feedCard -> feedCard.getCreatedAt().isAfter(LocalDateTime.now().minusDays(1)) && feedCard.isStory())
                 .toList().size();
 
         Assertions.assertThat(findPopularFeeds.size()).isEqualTo(isNotStoryCardCnt + isNotExpiredStoryCardCnt);
