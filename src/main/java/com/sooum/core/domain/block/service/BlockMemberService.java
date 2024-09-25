@@ -18,10 +18,6 @@ public class BlockMemberService {
     private final BlockRepository blockRepository;
     private final MemberService memberService;
 
-    public List<Long> findAllBlockToPk(Long memberPk) {
-        return blockRepository.findAllBlockToPk(memberPk);
-    }
-
     public void saveBlockMember(Long fromMemberPk, Long toMemberPk) {
         if (blockRepository.existsByFromMemberPkAndToMemberPk(fromMemberPk, toMemberPk)) {
             throw new EntityExistsException(ExceptionMessage.ALREADY_BLOCKED.getMessage());
@@ -41,5 +37,4 @@ public class BlockMemberService {
                 .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
                 .toList();
     }
-
 }
