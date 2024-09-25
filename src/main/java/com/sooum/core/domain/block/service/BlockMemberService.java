@@ -7,11 +7,6 @@ import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityExistsException;
-import com.sooum.core.domain.member.entity.Member;
-import com.sooum.core.domain.member.service.MemberService;
-import com.sooum.core.global.exceptionmessage.ExceptionMessage;
-import jakarta.persistence.EntityExistsException;
-import com.sooum.core.domain.card.entity.FeedCard;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +17,6 @@ import java.util.List;
 public class BlockMemberService {
     private final BlockRepository blockRepository;
     private final MemberService memberService;
-
-    public List<Long> findAllBlockToPk(Long memberPk) {
-        return blockRepository.findAllBlockToPk(memberPk);
-    }
-
-    public <T extends Card> List<T> filterBlockedMembers (List<T> cards, Long memberPk) {
-        List<Long> allBlockToPk = blockRepository.findAllBlockToPk(memberPk);
-        return cards.stream()
-                .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
-                .toList();
-    }
 
     public void saveBlockMember(Long fromMemberPk, Long toMemberPk) {
         if (blockRepository.existsByFromMemberPkAndToMemberPk(fromMemberPk, toMemberPk)) {
@@ -45,5 +29,12 @@ public class BlockMemberService {
         blockRepository.save(Block.builder()
                 .toMember(toMember)
                 .fromMember(fromMember).build());
+    }
+
+    public <T extends Card> List<T> filterBlockedMembers (List<T> cards, Long memberPk) {
+        List<Long> allBlockToPk = blockRepository.findAllBlockToPk(memberPk);
+        return cards.stream()
+                .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
+                .toList();
     }
 }

@@ -50,12 +50,17 @@ public class CommentCardService {
     }
 
     public CommentCard findCommentCard(Long commentCardPk) {
-        return commentCardRepository.findCommentCard(commentCardPk).orElseThrow(EntityNotFoundException::new);
+        return commentCardRepository.findCommentCard(commentCardPk)
+                .orElseThrow(() ->
+                        new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage())
+                );
     }
 
     public CommentCard findByPk(Long commentCardPk) {
         return commentCardRepository.findById(commentCardPk)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage())
+                );
     }
 
     public boolean isExistCommentCard(Long commentCardPk) {
