@@ -2,6 +2,7 @@ package com.sooum.core.domain.member.service;
 
 import com.sooum.core.domain.member.dto.AuthDTO.Login;
 import com.sooum.core.domain.member.dto.AuthDTO.LoginResponse;
+import com.sooum.core.domain.member.dto.AuthDTO.ReissuedToken;
 import com.sooum.core.domain.member.dto.AuthDTO.SignUpResponse;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.PolicyTerm;
@@ -64,13 +65,13 @@ public class MemberInfoService {
     }
 
     @Transactional
-    public String reissueAccessToken(HttpServletRequest request) {
+    public ReissuedToken reissueAccessToken(HttpServletRequest request) {
         String accessToken = tokenProvider.getAccessToken(request)
                 .orElseThrow(InvalidTokenException::new);
 
         Member member = memberService.findByPk(tokenProvider.getId(accessToken).orElseThrow(MemberNotFoundException::new));
         blacklistService.save(accessToken, Duration.between(LocalTime.now(), tokenProvider.getExpiration(accessToken)));
 
-        return tokenProvider.createAccessToken(member.getPk(), member.getRole());
+        return new ReissuedToken(tokenProvider.createAccessToken(member.getPk(), member.getRole()));
     }
 }
