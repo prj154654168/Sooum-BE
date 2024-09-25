@@ -1,7 +1,7 @@
 package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.block.service.BlockMemberService;
-import com.sooum.core.domain.card.dto.PopularCardDto;
+import com.sooum.core.domain.card.dto.PopularCardRetrieve;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
@@ -9,7 +9,6 @@ import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
-import com.sooum.core.domain.card.entity.parenttype.ParentType;
 import com.sooum.core.domain.card.repository.PopularFeedRepository;
 import com.sooum.core.domain.img.service.LocalImgService;
 import com.sooum.core.domain.member.entity.Member;
@@ -26,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
@@ -52,18 +52,18 @@ class PopularFeedServiceTest {
         List<Member> members = createMembers();
         List<FeedCard> feedCards = createFeedCards(members);
         given(popularFeedRepository.findPopularFeeds(any())).willReturn(feedCards);
-        given(blockMemberService.findAllBlockToPk(any())).willReturn(List.of());
+        given(blockMemberService.filterBlockedMembers(eq(feedCards), any())).willReturn(feedCards);
         given(feedLikeService.findByTargetCards(any())).willReturn(createFeedLikes(feedCards, members));
         given(commentCardService.findByMasterCards(any())).willReturn(createCommentCards(feedCards, members));
         given(localImgService.findImgUrl(any(), any())).willReturn("dummyUrl");
 
         // when
-        List<PopularCardDto.PopularCardRetrieve> popularFeeds = popularFeedService
+        List<PopularCardRetrieve> popularFeeds = popularFeedService
                 .findHomePopularFeeds(Optional.empty(), Optional.empty(), 1L);
 
         // then
         for (int i = 0; i < CARD_SIZE; i++) {
-            Assertions.assertThat(popularFeeds.get(i).getContents()).isEqualTo(feedCards.get(i).getContent());
+            Assertions.assertThat(popularFeeds.get(i).getContent()).isEqualTo(feedCards.get(i).getContent());
             Assertions.assertThat(popularFeeds.get(i).getFont()).isEqualTo(feedCards.get(i).getFont());
             Assertions.assertThat(popularFeeds.get(i).getFontSize()).isEqualTo(feedCards.get(i).getFontSize());
             Assertions.assertThat(popularFeeds.get(i).isStory()).isEqualTo(feedCards.get(i).isStory());
@@ -93,9 +93,8 @@ class PopularFeedServiceTest {
                     .imgType(ImgType.DEFAULT)
                     .imgName(i + ".jpg")
                     .isPublic(true)
-                    .isStory(false)
                     .writer(members.get(i % MEMBER_SIZE))
-                    .masterCard(feedCards.get(i))
+                    .masterCard(feedCards.get(i).getPk())
                     .parentCardType(CardType.FEED_CARD)
                     .parentCardPk(feedCards.get(i % (CARD_SIZE / 2)).getPk())
                     .build();
