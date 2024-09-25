@@ -48,4 +48,12 @@ public class AuthDTO {
             return isAllowTermOne && isAllowTermTwo && isAllowTermThree;
         }
     }
+
+    public record Key(
+            String publicKey
+    ) {}
+
+    public record ReissuedToken(
+            String accessToken
+    ) {}
 }

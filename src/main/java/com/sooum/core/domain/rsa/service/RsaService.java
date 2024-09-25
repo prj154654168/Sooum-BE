@@ -1,5 +1,6 @@
 package com.sooum.core.domain.rsa.service;
 
+import com.sooum.core.domain.member.dto.AuthDTO.Key;
 import com.sooum.core.domain.rsa.entity.Rsa;
 import com.sooum.core.domain.rsa.repository.RsaRepository;
 import com.sooum.core.global.rsa.RsaProvider;
@@ -21,7 +22,7 @@ public class RsaService {
     private final RsaProvider rsaProvider;
     private final RedisTemplate<String, String> redisTemplate;
 
-    public String save() {
+    public Key save() {
         HashMap<String, String> keyPair = rsaProvider.generateKeyPair();
 
         // Save to RDB
@@ -37,7 +38,7 @@ public class RsaService {
         redisTemplate.opsForValue().set(rsa.getPublicKey(), rsa.getPrivateKey());
         redisTemplate.expire(rsa.getPublicKey(), Duration.between(Instant.now(), expiredAt));
 
-        return rsa.getPublicKey();
+        return new Key(rsa.getPublicKey());
     }
 
     public String decodeDeviceId(String encryptedData, String publicKey) {
