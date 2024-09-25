@@ -25,17 +25,30 @@ public class FeedService {
 
         CommentCard commentCard = commentCardService.findCommentCard(commentCardPk);
         commentCardService.deleteOnlyDeletedChild(commentCard.getPk());
-        if (!commentCardService.hasChildCard(commentCard.getPk())) {
-
-            while (hasParentCard(commentCard) && isParentInDeletedState(commentCard) && isOnlyChild(commentCard)) {
-
+        if (commentCardService.hasChildCard(commentCard.getPk())) {
+            commentCard.changeDeleteStatus();
+            while (isParentDeletable(commentCard)) {
+                if (isParentCommentType(commentCard)) {
+                    CommentCard parent = commentCardService.findCommentCard(commentCard.getParentCardPk());
+                    commentCardService.deleteCommentCard(parent.getPk());
+                    commentCard = parent;
+                }
+                else if (isParentFeedType(commentCard)) {
+                    FeedCard parent = feedCardService.findFeedCard(commentCard.getParentCardPk());
+                    if (hasOnlyOneChild(parent)) {
+                        feedCardService.deleteFeedCard(parent.getPk());
+                    }
+                    break;
+                }
+            }
+        }else {
+            while (isParentDeletable(commentCard)) {
                 if (isParentCommentType(commentCard)) {
                     CommentCard parent = commentCardService.findCommentCard(commentCard.getParentCardPk());
                     commentCardService.deleteCommentCard(commentCard.getPk());
                     commentCard = parent;
-                    continue;
                 }
-                if (isParentFeedType(commentCard)) {
+                else if (isParentFeedType(commentCard)) {
                     FeedCard parent = feedCardService.findFeedCard(commentCard.getParentCardPk());
                     if (hasOnlyOneChild(parent)) {
                         feedCardService.deleteFeedCard(parent.getPk());
@@ -47,26 +60,11 @@ public class FeedService {
             if (hasParentCard(commentCard) && isOnlyChild(commentCard)) {
                 commentCardService.deleteCommentCard(commentCard.getPk());
             }
-        }else {
-            commentCard.changeDeleteStatus();
-            while (hasParentCard(commentCard) && isParentInDeletedState(commentCard) && isOnlyChild(commentCard)) {
-
-                if (isParentCommentType(commentCard)) {
-                    CommentCard parent = commentCardService.findCommentCard(commentCard.getParentCardPk());
-                    commentCardService.deleteCommentCard(parent.getPk());
-                    commentCard = parent;
-                    continue;
-                }
-                if (isParentFeedType(commentCard)) {
-                    FeedCard parent = feedCardService.findFeedCard(commentCard.getParentCardPk());
-                    if (hasOnlyOneChild(parent)) {
-                        feedCardService.deleteFeedCard(parent.getPk());
-                    }
-                    break;
-                }
-            }
-
         }
+    }
+
+    private boolean isParentDeletable(CommentCard commentCard) {
+        return hasParentCard(commentCard) && isParentInDeletedState(commentCard) && isOnlyChild(commentCard);
     }
 
     private boolean isParentInDeletedState(Card card) {
