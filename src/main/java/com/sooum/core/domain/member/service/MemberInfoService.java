@@ -37,7 +37,7 @@ public class MemberInfoService {
 
 
     public LoginResponse login(Login dto) {
-        String deviceId = rsaService.decodeDeviceId(dto.encryptedDeviceId(), dto.publicKey());
+        String deviceId = rsaService.decodeDeviceId(dto.encryptedDeviceId());
 
         try {
             Member member = memberService.findByDeviceId(deviceId);
@@ -52,7 +52,7 @@ public class MemberInfoService {
         if(!dto.policy().checkAllPolicyIsTrue())
             throw new PolicyNotAllowException();
 
-        String deviceId = rsaService.decodeDeviceId(dto.member().encryptedDeviceId(), dto.member().publicKey());
+        String deviceId = rsaService.decodeDeviceId(dto.member().encryptedDeviceId());
 
         if(memberService.isAlreadySignUp(deviceId))
             throw new DuplicateSignUpException();
