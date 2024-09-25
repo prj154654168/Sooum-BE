@@ -2,6 +2,7 @@ package com.sooum.core.domain.rsa.service;
 
 import com.sooum.core.domain.member.dto.AuthDTO.Key;
 import com.sooum.core.domain.rsa.entity.Rsa;
+import com.sooum.core.domain.rsa.exception.RsaDecodeException;
 import com.sooum.core.domain.rsa.repository.RsaRepository;
 import com.sooum.core.global.rsa.RsaProvider;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +46,17 @@ public class RsaService {
         return new Key(redisTemplate.opsForValue().get("public"));
     }
 
-    public String decodeDeviceId(String encryptedData, String publicKey) {
-        String privateKey = redisTemplate.opsForValue().get(publicKey);
+    public String decodeDeviceId(String encryptedData) {
+        String privateKey;
+
+        try {
+            privateKey = redisTemplate.opsForValue().get("private");
+        } catch (Exception e) {
+            Rsa rsa = rsaRepository.findByExpiredAtIsAfter(Instant.now())
+                    .orElseThrow(RsaDecodeException::new);
+            privateKey = rsa.getPrivateKey();
+        }
+
         return rsaProvider.decode(encryptedData, privateKey);
     }
 }
