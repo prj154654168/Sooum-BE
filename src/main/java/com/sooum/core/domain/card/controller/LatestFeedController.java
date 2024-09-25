@@ -3,7 +3,7 @@ package com.sooum.core.domain.card.controller;
 import com.sooum.core.domain.card.dto.LatestFeedCardDto;
 import com.sooum.core.domain.card.service.LatestFeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
-import com.sooum.core.global.responseform.ResponseEntityModel;
+import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class LatestFeedController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        return ResponseEntity.ok(ResponseEntityModel.<LatestFeedCardDto>builder()
+        return ResponseEntity.ok(ResponseCollectionModel.<LatestFeedCardDto>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
                         .httpCode(HttpStatus.OK.value())

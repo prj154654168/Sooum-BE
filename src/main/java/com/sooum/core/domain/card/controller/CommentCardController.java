@@ -1,9 +1,16 @@
 package com.sooum.core.domain.card.controller;
 
+import com.sooum.core.domain.card.dto.CommentDto;
+import com.sooum.core.domain.card.entity.parenttype.CardType;
+import com.sooum.core.domain.card.service.CommentCardService;
+import com.sooum.core.domain.card.service.CommentInfoService;
 import com.sooum.core.domain.card.service.CommentLikeService;
 import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
+import com.sooum.core.global.responseform.ResponseCollectionModel;
+import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
+import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +18,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Optional;
 
 @Validated
 @RestController
@@ -19,6 +28,8 @@ import java.net.URI;
 public class CommentCardController {
     private final CommentLikeService commentLikeService;
     private final FeedService feedService;
+    private final CommentCardService commentCardService;
+    private final CommentInfoService commentInfoService;
 
     @PostMapping("/{cardPk}/like")
     public ResponseEntity<ResponseStatus> createCommentLike(@PathVariable(value = "cardPk") Long cardPk,
@@ -36,7 +47,7 @@ public class CommentCardController {
     }
 
     @DeleteMapping("/{cardPk}/like")
-    public ResponseEntity<?> deleteCommentLike(@PathVariable(value = "cardPk") Long cardPk,
+    public ResponseEntity<Void> deleteCommentLike(@PathVariable(value = "cardPk") Long cardPk,
                                                @CurrentUser Long memberPk) {
         commentLikeService.deleteCommentLike(cardPk, memberPk);
 
@@ -47,5 +58,46 @@ public class CommentCardController {
     public ResponseEntity<Void> deleteCommentCardInfo(@PathVariable("cardPk") Long cardPk) {
         feedService.deleteCommentCard(cardPk);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/current/{parentCardPk}/count")
+    public ResponseEntity<ResponseEntityModel<CommentDto.CommentCntRetrieve>> countCommentsByParentCard(@PathVariable Long parentCardPk,
+                                                                                                        @RequestParam CardType parentCardType) {
+        return ResponseEntity.ok(
+                        ResponseEntityModel.<CommentDto.CommentCntRetrieve>builder()
+                                .status(ResponseStatus.builder()
+                                        .httpCode(HttpStatus.OK.value())
+                                        .httpStatus(HttpStatus.OK)
+                                        .responseMessage("comment cnt retrieve successfully")
+                                        .build())
+                                .content(commentCardService.countCommentsByParentCard(parentCardPk, parentCardType))
+                                .build()
+        );
+    }
+
+    @GetMapping("/current/{currentCardPk}")
+    public ResponseEntity<?> createCommentCardsInfo(@RequestParam(required = false) Optional<Long> lastPk,
+                                                    @RequestParam(required = false) Optional<Double> latitude,
+                                                    @RequestParam(required = false) Optional<Double> longitude,
+                                                    @RequestParam CardType parentCardType,
+                                                    @PathVariable Long currentCardPk,
+                                                    @CurrentUser Long memberPk) {
+        List<CommentDto.CommentCardsInfo> commentsInfo = commentInfoService.createCommentsInfo(lastPk, latitude, longitude, parentCardType, currentCardPk, memberPk);
+
+        if (commentsInfo.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(
+                ResponseCollectionModel.<CommentDto.CommentCardsInfo>builder()
+                        .status(ResponseStatus.builder()
+                                .httpCode(HttpStatus.OK.value())
+                                .httpStatus(HttpStatus.OK)
+                                .responseMessage("comments info retrieve successfully")
+                                .build())
+                        .content(commentsInfo)
+                        .build()
+                        .add(NextPageLinkGenerator.generateNextPageLink(commentsInfo))
+        );
     }
 }

@@ -5,7 +5,10 @@ import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.member.entity.Member;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,8 +33,8 @@ public class CommentCard extends Card {
     private Long masterCard;
 
     @Builder
-    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer, CardType parentCardType, Long parentCardPk, Long masterCard) {
-        super(content, fontSize, font, location, imgType, imgName, isPublic, isStory, writer);
+    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, Member writer, CardType parentCardType, Long parentCardPk, Long masterCard) {
+        super(content, fontSize, font, location, imgType, imgName, isPublic, writer);
         this.parentCardType = parentCardType;
         this.parentCardPk = parentCardPk;
         this.masterCard = masterCard;

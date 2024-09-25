@@ -1,6 +1,11 @@
 package com.sooum.core.domain.card.controller;
 
+import com.sooum.core.domain.card.dto.CommentDto;
+import com.sooum.core.domain.card.entity.parenttype.CardType;
+import com.sooum.core.domain.card.service.CommentCardService;
+import com.sooum.core.domain.card.service.CommentInfoService;
 import com.sooum.core.domain.card.service.CommentLikeService;
+import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import com.sooum.core.global.config.mvc.WebMvcConfig;
@@ -16,11 +21,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.doNothing;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentCardController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -33,6 +41,12 @@ class CommentCardControllerTest {
     MockMvc mockMvc;
     @MockBean
     CommentLikeService commentLikeService;
+    @MockBean
+    FeedService feedService;
+    @MockBean
+    CommentCardService commentCardService;
+    @MockBean
+    CommentInfoService commentInfoService;
     private static final String ACCESS_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjY5Mjk0MzMsImV4cCI6MTAxNzI2OTI5NDMzLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlkIjo2MjUwNDc5NzMyNTA1MTUxNTMsInJvbGUiOiJVU0VSIn0.aL4Tr3FaSwvu9hOQISAvGJfCHBGCV9jRo_BfTQkBssU";
     private static final String TOKEN_HEADER = "Authorization";
 
@@ -45,14 +59,13 @@ class CommentCardControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post("/comments/{cardPk}/like", 1L)
+                post("/comments/{cardPk}/like", 1L)
                         .header(TOKEN_HEADER, ACCESS_TOKEN)
         );
 
         // then
-        resultActions.andExpect(MockMvcResultMatchers.status().isCreated());
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.httpCode").value(HttpStatus.CREATED.value()));
+        resultActions.andExpect(status().isCreated());
+        resultActions.andExpect(jsonPath("$.httpCode").value(HttpStatus.CREATED.value()));
     }
 
     @Test
@@ -64,12 +77,48 @@ class CommentCardControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .delete("/comments/{cardPk}/like", 1)
+                delete("/comments/{cardPk}/like", 1)
                         .header(TOKEN_HEADER, ACCESS_TOKEN)
         );
 
         // then
-        resultActions.andExpect(MockMvcResultMatchers.status().isNoContent());
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("댓글이 없어서 조회가 안되는 경우")
+    @WithMockUser
+    void createCommentCardsInfo_notExistComment() throws Exception{
+        // given
+        given(commentInfoService.createCommentsInfo(any(), any(), any(), any(), any(), any())).willReturn(Collections.emptyList());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/comments/current/{cardPk}", 1L)
+                        .param("parentCardType", CardType.FEED_CARD.toString())
+                        .header(TOKEN_HEADER, ACCESS_TOKEN)
+        );
+
+        // then
+        resultActions.andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("댓글 조회가 되는 경우")
+    @WithMockUser
+    void createCommentCardsInfo_existComment() throws Exception{
+        // given
+        List<CommentDto.CommentCardsInfo> mockResult = List.of(mock(CommentDto.CommentCardsInfo.class));
+        given(commentInfoService.createCommentsInfo(any(), any(), any(), any(), any(), any())).willReturn(mockResult);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/comments/current/{cardPk}", 1L)
+                        .param("parentCardType", CardType.FEED_CARD.toString())
+                        .header(TOKEN_HEADER, ACCESS_TOKEN)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk());
     }
 }

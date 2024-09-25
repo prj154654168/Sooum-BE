@@ -4,7 +4,7 @@ import com.sooum.core.domain.card.dto.DistanceCardDto;
 import com.sooum.core.domain.card.dto.distancefilter.DistanceFilter;
 import com.sooum.core.domain.card.service.DistanceFeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
-import com.sooum.core.global.responseform.ResponseEntityModel;
+import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import jakarta.validation.constraints.NotNull;
@@ -35,7 +35,7 @@ public class DistanceCardController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
-        return ResponseEntity.ok(ResponseEntityModel.<DistanceCardDto>builder()
+        return ResponseEntity.ok(ResponseCollectionModel.<DistanceCardDto>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
                         .httpCode(HttpStatus.OK.value())
