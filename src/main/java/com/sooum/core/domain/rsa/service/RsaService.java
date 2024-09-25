@@ -4,7 +4,6 @@ import com.sooum.core.domain.member.dto.AuthDTO.Key;
 import com.sooum.core.domain.rsa.entity.Rsa;
 import com.sooum.core.domain.rsa.repository.RsaRepository;
 import com.sooum.core.global.rsa.RsaProvider;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -36,17 +35,14 @@ public class RsaService {
         rsaRepository.save(rsa);
 
         // Save to Redis
-        redisTemplate.opsForValue().set(rsa.getPublicKey(), rsa.getPrivateKey());
-        redisTemplate.expire(rsa.getPublicKey(), Duration.between(Instant.now(), expiredAt));
+        redisTemplate.opsForValue().set("public", rsa.getPublicKey(), Duration.between(Instant.now(), expiredAt));
+        redisTemplate.opsForValue().set("private", rsa.getPrivateKey(), Duration.between(Instant.now(), expiredAt));
 
         return new Key(rsa.getPublicKey());
     }
 
     public Key findPublicKey() {
-        Rsa rsa = rsaRepository.findByExpiredAtIsAfter(Instant.now())
-                .orElseThrow(EntityNotFoundException::new);
-
-        return new Key(rsa.getPublicKey());
+        return new Key(redisTemplate.opsForValue().get("public"));
     }
 
     public String decodeDeviceId(String encryptedData, String publicKey) {
