@@ -91,7 +91,7 @@ public class FeedService {
     @Transactional
     public void deleteFeedCard(Long feedCardPk) {
         List<CommentCard> childCommentCardList = commentCardService.findChildCommentCardList(feedCardPk);
-        if (childCommentCardList.size() == 1 && childCommentCardList.get(0).isDeleted()) {
+        if (isCommentDeletable(childCommentCardList)) {
             feedCardService.deleteFeedCard(feedCardPk);
             return;
         }
@@ -102,6 +102,10 @@ public class FeedService {
             deleteFeedCardAndAssociations(feedCardPk);
             feedCardService.deleteFeedCard(feedCardPk);
         }
+    }
+
+    private static boolean isCommentDeletable(List<CommentCard> childCommentCardList) {
+        return childCommentCardList.size() == 1 && childCommentCardList.get(0).isDeleted();
     }
 
     private void deleteFeedCardAndAssociations(Long feedCardPk) {
