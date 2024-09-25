@@ -19,6 +19,7 @@ public class FeedService {
 
     @Transactional
     public void deleteCommentCard(Long commentCardPk) {
+        if (isNotCommentCardOwner(commentCardPk, commentCardPk)) return;
 
         CommentCard commentCard = commentCardService.findCommentCard(commentCardPk);
         commentCardService.deleteOnlyDeletedChild(commentCard.getPk());
@@ -60,6 +61,10 @@ public class FeedService {
         }
     }
 
+    private boolean isNotCommentCardOwner(Long commentCardPk, Long writerPk) {
+        return !commentCardService.findCommentCard(commentCardPk).getWriter().getPk().equals(writerPk);
+    }
+
     private boolean isParentDeletable(CommentCard commentCard) {
         return hasParentCard(commentCard) && isParentInDeletedState(commentCard) && isOnlyChild(commentCard);
     }
@@ -86,7 +91,9 @@ public class FeedService {
     }
 
     @Transactional
-    public void deleteFeedCard(Long feedCardPk) {
+    public void deleteFeedCard(Long feedCardPk, Long writerPk) {
+        if (isNotFeedCardOwner(feedCardPk, writerPk)) return;
+
         List<CommentCard> childCommentCardList = commentCardService.findChildCommentCardList(feedCardPk);
         if (isCommentDeletable(childCommentCardList)) {
             feedCardService.deleteFeedCard(feedCardPk);
@@ -99,6 +106,10 @@ public class FeedService {
             deleteFeedCardAndAssociations(feedCardPk);
             feedCardService.deleteFeedCard(feedCardPk);
         }
+    }
+
+    private boolean isNotFeedCardOwner(Long feedCardPk, Long writerPk) {
+        return !feedCardService.findFeedCard(feedCardPk).getWriter().getPk().equals(writerPk);
     }
 
     private static boolean isCommentDeletable(List<CommentCard> childCommentCardList) {

@@ -1,12 +1,14 @@
 package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.FeedCard;
+import com.sooum.core.domain.member.entity.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.BDDMockito.*;
 
@@ -32,13 +34,18 @@ class FeedServiceTest {
 
         // given
         Long feedCardPk = 1L;
+        Long mockMemberPk = 1L;
+
+        Member mockMember = mock(Member.class);
         FeedCard mockFeedCard = mock(FeedCard.class);
 
         given(commentCardService.hasChildCard(feedCardPk)).willReturn(true);
         given(feedCardService.findFeedCard(feedCardPk)).willReturn(mockFeedCard);
+        given(mockMember.getPk()).willReturn(mockMemberPk);
+        given(mockFeedCard.getWriter()).willReturn(mockMember);
 
         // when
-        feedService.deleteFeedCard(feedCardPk);
+        feedService.deleteFeedCard(feedCardPk,mockMemberPk);
 
         // then
         then(mockFeedCard).should().changeDeleteStatus();
@@ -50,13 +57,20 @@ class FeedServiceTest {
 
         // given
         Long feedCardPk = 1L;
+        Long mockMemberPk = 1L;
+
+        Member mockMember = mock(Member.class);
+        FeedCard mockFeedCard = mock(FeedCard.class);
 
         given(commentCardService.hasChildCard(feedCardPk)).willReturn(false);
+        given(mockMember.getPk()).willReturn(mockMemberPk);
+        given(mockFeedCard.getWriter()).willReturn(mockMember);
+        given(feedCardService.findFeedCard(feedCardPk)).willReturn(mockFeedCard);
         willDoNothing().given(popularFeedService).deletePopularCard(feedCardPk);
         willDoNothing().given(feedLikeService).deleteAllFeedLikes(feedCardPk);
 
         // when
-        feedService.deleteFeedCard(feedCardPk);
+        feedService.deleteFeedCard(feedCardPk, mockMemberPk);
 
         // then
         then(feedCardService).should().deleteFeedCard(feedCardPk);
