@@ -21,10 +21,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class BlacklistBackupConfig {
+public class BlacklistFetchConfig {
 
-    private final String JOB_NAME = "blacklistBackupJob";
-    private final String STEP_NAME = "blacklistBackupStep";
+    private final String JOB_NAME = "blacklistFetchJob";
+    private final String STEP_NAME = "blacklistFetchStep";
 
     private final BlacklistService blacklistService;
     private final JobLauncher jobLauncher;
@@ -32,29 +32,26 @@ public class BlacklistBackupConfig {
     private final PlatformTransactionManager transactionManager;
 
     @Bean
-    public Job blacklistBackupJob() {
+    public Job blacklistFetchJob() {
         return new JobBuilder(JOB_NAME, jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(blacklistBackupStep())
+                .start(blacklistFetchStep())
                 .build();
     }
 
     @Bean
     @JobScope
-    public Step blacklistBackupStep() {
+    public Step blacklistFetchStep() {
         return new StepBuilder(STEP_NAME, jobRepository)
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("blacklistBackupStep start");
-                    blacklistService.backup();
-                    log.info("blacklistBackupStep end");
+                    blacklistService.fetch();
                     return RepeatStatus.FINISHED;
                 }, transactionManager)
                 .build();
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void runBlacklistBackupStep() throws Exception {
-        log.info("블랙리스트 백업 배치 작업 실행");
-        jobLauncher.run(blacklistBackupJob(), new JobParameters());
+        jobLauncher.run(blacklistFetchJob(), new JobParameters());
     }
 }
