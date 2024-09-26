@@ -25,14 +25,14 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
 
     @Query("SELECT f FROM FeedCard f WHERE (St_Distance(f.location, :userLocation) <= :maxDist "
             + "AND St_Distance(f.location, :userLocation) >= :minDist " +
-            "AND (f.isStory = true AND f.createdAt > (current_timestamp - 1 day))) and f.isDeleted = false "
+            "AND (f.isStory=false or (f.isStory = true AND f.createdAt > (current_timestamp - 1 day)))) and f.isDeleted = false "
             + "ORDER BY f.pk DESC")
     List<FeedCard> findFirstByDistance (@Param("userLocation") Point userLocation, @Param("minDist") double minDist,
                                         @Param("maxDist") double maxDist, Pageable pageable);
 
     @Query("SELECT f FROM FeedCard f WHERE (St_Distance(f.location, :userLocation) <= :maxDist"
             + " AND St_Distance(f.location, :userLocation) >= :minDist " +
-            "AND (f.isStory = true AND f.createdAt > (current_timestamp - 1 day))) and f.isDeleted = false "
+            "AND (f.isStory=false or (f.isStory = true AND f.createdAt > (current_timestamp - 1 day)))) and f.isDeleted = false "
             + " AND f.pk < :lastId ORDER BY f.pk DESC")
     List<FeedCard> findNextByDistance(@Param("userLocation") Point userLocation, @Param("lastId") Long lastId,
                                       @Param("minDist") double minDist, @Param("maxDist") double maxDist, Pageable pageable);
