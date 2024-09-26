@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
@@ -36,7 +34,7 @@ public class MemberAuthController {
                         .responseMessage("Request public Key successfully")
                         .build()
                 )
-                .content(rsaService.save())
+                .content(rsaService.findPublicKey())
                 .build()
                 .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/login").withRel("login")));
     }

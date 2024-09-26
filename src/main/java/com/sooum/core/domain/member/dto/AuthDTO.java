@@ -8,8 +8,7 @@ import jakarta.validation.constraints.NotNull;
 public class AuthDTO {
 
     public record Login(
-            @NotEmpty String encryptedDeviceId,
-            @NotEmpty String publicKey
+            @NotEmpty String encryptedDeviceId
     ) {}
 
     public record LoginResponse(
@@ -33,7 +32,6 @@ public class AuthDTO {
 
     public record MemberInfo(
             @NotEmpty String encryptedDeviceId,
-            @NotEmpty String publicKey,
             @NotNull DeviceType deviceType,
             @NotEmpty String firebaseToken,
             @NotNull Boolean isAllowNotify
