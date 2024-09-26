@@ -77,6 +77,7 @@ public class MemberAuthController {
                         .build()
                 )
                 .content(memberInfoService.reissueAccessToken(request))
-                .build()));
+                .build()
+                .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/login").withRel("login"))));
     }
 }

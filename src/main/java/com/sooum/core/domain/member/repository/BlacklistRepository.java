@@ -4,6 +4,4 @@ import com.sooum.core.domain.member.entity.Blacklist;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BlacklistRepository extends JpaRepository<Blacklist, Long> {
-
-    Boolean existsByAccessToken(String accessToken);
 }
