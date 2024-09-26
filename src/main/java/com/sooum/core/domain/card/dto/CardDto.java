@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class CardDto extends RepresentationModel<CardDto> {
     private long id;
-    @JsonProperty(value = "isStory")
-    private boolean isStory;
-    private LocalDateTime storyExpirationTime;
     private String content;
     private LocalDateTime createdAt;
     private int likeCnt;
@@ -29,10 +26,8 @@ public abstract class CardDto extends RepresentationModel<CardDto> {
     private Font font;
     private FontSize fontSize;
 
-    public CardDto(long id, boolean isStory, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize) {
+    public CardDto(long id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize) {
         this.id = id;
-        this.isStory = isStory;
-        this.storyExpirationTime = isStory ? createdAt.plusDays(1L) : null;
         this.content = content;
         this.createdAt = createdAt;
         this.likeCnt = likeCnt;

@@ -50,11 +50,11 @@ class CommentCardRepositoryTest {
         List<CommentCard> commentCards = commentCardRepository.findChildCards(feedCard.getPk());
 
         // when
-        Integer result = commentCardRepository.countCommentsByParentCard(feedCard.getPk(), CardType.FEED_CARD);
+        Integer result = commentCardRepository.countCommentsByParentCard(feedCard.getPk());
 
         // then
         long isNotDeletedCommentsCount = commentCards.stream().
-                filter(comment -> !comment.isDeleted() && comment.getParentCardType().equals(CardType.FEED_CARD))
+                filter(comment -> !comment.isDeleted())
                 .count();
         Assertions.assertThat(result).isEqualTo(isNotDeletedCommentsCount);
     }
@@ -66,7 +66,7 @@ class CommentCardRepositoryTest {
         FeedCard feedCard = feedCardRepository.findAll().get(0);
 
         // when
-        List<CommentCard> result = commentCardRepository.findCommentsInfo(feedCard.getPk(), CardType.FEED_CARD, PageRequest.of(0, TEST_PAGE_SIZE));
+        List<CommentCard> result = commentCardRepository.findCommentsInfo(feedCard.getPk(), PageRequest.of(0, TEST_PAGE_SIZE));
 
         // then
         boolean isPassCond = result.stream().allMatch(
@@ -82,7 +82,7 @@ class CommentCardRepositoryTest {
         List<CommentCard> allComments = commentCardRepository.findAll().stream().sorted(Comparator.comparing(CommentCard::getParentCardPk).reversed()).toList();
         // when
         long lastPk = allComments.get(allComments.size() - 5).getPk();
-        List<CommentCard> result = commentCardRepository.findCommentsInfoByLastPk(feedCard.getPk(), CardType.FEED_CARD, lastPk, PageRequest.of(0, TEST_PAGE_SIZE));
+        List<CommentCard> result = commentCardRepository.findCommentsInfoByLastPk(feedCard.getPk(), lastPk, PageRequest.of(0, TEST_PAGE_SIZE));
 
         // then
         boolean isPassCond = result.stream().allMatch(
