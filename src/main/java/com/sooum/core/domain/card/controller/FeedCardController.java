@@ -30,8 +30,8 @@ public class FeedCardController {
     public ResponseEntity<?> findFeedCardInfo(
             @RequestParam(required = false, value = "latitude") Optional<Double> latitude,
             @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
-            @PathVariable("cardId") @NotNull Long cardId, @CurrentUser Long memberId) {
-        FeedDetailCardDto detailFeedCard = detailFeedService.findDetailFeedCard(cardId, memberId, latitude, longitude);
+            @PathVariable("cardId") @NotNull Long cardId, @CurrentUser Long memberPk) {
+        FeedDetailCardDto detailFeedCard = detailFeedService.findDetailFeedCard(cardId, memberPk, latitude, longitude);
 
         return ResponseEntity.ok(ResponseEntityModel.<FeedDetailCardDto>builder()
                 .status(ResponseStatus.builder()
