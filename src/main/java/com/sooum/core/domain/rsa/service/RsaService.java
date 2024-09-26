@@ -5,6 +5,7 @@ import com.sooum.core.domain.rsa.entity.Rsa;
 import com.sooum.core.domain.rsa.exception.RsaDecodeException;
 import com.sooum.core.domain.rsa.repository.RsaRepository;
 import com.sooum.core.global.rsa.RsaProvider;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,17 @@ public class RsaService {
     }
 
     public Key findPublicKey() {
-        return new Key(redisTemplate.opsForValue().get("public"));
+        String publicKey;
+
+        try {
+            publicKey = redisTemplate.opsForValue().get("public");
+        } catch (Exception e) {
+            Rsa rsa = rsaRepository.findByExpiredAtIsAfter(Instant.now())
+                    .orElseThrow(EntityNotFoundException::new);
+            publicKey = rsa.getPublicKey();
+        }
+
+        return new Key(publicKey);
     }
 
     public String decodeDeviceId(String encryptedData) {
