@@ -9,13 +9,13 @@ public class MemberDto {
 
     @Getter
     public static class DefaultMemberResponse extends RepresentationModel<DefaultMemberResponse> {
-        private long pk;
+        private long id;
         private String nickname;
         private Link profileImgUrl;
 
         @Builder
-        public DefaultMemberResponse (long pk, String nickname, Link profileImgUrl) {
-            this.pk = pk;
+        public DefaultMemberResponse (long id, String nickname, Link profileImgUrl) {
+            this.id = id;
             this.nickname = nickname;
             this.profileImgUrl = profileImgUrl;
         }
