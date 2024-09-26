@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +36,10 @@ public class BlacklistService {
     }
 
     public void fetch() {
-        blacklistRepository.findAll().stream()
+        List<Blacklist> legacy = blacklistRepository.findAll().stream()
                 .filter(blacklist -> blacklist.getExpiredAt().isBefore(Instant.now()))
-                .forEach(blacklistRepository::delete);
+                .toList();
+
+        blacklistRepository.deleteAllInBatch(legacy);
     }
 }
