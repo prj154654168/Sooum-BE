@@ -16,6 +16,7 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sooum.core.domain.card.service.FeedService.*;
@@ -30,6 +31,9 @@ public class DistanceFeedService {
     private final CommentCardService commentCardService;
     private final BlockMemberService blockMemberService;
 
+    private static final int MAX_PAGE_SIZE = 100;
+    private static final int DEFAULT_PAGE_SIZE = 50;
+
     public List<DistanceCardDto> findDistanceFeeds(Long lastId, Long memberPk,
                                                    Double latitude, Double longitude, DistanceFilter distanceFilter) {
         Point userLocation = geometryFactory.createPoint(new Coordinate(longitude, latitude));
@@ -37,11 +41,10 @@ public class DistanceFeedService {
         double minDistance = distanceFilter.getMinDistance();
         double maxDistance = distanceFilter.getMaxDistance();
 
-        List<FeedCard> feedsByDistance = feedCardService.findFeedsByDistance(userLocation, lastId, minDistance, maxDistance);
-
-        List<FeedCard> filteredDistanceFeeds= blockMemberService.filterBlockedMembers(feedsByDistance, memberPk);
+        List<FeedCard> filteredDistanceFeeds = findFilteredDistanceFeeds(lastId, memberPk, userLocation, minDistance, maxDistance);
 
         List<FeedLike> feedLikeList = feedLikeService.findByTargetCards(filteredDistanceFeeds);
+
         List<CommentCard> commentCardList = commentCardService.findByTargetList(filteredDistanceFeeds);
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredDistanceFeeds.stream()
@@ -61,5 +64,33 @@ public class DistanceFeedService {
                         .build()
                 )
                 .toList());
+    }
+
+    private List<FeedCard> findFilteredDistanceFeeds(Long lastId, Long memberPk, Point userLocation, double minDistance, double maxDistance) {
+        ArrayList<FeedCard> resultFeedCards = new ArrayList<>();
+
+        while (resultFeedCards.size() < DEFAULT_PAGE_SIZE) {
+            List<FeedCard> feedsByDistance = feedCardService.findFeedsByDistance(userLocation, lastId, minDistance, maxDistance);
+
+            if (feedsByDistance.isEmpty()) {
+                break;
+            }
+            lastId = feedsByDistance.get(feedsByDistance.size() - 1).getPk();
+
+            List<FeedCard> filteredFeedCards = blockMemberService.filterBlockedMembers(feedsByDistance, memberPk);
+            resultFeedCards.addAll(filteredFeedCards);
+
+            if (isEndOfPage(feedsByDistance)) {
+                break;
+            }
+        }
+
+        return resultFeedCards.size() > DEFAULT_PAGE_SIZE
+                ? resultFeedCards.subList(0, DEFAULT_PAGE_SIZE)
+                : resultFeedCards;
+    }
+
+    private static boolean isEndOfPage(List<FeedCard> feedsByDistance) {
+        return feedsByDistance.size() < MAX_PAGE_SIZE;
     }
 }

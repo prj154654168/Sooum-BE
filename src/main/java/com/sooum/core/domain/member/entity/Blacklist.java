@@ -1,12 +1,15 @@
 package com.sooum.core.domain.member.entity;
 
 import com.sooum.core.domain.common.entity.BaseEntity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.Instant;
 
 @Getter
 @Entity
@@ -14,20 +17,14 @@ import lombok.NoArgsConstructor;
 public class Blacklist extends BaseEntity {
 
     @Id
-    private Long pk;
+    @Column(name = "TOKEN")
+    private String token;
 
-    @Column(name = "ACCESS_TOKEN")
-    private String accessToken;
-
-    @NotNull
-    @OneToOne(targetEntity = Member.class)
-    @JoinColumn(name = "MEMBER")
-    @MapsId
-    private Member member;
+    private Instant expiredAt;
 
     @Builder
-    public Blacklist(String accessToken, Member member) {
-        this.accessToken = accessToken;
-        this.member = member;
+    public Blacklist(String token, Instant expiredAt) {
+        this.token = token;
+        this.expiredAt = expiredAt;
     }
 }
