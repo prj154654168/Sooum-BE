@@ -26,7 +26,7 @@ public class FeedCardController {
     private final FeedService feedService;
     private final DetailFeedService detailFeedService;
 
-    @GetMapping("/{cardPk}")
+    @GetMapping("/detail/{cardPk}")
     public ResponseEntity<?> findFeedCardInfo(
             @RequestParam(required = false, value = "latitude") Optional<Double> latitude,
             @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
