@@ -2,7 +2,6 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.block.service.BlockMemberService;
 import com.sooum.core.domain.card.entity.CommentCard;
-import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.img.service.ImgService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -39,15 +38,15 @@ class CommentInfoServiceTest {
         // given
         List<CommentCard> mockComments = createMockComments(MAX_PAGE_SIZE);
         List<CommentCard> filterMockComments = createMockComments(83);
-        given(commentCardService.findCommentsByLastPk(any(), any(), any())).willReturn(mockComments);
+        given(commentCardService.findCommentsByLastPk(any(), any())).willReturn(mockComments);
         given(blockMemberService.filterBlockedMembers(eq(mockComments), any())).willReturn(filterMockComments);
 
         // when
-        List<CommentCard> comments = commentInfoService.findDefaultPageSizeComments(Optional.of(1L), CardType.FEED_CARD, 1L, 1L);
+        List<CommentCard> comments = commentInfoService.findDefaultPageSizeComments(Optional.of(1L), 1L, 1L);
 
         // then
         Assertions.assertThat(comments.size()).isEqualTo(50);
-        verify(commentCardService, times(1)).findCommentsByLastPk(any(),any(),any());
+        verify(commentCardService, times(1)).findCommentsByLastPk(any(),any());
     }
 
     @Test
@@ -56,15 +55,15 @@ class CommentInfoServiceTest {
         // given
         List<CommentCard> mockComments = createMockComments(MAX_PAGE_SIZE);
         List<CommentCard> filterMockComments = createMockComments(40);
-        given(commentCardService.findCommentsByLastPk(any(), any(), any())).willReturn(mockComments);
+        given(commentCardService.findCommentsByLastPk(any(), any())).willReturn(mockComments);
         given(blockMemberService.filterBlockedMembers(eq(mockComments), any())).willReturn(filterMockComments);
 
         // when
-        List<CommentCard> comments = commentInfoService.findDefaultPageSizeComments(Optional.of(1L), CardType.FEED_CARD, 1L, 1L);
+        List<CommentCard> comments = commentInfoService.findDefaultPageSizeComments(Optional.of(1L),1L, 1L);
 
         // then
         Assertions.assertThat(comments.size()).isEqualTo(50);
-        verify(commentCardService, times(2)).findCommentsByLastPk(any(),any(),any());
+        verify(commentCardService, times(2)).findCommentsByLastPk(any(),any());
     }
 
     private List<CommentCard> createMockComments(int size) {
