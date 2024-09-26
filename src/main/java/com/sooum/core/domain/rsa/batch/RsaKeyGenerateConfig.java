@@ -44,9 +44,7 @@ public class RsaKeyGenerateConfig {
     public Step rsaKeyGenerateStep() {
         return new StepBuilder(STEP_NAME, jobRepository)
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("rsaKeyGenerateStep start");
                     rsaService.save();
-                    log.info("rsaKeyGenerateStep end");
                     return RepeatStatus.FINISHED;
                 }, transactionManager)
                 .build();
@@ -54,7 +52,6 @@ public class RsaKeyGenerateConfig {
 
     @Scheduled(cron = "0 0 0 1 */6 *")  // 6개월마다 1일 00:00에 실행
     public void runRsaKeyGenerateJob() throws Exception {
-        log.info("RSA 키 생성 배치 작업 실행");
         jobLauncher.run(rsaKeyGenerateJob(), new JobParameters());
     }
 }
