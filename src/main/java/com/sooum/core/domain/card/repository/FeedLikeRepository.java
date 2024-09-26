@@ -22,4 +22,6 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     Optional<FeedLike> findFeedLiked(@Param("likedCardPk") Long likedCardPk, @Param("likedMemberPk") Long likedMemberPk);
 
     boolean existsByTargetCardPkAndLikedMemberPk(Long targetCardPk, Long likedMemberPk);
+
+    int countByTargetCard_Pk(Long feedCardPk);
 }
