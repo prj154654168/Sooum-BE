@@ -37,7 +37,7 @@ public class FeedDetailCardDto extends RepresentationModel<FeedDetailCardDto> {
         @Builder
         public DetailFeedCard(long id, String content, Link backgroundImgUrl, Font font, Double distance, LocalDateTime createdAt, boolean isLiked, int likeCnt, boolean isOwnCard, LocalDateTime storyExpiredTime, boolean isStory) {
             super(id, content, backgroundImgUrl, font, distance, createdAt, isLiked, likeCnt, isOwnCard);
-            this.storyExpiredTime = storyExpiredTime;
+            this.storyExpiredTime = isStory ? createdAt.plusDays(1L) : null;
             this.isStory = isStory;
         }
     }

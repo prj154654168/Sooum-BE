@@ -40,7 +40,6 @@ public class DetailFeedService {
                 .font(feedCard.getFont())
                 .content(feedCard.getContent())
                 .isStory(feedCard.isStory())
-                .storyExpiredTime(feedCard.getCreatedAt().plusDays(1L))
                 .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
                 .backgroundImgUrl(Link.of(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName())))
                 .createdAt(feedCard.getCreatedAt())
