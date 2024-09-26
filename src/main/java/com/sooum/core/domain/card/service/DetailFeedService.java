@@ -3,14 +3,13 @@ package com.sooum.core.domain.card.service;
 import com.sooum.core.domain.card.dto.DetailCardDto;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.img.service.ImgService;
-import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberInfoService;
-import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.domain.tag.service.FeedTagService;
 import com.sooum.core.global.util.DistanceUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -20,20 +19,19 @@ public class DetailFeedService {
     private final FeedCardService feedCardService;
     private final FeedLikeService feedLikeService;
     private final ImgService imgService;
-    private final MemberService memberService;
     private final FeedTagService feedTagService;
     private final MemberInfoService memberInfoService;
 
+    @Transactional
     public DetailCardDto.DetailCardRetrieve findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
         FeedCard feedCard = feedCardService.findFeedCard(cardPk);
-        Member member = memberService.findByPk(memberPk);
 
         DetailCardDto.DetailCard detailCard = createDetailCardDto(feedCard, memberPk, latitude, longitude);
 
         return DetailCardDto.DetailCardRetrieve.builder()
                 .detailCard(detailCard)
                 .tags(feedTagService.readTags(feedCard))
-                .member(memberInfoService.getDefaultMember(member)).build();
+                .member(memberInfoService.getDefaultMember(feedCard.getWriter())).build();
     }
 
     private DetailCardDto.DetailCard createDetailCardDto(FeedCard feedCard, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
