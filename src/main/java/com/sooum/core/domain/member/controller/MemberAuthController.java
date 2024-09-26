@@ -36,7 +36,7 @@ public class MemberAuthController {
                         .responseMessage("Request public Key successfully")
                         .build()
                 )
-                .content(List.of(rsaService.save()))
+                .content(rsaService.save())
                 .build()
                 .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/login").withRel("login")));
     }
@@ -50,7 +50,7 @@ public class MemberAuthController {
                         .responseMessage("Login successfully")
                         .build()
                 )
-                .content(List.of(memberInfoService.login(dto)))
+                .content(memberInfoService.login(dto))
                 .build()
                 .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/sign-up").withRel("sign-up")));
     }
@@ -64,7 +64,7 @@ public class MemberAuthController {
                         .responseMessage("Sign up successfully")
                         .build()
                 )
-                .content(List.of(memberInfoService.signUp(dto)))
+                .content(memberInfoService.signUp(dto))
                 .build()
                 .add(WebMvcLinkBuilder.linkTo(methodOn(LatestFeedController.class).getClass()).slash("/latest").withRel("sign-up")));
     }
@@ -78,7 +78,7 @@ public class MemberAuthController {
                         .responseMessage("Sign up successfully")
                         .build()
                 )
-                .content(List.of(memberInfoService.reissueAccessToken(request)))
+                .content(memberInfoService.reissueAccessToken(request))
                 .build()));
     }
 }
