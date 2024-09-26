@@ -4,6 +4,7 @@ import com.sooum.core.domain.member.dto.AuthDTO.Login;
 import com.sooum.core.domain.member.dto.AuthDTO.LoginResponse;
 import com.sooum.core.domain.member.dto.AuthDTO.ReissuedToken;
 import com.sooum.core.domain.member.dto.AuthDTO.SignUpResponse;
+import com.sooum.core.domain.member.dto.MemberDto;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.PolicyTerm;
 import com.sooum.core.domain.member.exception.DuplicateSignUpException;
@@ -73,5 +74,13 @@ public class MemberInfoService {
         blacklistService.save(accessToken, Duration.between(LocalTime.now(), tokenProvider.getExpiration(accessToken)));
 
         return new ReissuedToken(tokenProvider.createAccessToken(member.getPk(), member.getRole()));
+    }
+
+    public MemberDto.DefaultMemberResponse getDefaultMember(Member member) {
+        return MemberDto.DefaultMemberResponse.builder()
+                .id(member.getPk())
+                .nickname(member.getNickname())
+                .profileImgUrl(null) //TODO: 프로필 이미지 URL 추가
+                .build();
     }
 }
