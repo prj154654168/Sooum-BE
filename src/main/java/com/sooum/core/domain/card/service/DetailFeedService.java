@@ -1,6 +1,6 @@
 package com.sooum.core.domain.card.service;
 
-import com.sooum.core.domain.card.dto.DetailCardDto;
+import com.sooum.core.domain.card.dto.FeedDetailCardDto;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.service.MemberInfoService;
@@ -23,19 +23,19 @@ public class DetailFeedService {
     private final MemberInfoService memberInfoService;
 
     @Transactional
-    public DetailCardDto.DetailFeedCardRetrieve findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+    public FeedDetailCardDto findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
         FeedCard feedCard = feedCardService.findFeedCard(cardPk);
 
-        DetailCardDto.DetailFeedCard detailCard = createDetailCardDto(feedCard, memberPk, latitude, longitude);
+        FeedDetailCardDto.DetailFeedCard detailCard = createDetailCardDto(feedCard, memberPk, latitude, longitude);
 
-        return DetailCardDto.DetailFeedCardRetrieve.builder()
+        return FeedDetailCardDto.builder()
                 .detailFeedCard(detailCard)
                 .tags(feedTagService.readTags(feedCard))
                 .member(memberInfoService.getDefaultMember(feedCard.getWriter())).build();
     }
 
-    private DetailCardDto.DetailFeedCard createDetailCardDto(FeedCard feedCard, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
-        return DetailCardDto.DetailFeedCard.builder()
+    private FeedDetailCardDto.DetailFeedCard createDetailCardDto(FeedCard feedCard, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+        return FeedDetailCardDto.DetailFeedCard.builder()
                 .id(feedCard.getPk())
                 .font(feedCard.getFont())
                 .content(feedCard.getContent())
