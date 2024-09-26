@@ -116,7 +116,6 @@ public class TokenProvider {
         try {
             return Optional.ofNullable(getClaims(token).get(ID_CLAIM, Long.class));
         } catch (Exception e) {
-            log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
     }
