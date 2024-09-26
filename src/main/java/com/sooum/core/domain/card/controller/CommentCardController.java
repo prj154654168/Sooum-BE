@@ -1,7 +1,6 @@
 package com.sooum.core.domain.card.controller;
 
 import com.sooum.core.domain.card.dto.CommentDto;
-import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.card.service.CommentCardService;
 import com.sooum.core.domain.card.service.CommentInfoService;
 import com.sooum.core.domain.card.service.CommentLikeService;
@@ -10,7 +9,6 @@ import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
-import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +46,7 @@ public class CommentCardController {
 
     @DeleteMapping("/{cardPk}/like")
     public ResponseEntity<Void> deleteCommentLike(@PathVariable(value = "cardPk") Long cardPk,
-                                               @CurrentUser Long memberPk) {
+                                                  @CurrentUser Long memberPk) {
         commentLikeService.deleteCommentLike(cardPk, memberPk);
 
         return ResponseEntity.noContent().build();
@@ -61,8 +59,7 @@ public class CommentCardController {
     }
 
     @GetMapping("/current/{parentCardPk}/count")
-    public ResponseEntity<ResponseEntityModel<CommentDto.CommentCntRetrieve>> countCommentsByParentCard(@PathVariable Long parentCardPk,
-                                                                                                        @RequestParam CardType parentCardType) {
+    public ResponseEntity<ResponseEntityModel<CommentDto.CommentCntRetrieve>> countCommentsByParentCard(@PathVariable Long parentCardPk) {
         return ResponseEntity.ok(
                         ResponseEntityModel.<CommentDto.CommentCntRetrieve>builder()
                                 .status(ResponseStatus.builder()
@@ -70,19 +67,18 @@ public class CommentCardController {
                                         .httpStatus(HttpStatus.OK)
                                         .responseMessage("comment cnt retrieve successfully")
                                         .build())
-                                .content(commentCardService.countCommentsByParentCard(parentCardPk, parentCardType))
+                                .content(commentCardService.countCommentsByParentCard(parentCardPk))
                                 .build()
         );
     }
 
     @GetMapping("/current/{currentCardPk}")
-    public ResponseEntity<?> createCommentCardsInfo(@RequestParam(required = false) Optional<Long> lastPk,
+    public ResponseEntity<?> createCommentCardsInfo(@RequestParam(required = false) Optional<Long> lastId,
                                                     @RequestParam(required = false) Optional<Double> latitude,
                                                     @RequestParam(required = false) Optional<Double> longitude,
-                                                    @RequestParam CardType parentCardType,
                                                     @PathVariable Long currentCardPk,
                                                     @CurrentUser Long memberPk) {
-        List<CommentDto.CommentCardsInfo> commentsInfo = commentInfoService.createCommentsInfo(lastPk, latitude, longitude, parentCardType, currentCardPk, memberPk);
+        List<CommentDto.CommentCardsInfo> commentsInfo = commentInfoService.createCommentsInfo(lastId, latitude, longitude, currentCardPk, memberPk);
 
         if (commentsInfo.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -97,7 +93,7 @@ public class CommentCardController {
                                 .build())
                         .content(commentsInfo)
                         .build()
-                        .add(NextPageLinkGenerator.generateNextPageLink(commentsInfo))
+                        .add(commentInfoService.createNextCommentsInfoUrl(commentsInfo, currentCardPk))
         );
     }
 }

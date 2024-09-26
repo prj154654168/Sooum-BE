@@ -3,7 +3,6 @@ package com.sooum.core.domain.card.service;
 import com.sooum.core.domain.card.dto.CommentDto;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
-import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.card.repository.CommentCardRepository;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
@@ -42,7 +41,8 @@ public class CommentCardService {
     }
 
     public List<CommentCard> findByMasterCards(List<FeedCard> masterCards) {
-        return commentCardRepository.findByMasterCardIn(masterCards);
+        List<Long> masterCardsPk = masterCards.stream().map(FeedCard::getPk).toList();
+        return commentCardRepository.findByMasterCardIn(masterCardsPk);
     }
 
     public List<CommentCard> findByTargetList(List<FeedCard> targetList) {
@@ -69,17 +69,17 @@ public class CommentCardService {
     }
 
 
-    public CommentDto.CommentCntRetrieve countCommentsByParentCard(Long parentCardPk, CardType parentCardType) {
+    public CommentDto.CommentCntRetrieve countCommentsByParentCard(Long parentCardPk) {
         return CommentDto.CommentCntRetrieve.builder()
-                .commentCnt(commentCardRepository.countCommentsByParentCard(parentCardPk, parentCardType))
+                .commentCnt(commentCardRepository.countCommentsByParentCard(parentCardPk))
                 .build();
     }
 
-    public List<CommentCard> findCommentsByLastPk(Long currentCardPk, Optional<Long> lastPk, CardType parentCardType) {
+    public List<CommentCard> findCommentsByLastPk(Long currentCardPk, Optional<Long> lastPk) {
         PageRequest pageRequest = PageRequest.of(0, MAX_PAGE_SIZE);
         return lastPk.isEmpty()
-                ? commentCardRepository.findCommentsInfo(currentCardPk ,parentCardType, pageRequest)
-                : commentCardRepository.findCommentsInfoByLastPk(currentCardPk, parentCardType, lastPk.get(), pageRequest);
+                ? commentCardRepository.findCommentsInfo(currentCardPk, pageRequest)
+                : commentCardRepository.findCommentsInfoByLastPk(currentCardPk, lastPk.get(), pageRequest);
     }
 
     public List<CommentCard> findChildCommentsByParents(List<CommentCard> commentCards) {

@@ -1,11 +1,9 @@
 package com.sooum.core.global.util;
 
-import com.sooum.core.domain.card.controller.CommentCardController;
 import com.sooum.core.domain.card.controller.DistanceCardController;
 import com.sooum.core.domain.card.controller.FeedCardController;
 import com.sooum.core.domain.card.controller.LatestFeedController;
 import com.sooum.core.domain.card.dto.CardDto;
-import com.sooum.core.domain.card.dto.CommentDto;
 import com.sooum.core.domain.card.dto.DistanceCardDto;
 import com.sooum.core.domain.card.dto.LatestFeedCardDto;
 import com.sooum.core.domain.tag.controller.TagController;
@@ -25,18 +23,15 @@ public abstract class NextPageLinkGenerator {
         }
         int lastIdx = feedCardInfoList.size() - 1;
         long lastCardIdx = feedCardInfoList.get(lastIdx).getId();
-        if (feedCardInfoList.get(0) instanceof LatestFeedCardDto) {
+        E cardDto = feedCardInfoList.get(0);
+        if (cardDto instanceof LatestFeedCardDto) {
             return WebMvcLinkBuilder.linkTo(
                     methodOn(LatestFeedController.class).getClass()
             ).slash("/latest/"+lastCardIdx).withRel("next");
         }
-        if (feedCardInfoList.get(0) instanceof DistanceCardDto) {
+        if (cardDto instanceof DistanceCardDto) {
             return WebMvcLinkBuilder.linkTo(methodOn(DistanceCardController.class).getClass()
             ).slash("/"+lastCardIdx).withRel("next");
-        }
-        if (feedCardInfoList.get(0) instanceof CommentDto.CommentCardsInfo) {
-            return WebMvcLinkBuilder.linkTo(methodOn(CommentCardController.class).getClass()
-            ).slash("/current/" + lastCardIdx).withRel("next");
         }
         return Link.of("Not found");
     }
