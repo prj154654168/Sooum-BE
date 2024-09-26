@@ -26,14 +26,14 @@ public class FeedCardController {
     private final FeedService feedService;
     private final DetailFeedService detailFeedService;
 
-    @GetMapping("/detail/{cardPk}")
+    @GetMapping("/detail/{cardId}")
     public ResponseEntity<?> findFeedCardInfo(
             @RequestParam(required = false, value = "latitude") Optional<Double> latitude,
             @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
-            @PathVariable("cardPk") @NotNull Long cardPk, @CurrentUser Long memberPk) {
-        DetailCardDto.DetailCardRetrieve detailFeedCard = detailFeedService.findDetailFeedCard(cardPk, memberPk, latitude, longitude);
+            @PathVariable("cardId") @NotNull Long cardId, @CurrentUser Long memberId) {
+        DetailCardDto.DetailFeedCardRetrieve detailFeedCard = detailFeedService.findDetailFeedCard(cardId, memberId, latitude, longitude);
 
-        return ResponseEntity.ok(ResponseEntityModel.<DetailCardDto.DetailCardRetrieve>builder()
+        return ResponseEntity.ok(ResponseEntityModel.<DetailCardDto.DetailFeedCardRetrieve>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
                         .httpCode(HttpStatus.OK.value())

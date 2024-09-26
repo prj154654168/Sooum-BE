@@ -23,22 +23,21 @@ public class DetailFeedService {
     private final MemberInfoService memberInfoService;
 
     @Transactional
-    public DetailCardDto.DetailCardRetrieve findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+    public DetailCardDto.DetailFeedCardRetrieve findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
         FeedCard feedCard = feedCardService.findFeedCard(cardPk);
 
-        DetailCardDto.DetailCard detailCard = createDetailCardDto(feedCard, memberPk, latitude, longitude);
+        DetailCardDto.DetailFeedCard detailCard = createDetailCardDto(feedCard, memberPk, latitude, longitude);
 
-        return DetailCardDto.DetailCardRetrieve.builder()
-                .detailCard(detailCard)
+        return DetailCardDto.DetailFeedCardRetrieve.builder()
+                .detailFeedCard(detailCard)
                 .tags(feedTagService.readTags(feedCard))
                 .member(memberInfoService.getDefaultMember(feedCard.getWriter())).build();
     }
 
-    private DetailCardDto.DetailCard createDetailCardDto(FeedCard feedCard, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
-        return DetailCardDto.DetailCard.builder()
+    private DetailCardDto.DetailFeedCard createDetailCardDto(FeedCard feedCard, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+        return DetailCardDto.DetailFeedCard.builder()
                 .id(feedCard.getPk())
                 .font(feedCard.getFont())
-                .fontSize(feedCard.getFontSize())
                 .content(feedCard.getContent())
                 .isStory(feedCard.isStory())
                 .storyExpiredTime(feedCard.getCreatedAt().plusDays(1L))

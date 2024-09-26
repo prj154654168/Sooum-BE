@@ -18,14 +18,14 @@ import java.util.List;
 public class DetailCardDto {
 
     @Getter
-    public static class DetailCardRetrieve extends RepresentationModel<DetailCardRetrieve> {
-        private DetailCard detailCard;
+    public static class DetailFeedCardRetrieve extends RepresentationModel<DetailFeedCardRetrieve> {
+        private DetailFeedCard detailFeedCard;
         private MemberDto.DefaultMemberResponse member;
         private List<TagDto.ReadTagResponse> tags;
 
         @Builder
-        public DetailCardRetrieve(DetailCard detailCard, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags) {
-            this.detailCard = detailCard;
+        public DetailFeedCardRetrieve(DetailFeedCard detailFeedCard, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags) {
+            this.detailFeedCard = detailFeedCard;
             this.member = member;
             this.tags = tags;
         }
@@ -33,7 +33,7 @@ public class DetailCardDto {
 
     @Getter
     @Setter
-    public static class DetailCard extends RepresentationModel<DetailCard> {
+    public static class DetailFeedCard extends RepresentationModel<DetailFeedCard> {
         private long id;
         private String content;
         @JsonProperty(value = "isStory")
@@ -41,7 +41,6 @@ public class DetailCardDto {
         private LocalDateTime storyExpiredTime;
         private Link backgroundImgUrl;
         private Font font;
-        private FontSize fontSize;
         private Double distance;
         private LocalDateTime createdAt;
         @JsonProperty(value = "isLiked")
@@ -51,14 +50,13 @@ public class DetailCardDto {
         private boolean isOwnCard;
 
         @Builder
-        public DetailCard(long id, String content, boolean isStory, LocalDateTime storyExpiredTime, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance, LocalDateTime createdAt, boolean isLiked, int likeCnt, boolean isOwnCard) {
+        public DetailFeedCard(long id, String content, boolean isStory, LocalDateTime storyExpiredTime, Link backgroundImgUrl, Font font, Double distance, LocalDateTime createdAt, boolean isLiked, int likeCnt, boolean isOwnCard) {
             this.id = id;
             this.content = content;
             this.isStory = isStory;
             this.storyExpiredTime = storyExpiredTime;
             this.backgroundImgUrl = backgroundImgUrl;
             this.font = font;
-            this.fontSize = fontSize;
             this.distance = distance;
             this.createdAt = createdAt;
             this.isLiked = isLiked;
