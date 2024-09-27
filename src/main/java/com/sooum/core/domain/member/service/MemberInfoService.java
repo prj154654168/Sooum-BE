@@ -18,9 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.LocalTime;
-
 import static com.sooum.core.domain.member.dto.AuthDTO.SignUp;
 import static com.sooum.core.domain.member.dto.AuthDTO.Token;
 
@@ -28,13 +25,13 @@ import static com.sooum.core.domain.member.dto.AuthDTO.Token;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberInfoService {
+
     private final PolicyService policySaveService;
     private final RefreshTokenService refreshTokenSaveService;
     private final TokenProvider tokenProvider;
     private final MemberService memberService;
     private final BlacklistService blacklistService;
     private final RsaService rsaService;
-
 
     public LoginResponse login(Login dto) {
         String deviceId = rsaService.decodeDeviceId(dto.encryptedDeviceId());
@@ -70,7 +67,7 @@ public class MemberInfoService {
                 .orElseThrow(InvalidTokenException::new);
 
         Member member = memberService.findByPk(tokenProvider.getId(accessToken).orElseThrow(MemberNotFoundException::new));
-        blacklistService.save(accessToken, Duration.between(LocalTime.now(), tokenProvider.getExpiration(accessToken)));
+        blacklistService.save(accessToken, tokenProvider.getExpiration(accessToken));
 
         return new ReissuedToken(tokenProvider.createAccessToken(member.getPk(), member.getRole()));
     }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
@@ -143,8 +142,7 @@ public class TokenProvider {
         return Optional.of(Role.getRole(getClaims(token).get(ROLE_CLAIM, String.class)));
     }
 
-    public LocalTime getExpiration(String token) {
-        return LocalDateTime.ofInstant(getClaims(token).getExpiration().toInstant(),
-                ZoneId.systemDefault()).toLocalTime();
+    public LocalDateTime getExpiration(String token) {
+        return getClaims(token).getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 }
