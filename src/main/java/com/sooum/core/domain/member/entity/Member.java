@@ -69,4 +69,28 @@ public class Member extends BaseEntity {
         this.profileCard = null;
         this.role = Role.USER;
     }
+
+    public int ban() {
+        banCount++;
+        role = Role.BANNED;
+
+        return switch (banCount) {
+            case 1 -> {
+                untilBan = LocalDateTime.now().plusDays(1);
+                yield 1;
+            }
+            case 2 -> {
+                untilBan = LocalDateTime.now().plusDays(7);
+                yield 7;
+            }
+            case 3 -> {
+                untilBan = LocalDateTime.now().plusDays(14);
+                yield 14;
+            }
+            default -> {
+                untilBan = LocalDateTime.now().plusDays(30);
+                yield 30;
+            }
+        };
+    }
 }
