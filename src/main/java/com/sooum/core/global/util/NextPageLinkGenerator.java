@@ -43,7 +43,7 @@ public abstract class NextPageLinkGenerator {
 
         return feedCardInfoList.stream()
                 .peek(feedCard -> feedCard.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
-                        .slash("/detail/" + feedCard.getId())
+                        .slash("/" + feedCard.getId() + "/detail")
                         .withRel("detail"))).toList();
     }
 

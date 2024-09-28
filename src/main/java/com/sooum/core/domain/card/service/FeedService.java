@@ -2,6 +2,7 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.*;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,16 @@ public class FeedService {
     private final FeedCardService feedCardService;
     private final PopularFeedService popularFeedService;
     private final FeedLikeService feedLikeService;
+
+    public Card findParentCard(CommentCard commentCard) {
+        if(commentCard.getParentCardType().equals(CardType.COMMENT_CARD)){
+            return commentCardService.findByPk(commentCard.getParentCardPk());
+        }
+        if (commentCard.getParentCardType().equals(CardType.FEED_CARD)){
+            return feedCardService.findByPk(commentCard.getParentCardPk());
+        }
+        throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_TYPE.getMessage());
+    }
 
     @Transactional
     public void deleteCommentCard(Long commentCardPk) {
@@ -144,8 +155,6 @@ public class FeedService {
     private static boolean hasParentCard(CommentCard commentCard) {
         return commentCard.getParentCardPk() != null;
     }
-
-
 
     public static boolean isWrittenCommentCard(List<CommentCard> commentCardList, Long memberPk) {
         return commentCardList.stream().anyMatch(commentCard -> commentCard.getWriter().getPk().equals(memberPk));

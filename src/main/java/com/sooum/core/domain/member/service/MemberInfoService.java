@@ -78,7 +78,7 @@ public class MemberInfoService {
 
     public MemberDto.DefaultMemberResponse getDefaultMember(Member member) {
         return MemberDto.DefaultMemberResponse.builder()
-                .id(member.getPk())
+                .id(member.getPk().toString())
                 .nickname(member.getNickname())
                 .profileImgUrl(null) //TODO: 프로필 이미지 URL 추가
                 .build();

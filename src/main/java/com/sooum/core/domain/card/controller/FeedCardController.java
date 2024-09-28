@@ -1,6 +1,6 @@
 package com.sooum.core.domain.card.controller;
 
-import com.sooum.core.domain.card.dto.FeedDetailCardDto;
+import com.sooum.core.domain.card.dto.CardDetailDto;
 import com.sooum.core.domain.card.service.DetailFeedService;
 import com.sooum.core.domain.card.service.FeedLikeService;
 import com.sooum.core.domain.card.service.FeedService;
@@ -31,9 +31,8 @@ public class FeedCardController {
             @RequestParam(required = false, value = "latitude") Optional<Double> latitude,
             @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
             @PathVariable("cardId") @NotNull Long cardId, @CurrentUser Long memberPk) {
-        FeedDetailCardDto detailFeedCard = detailFeedService.findDetailFeedCard(cardId, memberPk, latitude, longitude);
-
-        return ResponseEntity.ok(ResponseEntityModel.<FeedDetailCardDto>builder()
+        CardDetailDto detailFeedCard = detailFeedService.findDetailFeedCard(cardId, memberPk, latitude, longitude);
+        return ResponseEntity.ok(ResponseEntityModel.<CardDetailDto>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
                         .httpCode(HttpStatus.OK.value())

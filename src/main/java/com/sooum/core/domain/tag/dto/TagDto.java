@@ -8,11 +8,11 @@ public class TagDto{
 
     @Getter
     public static class ReadTagResponse extends RepresentationModel<ReadTagResponse> {
-        private long id;
+        private String id;
         private String content;
 
         @Builder
-        public ReadTagResponse(long id, String content) {
+        public ReadTagResponse(String id, String content) {
             this.id = id;
             this.content = content;
         }

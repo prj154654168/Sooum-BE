@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
     @Query("SELECT ft.tag FROM FeedTag ft WHERE ft.feedCard = :feedCard")
-    List<Tag> findByFeedCard(@Param("feedCard") FeedCard feedCard);
+    List<Tag> findTagsByFeedCard(@Param("feedCard") FeedCard feedCard);
 }

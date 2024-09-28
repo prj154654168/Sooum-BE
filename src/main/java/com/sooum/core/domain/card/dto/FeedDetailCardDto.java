@@ -8,38 +8,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 
 @Getter
-public class FeedDetailCardDto extends RepresentationModel<FeedDetailCardDto> {
-    private DetailFeedCard detailFeedCard;
-    private MemberDto.DefaultMemberResponse member;
-    private List<TagDto.ReadTagResponse> tags;
+@Setter
+public class FeedDetailCardDto extends CardDetailDto {
+    @JsonProperty(value = "isStory")
+    private boolean isStory;
+    private LocalDateTime storyExpirationTime;
 
     @Builder
-    public FeedDetailCardDto(DetailFeedCard detailFeedCard, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags) {
-        this.detailFeedCard = detailFeedCard;
-        this.member = member;
-        this.tags = tags;
+    public FeedDetailCardDto(Font font, String id, String content, Link backgroundImgUrl, Double distance, LocalDateTime createdAt, boolean isOwnCard, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags, boolean isStory) {
+        super(font, id, content, backgroundImgUrl, distance, createdAt, isOwnCard, member, tags);
+        this.isStory = isStory;
+        this.storyExpirationTime = isStory ? createdAt.plusDays(1L) : null;
     }
-
-    @Getter
-    @Setter
-    public static class DetailFeedCard extends CardDetailDto {
-        @JsonProperty(value = "isStory")
-        private boolean isStory;
-        private LocalDateTime storyExpiredTime;
-
-        @Builder
-        public DetailFeedCard(long id, String content, Link backgroundImgUrl, Font font, Double distance, LocalDateTime createdAt, boolean isLiked, int likeCnt, boolean isOwnCard, LocalDateTime storyExpiredTime, boolean isStory) {
-            super(id, content, backgroundImgUrl, font, distance, createdAt, isLiked, likeCnt, isOwnCard);
-            this.storyExpiredTime = isStory ? createdAt.plusDays(1L) : null;
-            this.isStory = isStory;
-        }
-    }
-
 }

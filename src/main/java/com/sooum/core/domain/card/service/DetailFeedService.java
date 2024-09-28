@@ -1,10 +1,15 @@
 package com.sooum.core.domain.card.service;
 
+import com.sooum.core.domain.card.dto.CardDetailDto;
+import com.sooum.core.domain.card.dto.CommentDetailCardDto;
 import com.sooum.core.domain.card.dto.FeedDetailCardDto;
+import com.sooum.core.domain.card.entity.Card;
+import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.service.MemberInfoService;
 import com.sooum.core.domain.tag.service.FeedTagService;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import com.sooum.core.global.util.DistanceUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Link;
@@ -17,35 +22,52 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DetailFeedService {
     private final FeedCardService feedCardService;
-    private final FeedLikeService feedLikeService;
     private final ImgService imgService;
     private final FeedTagService feedTagService;
     private final MemberInfoService memberInfoService;
+    private final CommentCardService commentCardService;
+    private final FeedService feedService;
 
-    @Transactional
-    public FeedDetailCardDto findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
-        FeedCard feedCard = feedCardService.findFeedCard(cardPk);
+    @Transactional(readOnly = true)
+    public CardDetailDto findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+        Card card = feedCardService.isExistFeedCard(cardPk)
+                ? feedCardService.findFeedCard(cardPk)
+                : commentCardService.findCommentCard(cardPk);
 
-        FeedDetailCardDto.DetailFeedCard detailCard = createDetailCardDto(feedCard, memberPk, latitude, longitude);
-
-        return FeedDetailCardDto.builder()
-                .detailFeedCard(detailCard)
-                .tags(feedTagService.readTags(feedCard))
-                .member(memberInfoService.getDefaultMember(feedCard.getWriter())).build();
+        return createDetailCardDto(card, memberPk, latitude, longitude);
     }
 
-    private FeedDetailCardDto.DetailFeedCard createDetailCardDto(FeedCard feedCard, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
-        return FeedDetailCardDto.DetailFeedCard.builder()
-                .id(feedCard.getPk())
-                .font(feedCard.getFont())
-                .content(feedCard.getContent())
-                .isStory(feedCard.isStory())
-                .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
-                .backgroundImgUrl(Link.of(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName())))
-                .createdAt(feedCard.getCreatedAt())
-                .isLiked(feedLikeService.hasLiked(feedCard.getPk(), memberPk))
-                .likeCnt(feedLikeService.getLikeCount(feedCard.getPk()))
-                .isOwnCard(memberPk.equals(feedCard.getWriter().getPk()))
-                .build();
+    public CardDetailDto createDetailCardDto(Card card, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+
+        if (card instanceof FeedCard) {
+            return FeedDetailCardDto.builder()
+                    .id(card.getPk().toString())
+                    .backgroundImgUrl(Link.of(imgService.findImgUrl(card.getImgType(), card.getImgName())))
+                    .isStory(((FeedCard) card).isStory())
+                    .createdAt(card.getCreatedAt())
+                    .content(card.getContent())
+                    .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))
+                    .font(card.getFont())
+                    .isOwnCard(memberPk.equals(card.getWriter().getPk()))
+                    .member(memberInfoService.getDefaultMember(card.getWriter()))
+                    .tags(feedTagService.readTags(card))
+                    .build();
+        }
+        if (card instanceof CommentCard commentCard) {
+            return CommentDetailCardDto.builder()
+                    .id(card.getPk().toString())
+                    .backgroundImgUrl(Link.of(imgService.findImgUrl(card.getImgType(), card.getImgName())))
+                    .createdAt(card.getCreatedAt())
+                    .content(card.getContent())
+                    .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))
+                    .font(card.getFont())
+                    .isOwnCard(memberPk.equals(card.getWriter().getPk()))
+                    .member(memberInfoService.getDefaultMember(card.getWriter()))
+                    .tags(feedTagService.readTags(card))
+                    .previousCardId(feedService.findParentCard(commentCard).getPk())
+                    .previousCardImgLink(Link.of(imgService.findImgUrl(feedService.findParentCard(commentCard).getImgType(),feedService.findParentCard(commentCard).getImgName())))
+                    .build();
+        }
+        throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
     }
 }
