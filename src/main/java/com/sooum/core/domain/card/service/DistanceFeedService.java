@@ -49,7 +49,7 @@ public class DistanceFeedService {
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredDistanceFeeds.stream()
                 .map(feedCard -> DistanceCardDto.builder()
-                        .id(feedCard.getPk())
+                        .id(feedCard.getPk().toString())
                         .font(feedCard.getFont())
                         .fontSize(feedCard.getFontSize())
                         .content(feedCard.getContent())

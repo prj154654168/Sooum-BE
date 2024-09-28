@@ -22,7 +22,7 @@ public abstract class NextPageLinkGenerator {
             return Link.of("Not found");
         }
         int lastIdx = feedCardInfoList.size() - 1;
-        long lastCardIdx = feedCardInfoList.get(lastIdx).getId();
+        String lastCardIdx = feedCardInfoList.get(lastIdx).getId();
         E cardDto = feedCardInfoList.get(0);
         if (cardDto instanceof LatestFeedCardDto) {
             return WebMvcLinkBuilder.linkTo(

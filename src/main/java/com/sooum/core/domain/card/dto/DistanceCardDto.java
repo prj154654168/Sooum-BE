@@ -20,7 +20,7 @@ public class DistanceCardDto extends CardDto {
     private Double distance;
 
     @Builder
-    public DistanceCardDto(long id, boolean isStory, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, @NonNull Double distance) {
+    public DistanceCardDto(String id, boolean isStory, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, @NonNull Double distance) {
         super(id, content, createdAt, likeCnt, isLiked, commentCnt, isCommentWritten, backgroundImgUrl, font, fontSize);
         this.isStory = isStory;
         this.storyExpirationTime = isStory ? createdAt.plusDays(1L) : null;

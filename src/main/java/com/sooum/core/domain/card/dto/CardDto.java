@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public abstract class CardDto extends RepresentationModel<CardDto> {
-    private long id;
+    private String id;
     private String content;
     private LocalDateTime createdAt;
     private int likeCnt;
@@ -26,7 +26,7 @@ public abstract class CardDto extends RepresentationModel<CardDto> {
     private Font font;
     private FontSize fontSize;
 
-    public CardDto(long id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize) {
+    public CardDto(String id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize) {
         this.id = id;
         this.content = content;
         this.createdAt = createdAt;

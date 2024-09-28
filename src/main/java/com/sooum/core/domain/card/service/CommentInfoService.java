@@ -42,7 +42,7 @@ public class CommentInfoService {
 
         return NextPageLinkGenerator.appendEachCardDetailLink(comments.stream()
                 .map(comment -> CommentDto.CommentCardsInfo.builder()
-                        .id(comment.getPk())
+                        .id(comment.getPk().toString())
                         .content(comment.getContent())
                         .backgroundImgUrl(Link.of(imgService.findImgUrl(comment.getImgType(), comment.getImgName())))
                         .font(comment.getFont())
@@ -80,7 +80,7 @@ public class CommentInfoService {
     }
 
     public Link createNextCommentsInfoUrl(List<CommentDto.CommentCardsInfo> commentsInfoDto, Long currentCardPk) {
-        long lastPk = commentsInfoDto.get(commentsInfoDto.size() - 1).getId();
+        String lastPk = commentsInfoDto.get(commentsInfoDto.size() - 1).getId();
         return linkTo(methodOn(CommentCardController.class).getClass())
                 .slash("/current/" + currentCardPk + "?lastId=" + lastPk).withRel("next");
     }

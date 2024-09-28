@@ -38,7 +38,7 @@ public class LatestFeedService {
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredLatestFeed.stream()
                 .map(feedCard -> LatestFeedCardDto.builder()
-                        .id(feedCard.getPk())
+                        .id(feedCard.getPk().toString())
                         .font(feedCard.getFont())
                         .fontSize(feedCard.getFontSize())
                         .content(feedCard.getContent())
