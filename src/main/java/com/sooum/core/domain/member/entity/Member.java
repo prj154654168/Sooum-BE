@@ -56,6 +56,8 @@ public class Member extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private FeedCard profileCard;
 
+    //TODO: profileImageUrl 추가
+
     @Builder
     public Member(String deviceId, DeviceType deviceType, String firebaseToken, String nickname, boolean isAllowNotify) {
         this.deviceId = deviceId;
