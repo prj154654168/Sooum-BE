@@ -13,27 +13,39 @@ import java.util.List;
 public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
     @Query("select f " +
             "from FeedCard f " +
-            "where (f.pk < :lastId and (f.isStory=false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day)))) and f.isDeleted = false " +
+            "where f.pk < :lastId " +
+                "and (f.isStory=false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day))) " +
+                "and f.isDeleted = false " +
+                "and f.isPublic = true " +
             "order by f.pk desc")
     List<FeedCard> findByNextPage(@Param("lastId") Long lastId, Pageable pageable);
 
     @Query("select f " +
             "from FeedCard f " +
-            "where (f.isStory=false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day))) and f.isDeleted = false " +
+            "where (f.isStory=false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day))) " +
+                "and f.isDeleted = false " +
+                "and f.isPublic = true " +
             "order by f.pk desc")
     List<FeedCard> findFirstPage(Pageable pageable);
 
-    @Query("SELECT f FROM FeedCard f WHERE (St_Distance(f.location, :userLocation) <= :maxDist "
-            + "AND St_Distance(f.location, :userLocation) >= :minDist " +
-            "AND (f.isStory=false or (f.isStory = true AND f.createdAt > (current_timestamp - 1 day)))) and f.isDeleted = false "
-            + "ORDER BY f.pk DESC")
+    @Query("SELECT f FROM FeedCard f " +
+            "WHERE (St_Distance(f.location, :userLocation) <= :maxDist " +
+                "AND St_Distance(f.location, :userLocation) >= :minDist " +
+                "AND (f.isStory = false or (f.isStory = true AND f.createdAt > (current_timestamp - 1 day)))) " +
+                "AND f.isDeleted = false " +
+                "AND f.isPublic = true " +
+            "ORDER BY f.pk DESC")
     List<FeedCard> findFirstByDistance (@Param("userLocation") Point userLocation, @Param("minDist") double minDist,
                                         @Param("maxDist") double maxDist, Pageable pageable);
 
-    @Query("SELECT f FROM FeedCard f WHERE (St_Distance(f.location, :userLocation) <= :maxDist"
-            + " AND St_Distance(f.location, :userLocation) >= :minDist " +
-            "AND (f.isStory=false or (f.isStory = true AND f.createdAt > (current_timestamp - 1 day)))) and f.isDeleted = false "
-            + " AND f.pk < :lastId ORDER BY f.pk DESC")
+    @Query("SELECT f FROM FeedCard f " +
+            "WHERE (St_Distance(f.location, :userLocation) <= :maxDist " +
+                "AND St_Distance(f.location, :userLocation) >= :minDist " +
+                "AND (f.isStory = false or (f.isStory = true AND f.createdAt > (current_timestamp - 1 day)))) " +
+                "AND f.isDeleted = false " +
+                "AND f.pk < :lastId " +
+                "AND f.isPublic = true " +
+            "ORDER BY f.pk DESC")
     List<FeedCard> findNextByDistance(@Param("userLocation") Point userLocation, @Param("lastId") Long lastId,
                                       @Param("minDist") double minDist, @Param("maxDist") double maxDist, Pageable pageable);
 
