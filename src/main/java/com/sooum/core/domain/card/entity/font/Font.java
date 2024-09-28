@@ -1,5 +1,5 @@
 package com.sooum.core.domain.card.entity.font;
 
 public enum Font {
-    DEFAULT, CUSTOM
+    PRETENDARD, SCHOOL_SAFE_CHALKBOARD_ERASER
 }

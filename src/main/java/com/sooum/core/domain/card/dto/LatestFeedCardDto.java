@@ -17,7 +17,7 @@ public class LatestFeedCardDto extends CardDto {
     private LocalDateTime storyExpirationTime;
     private final Double distance;
     @Builder
-    public LatestFeedCardDto(long id, boolean isStory, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance) {
+    public LatestFeedCardDto(String id, boolean isStory, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance) {
         super(id, content, createdAt, likeCnt, isLiked, commentCnt, isCommentWritten, backgroundImgUrl, font, fontSize);
         this.isStory = isStory;
         this.storyExpirationTime = isStory ? createdAt.plusDays(1L) : null;
