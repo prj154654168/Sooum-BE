@@ -43,9 +43,6 @@ public abstract class Card extends BaseEntity {
     @Column(name = "IMG_NAME")
     private String imgName;
 
-    @Column(name = "IS_PUBLIC")
-    private boolean isPublic;
-
     @Column(name = "IS_DELETED")
     private boolean isDeleted;
 
@@ -58,14 +55,13 @@ public abstract class Card extends BaseEntity {
         this.isDeleted = true;
     }
 
-    public Card(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, Member writer) {
+    public Card(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, Member writer) {
         this.content = content;
         this.fontSize = fontSize;
         this.font = font;
         this.location = location;
         this.imgType = imgType;
         this.imgName = imgName;
-        this.isPublic = isPublic;
         this.writer = writer;
     }
 }
