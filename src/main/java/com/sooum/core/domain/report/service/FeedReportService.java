@@ -1,7 +1,9 @@
 package com.sooum.core.domain.report.service;
 
-import com.sooum.core.domain.card.entity.Card;
+import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
+import com.sooum.core.domain.card.repository.CommentCardRepository;
+import com.sooum.core.domain.card.service.CommentCardService;
 import com.sooum.core.domain.card.service.FeedCardService;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberBanService;
@@ -17,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FeedReportService {
@@ -26,6 +30,8 @@ public class FeedReportService {
     private final FeedReportRepository feedReportRepository;
     private final MemberBanService memberBanService;
     private final TokenProvider tokenProvider;
+    private final CommentCardService commentCardService;
+    private final CommentCardRepository commentCardRepository;
 
     @Transactional
     public void report(Long memberPk, Long cardPk, ReportType type, HttpServletRequest request) {
@@ -52,8 +58,16 @@ public class FeedReportService {
             throw new DuplicateReportException();
     }
 
-    private boolean isCardReportedOverLimit(Card card) {
-        if(feedReportRepository.countFeedReportByCard(card) > 7) {
+    private boolean isCardReportedOverLimit(FeedCard card) {
+        List<FeedReport> reports = feedReportRepository.findByTargetCard(card);
+        if(reports.size() >= 7) {
+            feedReportRepository.deleteAllInBatch(reports);
+
+            if(commentCardService.hasChildCard(card.getPk())) {     // 검토 필요) 하위 카드 삭제
+                List<CommentCard> comments = commentCardService.findChildCommentCardList(card.getPk());
+                commentCardRepository.deleteAllInBatch(comments);
+            }
+
             feedCardService.deleteFeedCard(card.getPk());
             return true;
         }
