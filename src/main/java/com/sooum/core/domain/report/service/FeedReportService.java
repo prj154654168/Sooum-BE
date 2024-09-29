@@ -63,8 +63,8 @@ public class FeedReportService {
         if(reports.size() >= 7) {
             feedReportRepository.deleteAllInBatch(reports);
 
-            if(commentCardService.hasChildCard(card.getPk())) {     // 검토 필요) 하위 카드 삭제
-                List<CommentCard> comments = commentCardService.findChildCommentCardList(card.getPk());
+            if(commentCardService.hasChildCard(card.getPk())) {
+                List<CommentCard> comments = commentCardService.findByMasterCardPk(card.getPk());
                 commentCardRepository.deleteAllInBatch(comments);
             }
 
