@@ -48,4 +48,8 @@ public class CommentLikeService {
     public List<CommentLike> findByTargetCards(List<CommentCard> commentCards) {
         return commentLikeRepository.findByTargetCardIn(commentCards);
     }
+
+    public void deleteAllFeedLikes(Long commentCardPk) {
+        commentLikeRepository.deleteAllInBatch(commentLikeRepository.findAllByTargetCard_Pk(commentCardPk));
+    }
 }

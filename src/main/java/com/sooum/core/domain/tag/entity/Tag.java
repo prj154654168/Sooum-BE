@@ -31,4 +31,8 @@ public class Tag extends BaseEntity {
         this.content = content;
         this.count = 0;
     }
+
+    public void minusCount(int count) {
+        this.count -= count;
+    }
 }
