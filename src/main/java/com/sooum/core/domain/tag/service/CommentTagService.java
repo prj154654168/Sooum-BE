@@ -16,7 +16,7 @@ public class CommentTagService {
 
     @Transactional
     public void deleteByCommentCardPk(Long cardPk) {
-        List<CommentTag> tags = commentTagRepository.findAllByCommentCard_Pk(cardPk);
+        List<CommentTag> tags = commentTagRepository.findAllByCommentCardPk(cardPk);
 
         if(!tags.isEmpty()) {
             tags.get(0).getTag().minusCount(tags.size());

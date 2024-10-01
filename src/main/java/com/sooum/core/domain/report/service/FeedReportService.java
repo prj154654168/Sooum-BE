@@ -5,6 +5,7 @@ import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.repository.CommentCardRepository;
 import com.sooum.core.domain.card.service.CommentCardService;
+import com.sooum.core.domain.card.service.CommentLikeService;
 import com.sooum.core.domain.card.service.FeedCardService;
 import com.sooum.core.domain.card.service.FeedLikeService;
 import com.sooum.core.domain.member.entity.Member;
@@ -29,6 +30,7 @@ public class FeedReportService {
     private final CommentTagService commentTagService;
     private final FeedTagService feedTagService;
     private final FeedLikeService feedLikeService;
+    private final CommentLikeService commentLikeService;
 
     public boolean isDuplicateReport(Long cardPk, Long memberPk) {
         return feedReportRepository.existsByReporter_PkAndTargetCard_Pk(memberPk, cardPk);
@@ -43,7 +45,7 @@ public class FeedReportService {
     }
 
     public boolean isCardReportedOverLimit(Long cardPk) {
-        List<FeedReport> reports = feedReportRepository.findByTargetCard_Pk(cardPk);
+        List<FeedReport> reports = feedReportRepository.findByTargetCardPk(cardPk);
         if(reports.size() >= 7) {
             feedReportRepository.deleteAllInBatch(reports);
 
@@ -53,13 +55,14 @@ public class FeedReportService {
                         .map(Card::getPk)
                         .forEach(pk -> {
                             commentTagService.deleteByCommentCardPk(pk);
-                            feedLikeService.deleteAllFeedLikes(pk);
+                            commentLikeService.deleteAllFeedLikes(pk);
                         });
 
                 commentCardRepository.deleteAllInBatch(comments);
             }
 
             feedTagService.deleteByFeedCardPk(cardPk);
+            feedLikeService.deleteAllFeedLikes(cardPk);
             feedCardService.deleteFeedCard(cardPk);
             return true;
         }

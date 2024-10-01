@@ -16,7 +16,7 @@ public class FeedTagService {
 
     @Transactional
     public void deleteByFeedCardPk(Long cardPk) {
-        List<FeedTag> tags = feedTagRepository.findAllByFeedCard_Pk(cardPk);
+        List<FeedTag> tags = feedTagRepository.findAllByFeedCardPk(cardPk);
 
         if(!tags.isEmpty()) {
             tags.get(0).getTag().minusCount(tags.size());
