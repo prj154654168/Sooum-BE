@@ -21,7 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.hateoas.Link;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -32,8 +31,7 @@ import java.util.List;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentCardController.class)
@@ -58,41 +56,6 @@ class CommentCardControllerTest {
     CommentInfoService commentInfoService;
     private static final String ACCESS_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjY5Mjk0MzMsImV4cCI6MTAxNzI2OTI5NDMzLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlkIjo2MjUwNDc5NzMyNTA1MTUxNTMsInJvbGUiOiJVU0VSIn0.aL4Tr3FaSwvu9hOQISAvGJfCHBGCV9jRo_BfTQkBssU";
     private static final String TOKEN_HEADER = "Authorization";
-
-    @Test
-    @DisplayName("댓글 카드 좋아요 성공")
-    @WithMockUser
-    void createCommentLikeSuccess() throws Exception{
-        // given
-        doNothing().when(commentLikeService).createCommentLike(any(), any());
-
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                post("/comments/{cardPk}/like", 1L)
-                        .header(TOKEN_HEADER, ACCESS_TOKEN)
-        );
-
-        // then
-        resultActions.andExpect(status().isCreated());
-        resultActions.andExpect(jsonPath("$.httpCode").value(HttpStatus.CREATED.value()));
-    }
-
-    @Test
-    @DisplayName("댓글 카드 좋아요 삭제")
-    @WithMockUser
-    void deleteCommentLikeSuccess() throws Exception{
-        // given
-        doNothing().when(commentLikeService).deleteCommentLike(any(), any());
-
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                delete("/comments/{cardPk}/like", 1)
-                        .header(TOKEN_HEADER, ACCESS_TOKEN)
-        );
-
-        // then
-        resultActions.andExpect(status().isNoContent());
-    }
 
     @Test
     @DisplayName("댓글이 없어서 조회가 안되는 경우")

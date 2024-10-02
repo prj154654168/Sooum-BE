@@ -79,7 +79,7 @@ class PopularFeedRepositoryTest {
             FeedCard feedCard = FeedCard.builder()
                     .content("카드 내용 " + i)
                     .fontSize(FontSize.BIG)
-                    .font(Font.DEFAULT)
+                    .font(Font.PRETENDARD)
                     .location(null)
                     .imgType(ImgType.DEFAULT)
                     .imgName(i + ".jpg")

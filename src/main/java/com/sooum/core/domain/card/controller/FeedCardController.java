@@ -46,14 +46,14 @@ public class FeedCardController {
     @PostMapping("/{cardPk}/like")
     public ResponseEntity<ResponseStatus> createFeedLike(@PathVariable(value = "cardPk") @NotNull Long cardPk,
                                                          @CurrentUser Long memberPk) {
-        feedLikeService.createFeedLike(cardPk, memberPk);
+        feedLikeService.createCardLike(cardPk, memberPk);
 
         return ResponseEntity.created(URI.create(""))
                 .body(
                         ResponseStatus.builder()
                                 .httpCode(HttpStatus.CREATED.value())
                                 .httpStatus(HttpStatus.CREATED)
-                                .responseMessage("Feed card like successfully")
+                                .responseMessage("Card like successfully")
                                 .build()
                 );
     }
@@ -61,7 +61,7 @@ public class FeedCardController {
     @DeleteMapping("/{cardPk}/like")
     public ResponseEntity<?> deleteFeedLike(@PathVariable(value = "cardPk") @NotNull Long cardPk,
                                             @CurrentUser Long memberPk) {
-        feedLikeService.deleteFeedLike(cardPk, memberPk);
+        feedLikeService.deleteCardLike(cardPk, memberPk);
 
         return ResponseEntity.noContent().build();
     }
