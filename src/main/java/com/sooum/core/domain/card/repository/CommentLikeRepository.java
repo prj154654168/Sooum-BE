@@ -14,4 +14,5 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
     Optional<CommentLike> findCommentLiked(@Param("likedCardPk") Long likedCardPk, @Param("likedMemberPk") Long likedMemberPk);
     boolean existsByTargetCardPkAndLikedMemberPk(Long targetCardPk, Long likedMemberPk);
     List<CommentLike> findByTargetCardIn(List<CommentCard> commentCards);
+    Integer countByTargetCard_Pk(Long cardPk);
 }

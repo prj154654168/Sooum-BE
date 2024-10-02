@@ -48,4 +48,12 @@ public class CommentLikeService {
     public List<CommentLike> findByTargetCards(List<CommentCard> commentCards) {
         return commentLikeRepository.findByTargetCardIn(commentCards);
     }
+
+    public int countLike(Long cardPk) {
+        return commentLikeRepository.countByTargetCard_Pk(cardPk);
+    }
+
+    public boolean isLiked(Long cardPk, Long memberPk) {
+        return commentLikeRepository.existsByTargetCardPkAndLikedMemberPk(cardPk, memberPk);
+    }
 }
