@@ -1,7 +1,6 @@
 package com.sooum.core.domain.card.repository;
 
 import com.sooum.core.domain.card.entity.CommentCard;
-import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

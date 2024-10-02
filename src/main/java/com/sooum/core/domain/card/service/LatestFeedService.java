@@ -9,7 +9,6 @@ import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

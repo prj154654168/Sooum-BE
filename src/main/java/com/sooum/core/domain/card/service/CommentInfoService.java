@@ -6,12 +6,9 @@ import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.CommentLike;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.img.service.ImgService;
-import com.sooum.core.domain.member.entity.Member;
-import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.util.DistanceUtils;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

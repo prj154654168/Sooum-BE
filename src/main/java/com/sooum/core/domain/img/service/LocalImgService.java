@@ -41,27 +41,19 @@ public class LocalImgService implements ImgService{
 
     @Override
     public List<ImgUrlInfo> createDefaultImgRetrieveUrls(Optional<List<String>> previousImgsName) {
-        List<Integer> allImgs = IntStream.rangeClosed(1, defaultImgSize)
+        List<String> allDefaultImgsName = IntStream.rangeClosed(1, defaultImgSize)
                 .boxed()
+                .map(img -> img + "." + DEFAULT_IMG_EXTENSION)
                 .collect(Collectors.toList());
-        Collections.shuffle(allImgs);
+        Collections.shuffle(allDefaultImgsName);
 
-        if (previousImgsName.isPresent()) {
-            List<Integer> originalPreviousImgsName = previousImgsName.get().stream()
-                    .map(img -> Integer.parseInt(img.split("[.]")[0]))
-                    .toList();
+        previousImgsName.ifPresent(allDefaultImgsName::removeAll);
 
-            allImgs.removeAll(originalPreviousImgsName);
-        }
-
-        return allImgs.subList(0, DEFAULT_IMG_CNT).stream()
-                .map(img -> {
-                    String imgName = img + "." + DEFAULT_IMG_EXTENSION;
-                    return ImgUrlInfo.builder()
-                            .imgName(imgName)
-                            .url(findImgUrl(ImgType.DEFAULT, imgName))
-                            .build();
-                })
+        return allDefaultImgsName.subList(0, DEFAULT_IMG_CNT).stream()
+                .map(imgName -> ImgUrlInfo.builder()
+                        .imgName(imgName)
+                        .url(findImgUrl(ImgType.DEFAULT, imgName))
+                        .build())
                 .toList();
     }
 
@@ -94,7 +86,6 @@ public class LocalImgService implements ImgService{
         return new UrlResource("file:" + serverImgPath + imgPath + "/" + imgName);
     }
 
-    // todo s3로 storage 변경 시 삭제
     public void saveUserImg(MultipartFile file, String imgName) {
         Path filePath = Paths.get(serverImgPath + USER_IMG_PATH, imgName);
         try {

@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

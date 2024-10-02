@@ -7,12 +7,10 @@ import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
 import com.sooum.core.domain.card.repository.PopularFeedRepository;
 import com.sooum.core.domain.img.service.ImgService;
-import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.util.DistanceUtils;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

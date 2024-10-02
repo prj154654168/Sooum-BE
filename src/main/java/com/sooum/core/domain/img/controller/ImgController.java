@@ -7,7 +7,6 @@ import com.sooum.core.domain.img.service.LocalImgService;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.hateoas.CollectionModel;
@@ -19,11 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class ImgController {
     private final ImgService imgService;
 
+    // todo 임시 api
     @GetMapping("/{imgName}/user")
     public ResponseEntity<Resource> findUserImg(@PathVariable(value = "imgName") String imgName) throws MalformedURLException {
         LocalImgService localImgService = (LocalImgService) imgService;
@@ -39,6 +39,7 @@ public class ImgController {
                 .body(localImgService.findImg(ImgType.USER, imgName));
     }
 
+    // todo 임시 api
     @GetMapping("/{imgName}/default")
     public ResponseEntity<Resource> findDefaultImg(@PathVariable(value = "imgName") String imgName) throws MalformedURLException {
         LocalImgService localImgService = (LocalImgService) imgService;
@@ -56,14 +57,14 @@ public class ImgController {
                                 ResponseStatus.builder()
                                         .httpCode(HttpStatus.OK.value())
                                         .httpStatus(HttpStatus.OK)
-                                        .responseMessage("The link for viewing the image has been issued")
+                                        .responseMessage("The link for retrieving the image has been issued")
                                         .build()
                         )
                         .content(imgsUrlInfo)
                         .build()
                         .add(linkTo(methodOn(ImgController.class)
                                 .createDefaultImgsRetrieveUrl(Optional.of(imgService.findIssuedDefaultImgsName(imgsUrlInfo))))
-                                .withSelfRel())
+                                .withRel("next"))
         );
     }
 

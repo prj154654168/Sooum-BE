@@ -2,14 +2,11 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.*;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
-import com.sooum.core.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
