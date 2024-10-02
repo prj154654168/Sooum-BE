@@ -29,10 +29,10 @@ public class ReportService {
         validateDuplicateReport(cardPk, memberPk);
 
         Member member = memberService.findByPk(memberPk);
-        try {
+        if(feedCardService.isExistFeedCard(cardPk)) {
             FeedCard feedCard = feedCardService.findByPk(cardPk);
             reportFeed(feedCard, member, reportType);
-        } catch (EntityNotFoundException e) {
+        } else {
             CommentCard commentCard = commentCardService.findByPk(cardPk);
             reportComment(commentCard, member, reportType);
         }
