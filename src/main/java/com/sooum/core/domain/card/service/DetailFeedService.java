@@ -12,7 +12,6 @@ import com.sooum.core.domain.tag.service.FeedTagService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import com.sooum.core.global.util.DistanceUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

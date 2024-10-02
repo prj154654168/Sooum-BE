@@ -3,6 +3,7 @@ package com.sooum.core.domain.card.service;
 import com.sooum.core.domain.card.entity.*;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,16 @@ public class FeedService {
     private final PopularFeedService popularFeedService;
     private final FeedLikeService feedLikeService;
 
+    @Transactional
+    public void deleteCard(Long cardPk, Long writerPk) {
+        CardType cardType = commentCardService.findCardType(cardPk);
+        switch (cardType) {
+            case FEED_CARD -> deleteFeedCard(cardPk, writerPk);
+            case COMMENT_CARD -> deleteCommentCard(cardPk, writerPk);
+            default -> throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
+        }
+    }
+
     public Card findParentCard(CommentCard commentCard) {
         if(commentCard.getParentCardType().equals(CardType.COMMENT_CARD)){
             return commentCardService.findByPk(commentCard.getParentCardPk());
@@ -28,9 +39,9 @@ public class FeedService {
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_TYPE.getMessage());
     }
 
-    @Transactional
-    public void deleteCommentCard(Long commentCardPk) {
-        if (isNotCommentCardOwner(commentCardPk, commentCardPk)) return;
+
+    private void deleteCommentCard(Long commentCardPk, Long writerPk) {
+        if (isNotCommentCardOwner(commentCardPk, writerPk)) return;
 
         CommentCard commentCard = commentCardService.findCommentCard(commentCardPk);
         commentCardService.deleteOnlyDeletedChild(commentCard.getPk());
@@ -101,8 +112,7 @@ public class FeedService {
         return commentCard.getParentCardType().equals(CardType.COMMENT_CARD);
     }
 
-    @Transactional
-    public void deleteFeedCard(Long feedCardPk, Long writerPk) {
+    private void deleteFeedCard(Long feedCardPk, Long writerPk) {
         if (isNotFeedCardOwner(feedCardPk, writerPk)) return;
 
         List<CommentCard> childCommentCardList = commentCardService.findChildCommentCardList(feedCardPk);

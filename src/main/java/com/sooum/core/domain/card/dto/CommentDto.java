@@ -4,7 +4,6 @@ import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.hateoas.Link;
 
 import java.time.LocalDateTime;
