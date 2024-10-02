@@ -42,7 +42,7 @@ public class DetailFeedService {
         if (card instanceof FeedCard) {
             return FeedDetailCardDto.builder()
                     .id(card.getPk().toString())
-                    .backgroundImgUrl(Link.of(imgService.findImgUrl(card.getImgType(), card.getImgName())))
+                    .backgroundImgUrl(imgService.findImgUrl(card.getImgType(), card.getImgName()))
                     .isStory(((FeedCard) card).isStory())
                     .createdAt(card.getCreatedAt())
                     .content(card.getContent())
@@ -56,7 +56,7 @@ public class DetailFeedService {
         if (card instanceof CommentCard commentCard) {
             return CommentDetailCardDto.builder()
                     .id(card.getPk().toString())
-                    .backgroundImgUrl(Link.of(imgService.findImgUrl(card.getImgType(), card.getImgName())))
+                    .backgroundImgUrl(imgService.findImgUrl(card.getImgType(), card.getImgName()))
                     .createdAt(card.getCreatedAt())
                     .content(card.getContent())
                     .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))
@@ -65,7 +65,7 @@ public class DetailFeedService {
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
                     .tags(feedTagService.readTags(card))
                     .previousCardId(feedService.findParentCard(commentCard).getPk())
-                    .previousCardImgLink(Link.of(imgService.findImgUrl(feedService.findParentCard(commentCard).getImgType(),feedService.findParentCard(commentCard).getImgName())))
+                    .previousCardImgLink(imgService.findImgUrl(feedService.findParentCard(commentCard).getImgType(),feedService.findParentCard(commentCard).getImgName()))
                     .build();
         }
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
