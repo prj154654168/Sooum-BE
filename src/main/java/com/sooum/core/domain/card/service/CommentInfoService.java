@@ -44,7 +44,7 @@ public class CommentInfoService {
                 .map(comment -> CommentDto.CommentCardsInfo.builder()
                         .id(comment.getPk().toString())
                         .content(comment.getContent())
-                        .backgroundImgUrl(Link.of(imgService.findImgUrl(comment.getImgType(), comment.getImgName())))
+                        .backgroundImgUrl(imgService.findImgUrl(comment.getImgType(), comment.getImgName()))
                         .font(comment.getFont())
                         .fontSize(comment.getFontSize())
                         .distance(DistanceUtils.calculate(comment.getLocation(), latitude, longitude))

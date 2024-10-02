@@ -1,10 +1,8 @@
 package com.sooum.core.domain.card.controller;
 
+import com.sooum.core.domain.card.dto.CardSummary;
 import com.sooum.core.domain.card.dto.CommentDto;
-import com.sooum.core.domain.card.service.CommentCardService;
-import com.sooum.core.domain.card.service.CommentInfoService;
-import com.sooum.core.domain.card.service.CommentLikeService;
-import com.sooum.core.domain.card.service.FeedService;
+import com.sooum.core.domain.card.service.*;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseEntityModel;
@@ -24,27 +22,12 @@ import java.util.Optional;
 @RequestMapping("/comments")
 public class CommentCardController {
     private final FeedService feedService;
-    private final CommentCardService commentCardService;
     private final CommentInfoService commentInfoService;
 
     @DeleteMapping("/{cardPk}")
     public ResponseEntity<Void> deleteCommentCardInfo(@PathVariable("cardPk") Long cardPk) {
         feedService.deleteCommentCard(cardPk);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/current/{parentCardPk}/count")
-    public ResponseEntity<ResponseEntityModel<CommentDto.CommentCntRetrieve>> countCommentsByParentCard(@PathVariable Long parentCardPk) {
-        return ResponseEntity.ok(
-                        ResponseEntityModel.<CommentDto.CommentCntRetrieve>builder()
-                                .status(ResponseStatus.builder()
-                                        .httpCode(HttpStatus.OK.value())
-                                        .httpStatus(HttpStatus.OK)
-                                        .responseMessage("comment cnt retrieve successfully")
-                                        .build())
-                                .content(commentCardService.countCommentsByParentCard(parentCardPk))
-                                .build()
-        );
     }
 
     @GetMapping("/current/{currentCardPk}")

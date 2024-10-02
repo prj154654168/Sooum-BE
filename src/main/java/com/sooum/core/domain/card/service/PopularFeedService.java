@@ -11,7 +11,6 @@ import com.sooum.core.global.util.DistanceUtils;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,14 +42,14 @@ public class PopularFeedService {
         List<FeedCard> filteredFeeds = blockMemberService.filterBlockedMembers(popularFeeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
-        List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);
+        List<CommentCard> comments = commentCardService.findByTargetList(filteredFeeds);
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredFeeds.stream()
                 .map(feed -> PopularCardRetrieve.builder()
                         .id(feed.getPk().toString())
                         .content(feed.getContent())
                         .isStory(feed.isStory())
-                        .backgroundImgUrl(Link.of(imgService.findImgUrl(feed.getImgType(), feed.getImgName())))
+                        .backgroundImgUrl(imgService.findImgUrl(feed.getImgType(), feed.getImgName()))
                         .font(feed.getFont())
                         .fontSize(feed.getFontSize())
                         .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))

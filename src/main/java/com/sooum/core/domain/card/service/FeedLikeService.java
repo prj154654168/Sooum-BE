@@ -36,7 +36,7 @@ public class FeedLikeService {
         return feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(feedCardPk, memberPk);
     }
 
-    public int getLikeCount(Long feedCardPk) {
+    public int countLike(Long feedCardPk) {
         return feedLikeRepository.countByTargetCard_Pk(feedCardPk);
     }
 
@@ -85,7 +85,11 @@ public class FeedLikeService {
         }
     }
 
-    protected CardType findCardType(Long cardPk) {
+    public CardType findCardType(Long cardPk) {
         return feedCardService.isExistFeedCard(cardPk) ? CardType.FEED_CARD : CardType.COMMENT_CARD;
+    }
+
+    public boolean isLiked(Long cardPk, Long memberPk){
+            return feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(cardPk, memberPk);
     }
 }
