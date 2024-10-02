@@ -34,7 +34,7 @@ public class FeedLikeService {
         return feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(feedCardPk, memberPk);
     }
 
-    public int getLikeCount(Long feedCardPk) {
+    public int countLike(Long feedCardPk) {
         return feedLikeRepository.countByTargetCard_Pk(feedCardPk);
     }
 
@@ -59,5 +59,9 @@ public class FeedLikeService {
         FeedLike feedLiked = feedLikeRepository.findFeedLiked(likedFeedCardPk, likedMemberPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.LIKE_NOT_FOUND.getMessage()));
         feedLikeRepository.delete(feedLiked);
+    }
+
+    public boolean isLiked(Long cardPk, Long memberPk) {
+        return feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(cardPk, memberPk);
     }
 }
