@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.hateoas.Link;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -54,8 +55,8 @@ class PopularFeedServiceTest {
         given(popularFeedRepository.findPopularFeeds(any())).willReturn(feedCards);
         given(blockMemberService.filterBlockedMembers(eq(feedCards), any())).willReturn(feedCards);
         given(feedLikeService.findByTargetCards(any())).willReturn(createFeedLikes(feedCards, members));
-        given(commentCardService.findByMasterCards(any())).willReturn(createCommentCards(feedCards, members));
-        given(localImgService.findImgUrl(any(), any())).willReturn("dummyUrl");
+        given(commentCardService.findByTargetList(any())).willReturn(createCommentCards(feedCards, members));
+        given(localImgService.findImgUrl(any(), any())).willReturn(Link.of("dummyUrl"));
 
         // when
         List<PopularCardRetrieve> popularFeeds = popularFeedService

@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CommentCardRepository extends JpaRepository<CommentCard, Long> {
-    List<CommentCard> findByMasterCardIn(List<FeedCard> masterCards);
-
     @Query("select cc from CommentCard cc where cc.masterCard in :targetList")
     List<CommentCard> findByTargetList(@Param("targetList") List<Long> targetPkList);
 
