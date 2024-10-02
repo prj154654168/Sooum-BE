@@ -7,6 +7,7 @@ import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
 import com.sooum.core.domain.card.repository.PopularFeedRepository;
 import com.sooum.core.domain.img.service.ImgService;
+import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.util.DistanceUtils;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -43,14 +44,14 @@ public class PopularFeedService {
         List<FeedCard> filteredFeeds = blockMemberService.filterBlockedMembers(popularFeeds, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
-        List<CommentCard> comments = commentCardService.findByMasterCards(filteredFeeds);
+        List<CommentCard> comments = commentCardService.findByTargetList(filteredFeeds);
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredFeeds.stream()
                 .map(feed -> PopularCardRetrieve.builder()
                         .id(feed.getPk())
                         .content(feed.getContent())
                         .isStory(feed.isStory())
-                        .backgroundImgUrl(Link.of(imgService.findImgUrl(feed.getImgType(), feed.getImgName())))
+                        .backgroundImgUrl(imgService.findImgUrl(feed.getImgType(), feed.getImgName()))
                         .font(feed.getFont())
                         .fontSize(feed.getFontSize())
                         .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))

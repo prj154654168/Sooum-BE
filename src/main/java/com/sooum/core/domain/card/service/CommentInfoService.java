@@ -6,6 +6,8 @@ import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.CommentLike;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.img.service.ImgService;
+import com.sooum.core.domain.member.entity.Member;
+import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.util.DistanceUtils;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +44,7 @@ public class CommentInfoService {
                 .map(comment -> CommentDto.CommentCardsInfo.builder()
                         .id(comment.getPk())
                         .content(comment.getContent())
-                        .backgroundImgUrl(Link.of(imgService.findImgUrl(comment.getImgType(), comment.getImgName())))
+                        .backgroundImgUrl(imgService.findImgUrl(comment.getImgType(), comment.getImgName()))
                         .font(comment.getFont())
                         .fontSize(comment.getFontSize())
                         .distance(DistanceUtils.calculate(comment.getLocation(), latitude, longitude))

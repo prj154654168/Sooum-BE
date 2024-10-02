@@ -55,7 +55,7 @@ public class DistanceFeedService {
                         .content(feedCard.getContent())
                         .isStory(feedCard.isStory())
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
-                        .backgroundImgUrl(Link.of(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName())))
+                        .backgroundImgUrl(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
                         .isCommentWritten(isWrittenCommentCard(commentCardList, memberPk))
                         .isLiked(isLiked(feedCard, feedLikeList))
