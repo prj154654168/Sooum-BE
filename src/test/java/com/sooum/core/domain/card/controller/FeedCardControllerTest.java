@@ -8,6 +8,9 @@ import com.sooum.core.global.config.mvc.WebMvcConfig;
 import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,6 +34,9 @@ import static org.mockito.BDDMockito.doNothing;
 @MockBean(JwtBlacklistInterceptor.class)
 @MockBean(WebMvcConfig.class)
 @MockBean(TokenProvider.class)
+@MockBean(JobExplorer.class)
+@MockBean(JobOperator.class)
+@MockBean(JobRepository.class)
 @Import(SecurityConfig.class)
 class FeedCardControllerTest {
     @Autowired

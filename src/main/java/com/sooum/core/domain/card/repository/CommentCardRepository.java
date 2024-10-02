@@ -23,23 +23,18 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
     @Query("select cc from CommentCard cc where cc.pk = :commentCardPk")
     Optional<CommentCard> findCommentCard(@Param("commentCardPk") Long commentCardPk);
 
-    @Query("select count(cc) from CommentCard cc where cc.isDeleted = false and " +
-            " cc.parentCardPk = :parentCardPk and cc.parentCardType = :parentCardType")
-    Integer countCommentsByParentCard(@Param("parentCardPk") Long parentCardPk, @Param("parentCardType") CardType parentCardType);
+    @Query("select count(cc) from CommentCard cc where cc.isDeleted = false and cc.parentCardPk = :parentCardPk")
+    Integer countCommentsByParentCard(@Param("parentCardPk") Long parentCardPk);
 
-    @Query("select cc from CommentCard cc where cc.parentCardType = :parentCardType and cc.isDeleted = false" +
-            " and cc.parentCardPk = :parentCardPk" +
+    @Query("select cc from CommentCard cc where cc.isDeleted = false and cc.parentCardPk = :parentCardPk" +
             " order by cc.pk desc ")
     List<CommentCard> findCommentsInfo(@Param("parentCardPk") Long parentCardPk,
-                                       @Param("parentCardType")CardType parentCardType,
                                        Pageable pageable);
 
-    @Query("select cc from CommentCard cc where cc.parentCardType = :parentCardType and cc.isDeleted = false" +
-            " and cc.parentCardPk = :parentCardPk" +
+    @Query("select cc from CommentCard cc where cc.isDeleted = false and cc.parentCardPk = :parentCardPk" +
             " and cc.pk < :lastPk" +
             " order by cc.pk desc ")
     List<CommentCard> findCommentsInfoByLastPk(@Param("parentCardPk") Long parentCardPk,
-                                               @Param("parentCardType")CardType parentCardType,
                                                @Param("lastPk") Long lastPk,
                                                Pageable pageable);
 }

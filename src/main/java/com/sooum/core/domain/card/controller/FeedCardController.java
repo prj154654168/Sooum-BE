@@ -1,18 +1,21 @@
 package com.sooum.core.domain.card.controller;
 
+import com.sooum.core.domain.card.dto.CardDetailDto;
+import com.sooum.core.domain.card.service.DetailFeedService;
 import com.sooum.core.domain.card.service.FeedLikeService;
 import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
+import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 @Validated
 @RestController
@@ -21,11 +24,23 @@ import java.net.URI;
 public class FeedCardController {
     private final FeedLikeService feedLikeService;
     private final FeedService feedService;
+    private final DetailFeedService detailFeedService;
 
-    @GetMapping("/{cardPk}")
-    public EntityModel<?> findFeedCardInfo(@PathVariable("cardPk") Long cardPk) {
-        //todo 추후에 글 상세보기 api 구현
-        return null;
+    @GetMapping("/{cardId}/detail")
+    public ResponseEntity<?> findFeedCardInfo(
+            @RequestParam(required = false, value = "latitude") Optional<Double> latitude,
+            @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
+            @PathVariable("cardId") @NotNull Long cardId, @CurrentUser Long memberPk) {
+        CardDetailDto detailFeedCard = detailFeedService.findDetailFeedCard(cardId, memberPk, latitude, longitude);
+        return ResponseEntity.ok(ResponseEntityModel.<CardDetailDto>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("Card details retrieved successfully.")
+                        .build()
+                ).content(detailFeedCard)
+                .build()
+        );
     }
 
     @PostMapping("/{cardPk}/like")

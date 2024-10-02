@@ -30,6 +30,14 @@ public class FeedLikeService {
         feedLikeRepository.deleteAllFeedLikes(feedCardPk);
     }
 
+    public boolean hasLiked(Long feedCardPk, Long memberPk) {
+        return feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(feedCardPk, memberPk);
+    }
+
+    public int getLikeCount(Long feedCardPk) {
+        return feedLikeRepository.countByTargetCard_Pk(feedCardPk);
+    }
+
     @Transactional
     public void createFeedLike(Long targetFeedCardPk, Long requesterPk) {
         if (feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(targetFeedCardPk, requesterPk)) {

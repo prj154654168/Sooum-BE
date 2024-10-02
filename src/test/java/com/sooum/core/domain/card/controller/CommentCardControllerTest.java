@@ -12,11 +12,15 @@ import com.sooum.core.global.config.mvc.WebMvcConfig;
 import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +30,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.BDDMockito.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +41,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JwtBlacklistInterceptor.class)
 @MockBean(WebMvcConfig.class)
 @MockBean(TokenProvider.class)
+@MockBean(JobExplorer.class)
+@MockBean(JobOperator.class)
+@MockBean(JobRepository.class)
 @Import(SecurityConfig.class)
 class CommentCardControllerTest {
     @Autowired
@@ -90,7 +99,7 @@ class CommentCardControllerTest {
     @WithMockUser
     void createCommentCardsInfo_notExistComment() throws Exception{
         // given
-        given(commentInfoService.createCommentsInfo(any(), any(), any(), any(), any(), any())).willReturn(Collections.emptyList());
+        given(commentInfoService.createCommentsInfo(any(), any(), any(), any(), any())).willReturn(Collections.emptyList());
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -109,7 +118,9 @@ class CommentCardControllerTest {
     void createCommentCardsInfo_existComment() throws Exception{
         // given
         List<CommentDto.CommentCardsInfo> mockResult = List.of(mock(CommentDto.CommentCardsInfo.class));
-        given(commentInfoService.createCommentsInfo(any(), any(), any(), any(), any(), any())).willReturn(mockResult);
+        Link mockLink = linkTo(methodOn(CommentCardController.class).getClass()).slash("/").withSelfRel();
+        given(commentInfoService.createCommentsInfo(any(), any(), any(), any(), any())).willReturn(mockResult);
+        given(commentInfoService.createNextCommentsInfoUrl(any(), any())).willReturn(mockLink);
 
         // when
         ResultActions resultActions = mockMvc.perform(

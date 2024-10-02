@@ -46,7 +46,7 @@ public class PopularFeedService {
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredFeeds.stream()
                 .map(feed -> PopularCardRetrieve.builder()
-                        .id(feed.getPk())
+                        .id(feed.getPk().toString())
                         .content(feed.getContent())
                         .isStory(feed.isStory())
                         .backgroundImgUrl(imgService.findImgUrl(feed.getImgType(), feed.getImgName()))
