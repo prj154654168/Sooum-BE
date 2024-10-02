@@ -52,4 +52,8 @@ public class CommentLikeService {
     public void deleteAllFeedLikes(Long commentCardPk) {
         commentLikeRepository.deleteAllInBatch(commentLikeRepository.findAllByTargetCard_Pk(commentCardPk));
     }
+
+    public void deleteByCommentCards(List<CommentCard> comments) {
+        commentLikeRepository.deleteByCommentCard(comments);
+    }
 }

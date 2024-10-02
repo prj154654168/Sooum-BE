@@ -11,6 +11,9 @@ import com.sooum.core.domain.report.entity.reporttype.ReportType;
 import com.sooum.core.domain.report.exception.DuplicateReportException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,11 @@ public class ReportService {
     private final CommentReportService commentReportService;
 
     @Transactional
+    @Retryable(
+            retryFor = {ObjectOptimisticLockingFailureException.class},
+            maxAttempts = 5,
+            backoff = @Backoff(100)
+    )
     public void report(Long cardPk, ReportType reportType, Long memberPk) {
         validateDuplicateReport(cardPk, memberPk);
 
@@ -52,7 +60,6 @@ public class ReportService {
             card.getWriter().ban();
     }
 
-
     private boolean isReportedOverLimit(Card card) {
         if(card instanceof FeedCard)
             return feedReportService.isCardReportedOverLimit(card.getPk());
@@ -61,7 +68,6 @@ public class ReportService {
 
         throw new EntityNotFoundException();
     }
-
 
     private void validateDuplicateReport(Long cardPk, Long memberPk) {
         if(feedReportService.isDuplicateReport(cardPk, memberPk)

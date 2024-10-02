@@ -1,6 +1,5 @@
 package com.sooum.core.domain.report.service;
 
-import com.sooum.core.domain.card.entity.Card;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.repository.CommentCardRepository;
@@ -51,13 +50,8 @@ public class FeedReportService {
 
             if(commentCardService.hasChildCard(cardPk)) {
                 List<CommentCard> comments = commentCardService.findByMasterCardPk(cardPk);
-                comments.stream()
-                        .map(Card::getPk)
-                        .forEach(pk -> {
-                            commentTagService.deleteByCommentCardPk(pk);
-                            commentLikeService.deleteAllFeedLikes(pk);
-                        });
-
+                commentTagService.deleteByCommentCards(comments);
+                commentLikeService.deleteByCommentCards(comments);
                 commentCardRepository.deleteAllInBatch(comments);
             }
 

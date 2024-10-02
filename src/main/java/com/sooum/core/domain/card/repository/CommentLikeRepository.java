@@ -15,4 +15,6 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
     boolean existsByTargetCardPkAndLikedMemberPk(Long targetCardPk, Long likedMemberPk);
     List<CommentLike> findByTargetCardIn(List<CommentCard> commentCards);
     List<CommentLike> findAllByTargetCard_Pk(Long cardPk);
+    @Query("delete from CommentLike cl where cl.targetCard in :cards")
+    void deleteByCommentCard(@Param("cards") List<CommentCard> commentCards);
 }
