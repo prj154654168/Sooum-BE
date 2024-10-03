@@ -26,7 +26,7 @@ public class TagService {
     private final FeedTagRepository feedTagRepository;
     private final CommentTagRepository commentTagRepository;
     private final TagRepository tagRepository;
-    private final Client redisearchClient;
+//    private final Client redisearchClient;
 
     public List<TagDto.ReadTagResponse> readTags(Card card) {
         List<Tag> tagsByFeedCard = getTagsByCard(card);
@@ -50,33 +50,33 @@ public class TagService {
     }
 
     public List<TagDto.RelatedTag> findRelatedTags(String keyword) {
-        try {
-            Query query = new Query("*" + keyword + "*")
-                    .setSortBy("count", false)
-                    .limit(0, 5);
-
-            SearchResult searchResult = redisearchClient.search(query);
-
-            return searchResult.docs.stream()
-                    .map(doc -> new TagDto.RelatedTag(
-                            Integer.parseInt(doc.getString("count")),
-                            doc.getString("content")))
-                    .toList();
-        } catch (Exception ignore) {
+//        try {
+//            Query query = new Query("*" + keyword + "*")
+//                    .setSortBy("count", false)
+//                    .limit(0, 5);
+//
+//            SearchResult searchResult = redisearchClient.search(query);
+//
+//            return searchResult.docs.stream()
+//                    .map(doc -> new TagDto.RelatedTag(
+//                            Integer.parseInt(doc.getString("count")),
+//                            doc.getString("content")))
+//                    .toList();
+//        } catch (Exception ignore) {
             return tagRepository.findByKeyword(keyword, PageRequest.of(0, 5))
                     .stream()
                     .map(tag -> new TagDto.RelatedTag(tag.getCount(), tag.getContent()))
                     .toList();
-        }
+//        }
     }
 
     public void upsert() {
-        tagRepository.findAllByIsActiveIsTrue().forEach(tag -> {
-            Document doc = new Document(tag.getContent())
-                    .set("content", tag.getContent())
-                    .set("count", tag.getCount());
-
-            redisearchClient.addDocument(doc);
-        });
+//        tagRepository.findAllByIsActiveIsTrue().forEach(tag -> {
+//            Document doc = new Document(tag.getContent())
+//                    .set("content", tag.getContent())
+//                    .set("count", tag.getCount());
+//
+//            redisearchClient.addDocument(doc);
+//        });
     }
 }
