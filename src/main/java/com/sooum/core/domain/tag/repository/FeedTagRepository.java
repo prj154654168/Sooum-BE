@@ -22,6 +22,7 @@ public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
             "and ft.feedCard.isDeleted = false and ft.feedCard.isPublic = false and ft.feedCard.isStory = false " +
             "order by ft.feedCard.pk desc")
     List<FeedCard> findFeeds(@Param("tagContent") String tagContent, @Param("lastPk") Long lastPk, Pageable pageable);
-    @Query("select count(ft) from FeedTag ft where ft.tag.content = :tagContent")
+    @Query("select count(ft) from FeedTag ft where ft.tag.content = :tagContent " +
+            "and ft.feedCard.isDeleted = false and ft.feedCard.isPublic = false and ft.feedCard.isStory = false")
     Integer countTagFeeds(@Param("tagContent") String tagContent);
 }
