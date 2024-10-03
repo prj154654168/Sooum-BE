@@ -1,11 +1,9 @@
 package com.sooum.core.domain.card.controller;
 
-import com.sooum.core.domain.card.dto.CardSummary;
 import com.sooum.core.domain.card.dto.CommentDto;
-import com.sooum.core.domain.card.service.*;
+import com.sooum.core.domain.card.service.CommentInfoService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
-import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,14 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/comments")
 public class CommentCardController {
-    private final FeedService feedService;
     private final CommentInfoService commentInfoService;
-
-    @DeleteMapping("/{cardPk}")
-    public ResponseEntity<Void> deleteCommentCardInfo(@PathVariable("cardPk") Long cardPk) {
-        feedService.deleteCommentCard(cardPk);
-        return ResponseEntity.noContent().build();
-    }
 
     @GetMapping("/current/{currentCardPk}")
     public ResponseEntity<?> createCommentCardsInfo(@RequestParam(required = false) Optional<Long> lastId,

@@ -5,7 +5,6 @@ import com.sooum.core.domain.card.dto.CreateCommentDto;
 import com.sooum.core.domain.card.dto.CreateFeedCardDto;
 import com.sooum.core.domain.card.service.DetailFeedService;
 import com.sooum.core.domain.card.service.FeedLikeService;
-import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
@@ -26,7 +25,6 @@ import java.util.Optional;
 @RequestMapping("/cards")
 public class FeedCardController {
     private final FeedLikeService feedLikeService;
-    private final FeedService feedService;
     private final DetailFeedService detailFeedService;
 
     @GetMapping("/{cardId}/detail")
@@ -91,12 +89,6 @@ public class FeedCardController {
                                             @CurrentUser Long memberPk) {
         feedLikeService.deleteCardLike(cardPk, memberPk);
 
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{cardPk}")
-    public ResponseEntity<Void> deleteFeedCardInfo(@PathVariable("cardPk") Long cardPk, @CurrentUser Long memberPk) {
-        feedService.deleteFeedCard(cardPk, memberPk);
         return ResponseEntity.noContent().build();
     }
 }
