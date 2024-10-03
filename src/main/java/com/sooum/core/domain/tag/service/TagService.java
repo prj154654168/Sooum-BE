@@ -7,6 +7,7 @@ import com.sooum.core.domain.tag.dto.TagDto;
 import com.sooum.core.domain.tag.entity.Tag;
 import com.sooum.core.domain.tag.repository.CommentTagRepository;
 import com.sooum.core.domain.tag.repository.FeedTagRepository;
+import com.sooum.core.domain.tag.repository.TagRepository;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
 public class TagService {
     private final FeedTagRepository feedTagRepository;
     private final CommentTagRepository commentTagRepository;
+    private final TagRepository tagRepository;
 
     public List<TagDto.ReadTagResponse> readTags(Card card) {
         List<Tag> tagsByFeedCard = getTagsByCard(card);
@@ -40,4 +42,13 @@ public class TagService {
         }
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
     }
+
+    public List<Tag> findTagList(List<String> tagContents) {
+        return tagRepository.findTagList(tagContents);
+    }
+
+    public void saveAll(List<Tag> tags) {
+        tagRepository.saveAll(tags);
+    }
+
 }
