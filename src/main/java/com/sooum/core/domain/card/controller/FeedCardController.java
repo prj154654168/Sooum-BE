@@ -5,6 +5,7 @@ import com.sooum.core.domain.card.dto.CreateCommentDto;
 import com.sooum.core.domain.card.dto.CreateFeedCardDto;
 import com.sooum.core.domain.card.service.DetailFeedService;
 import com.sooum.core.domain.card.service.FeedLikeService;
+import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class FeedCardController {
     private final FeedLikeService feedLikeService;
     private final DetailFeedService detailFeedService;
+    private final FeedService feedService;
 
     @GetMapping("/{cardId}/detail")
     public ResponseEntity<?> findFeedCardInfo(
