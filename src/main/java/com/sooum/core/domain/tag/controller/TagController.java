@@ -22,7 +22,7 @@ public class TagController {
         return null;
     }
 
-    @GetMapping("")
+    @GetMapping("/search")
     ResponseEntity<?> findRelatedTags(@RequestParam String keyword) {
         return ResponseEntity.ok(ResponseCollectionModel.<TagDto.RelatedTag>builder()
                 .status(ResponseStatus.builder()
