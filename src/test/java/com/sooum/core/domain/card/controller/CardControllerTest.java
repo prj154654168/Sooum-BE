@@ -1,6 +1,6 @@
 package com.sooum.core.domain.card.controller;
 
-import com.sooum.core.domain.card.service.DetailFeedService;
+import com.sooum.core.domain.card.service.CardService;
 import com.sooum.core.domain.card.service.FeedLikeService;
 import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.doNothing;
 
-@WebMvcTest(FeedCardController.class)
+@WebMvcTest(CardController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @MockBean(JwtBlacklistInterceptor.class)
 @MockBean(WebMvcConfig.class)
@@ -39,15 +39,16 @@ import static org.mockito.BDDMockito.doNothing;
 @MockBean(JobOperator.class)
 @MockBean(JobRepository.class)
 @Import(SecurityConfig.class)
-class FeedCardControllerTest {
+class CardControllerTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
-    FeedLikeService feedLikeService;
+    CardService cardService;
     @MockBean
     FeedService feedService;
     @MockBean
-    DetailFeedService detailFeedService;
+    FeedLikeService feedLikeService;
+
     private static final String ACCESS_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjY5Mjk0MzMsImV4cCI6MTAxNzI2OTI5NDMzLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlkIjo2MjUwNDc5NzMyNTA1MTUxNTMsInJvbGUiOiJVU0VSIn0.aL4Tr3FaSwvu9hOQISAvGJfCHBGCV9jRo_BfTQkBssU";
     private static final String TOKEN_HEADER = "Authorization";
 
