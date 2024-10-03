@@ -82,4 +82,8 @@ public class CommentCardService {
     public int countComment(Long parentCardPk) {
         return commentCardRepository.countCommentsByParentCard(parentCardPk);
     }
+
+    public void saveComment(CommentCard commentCard) {
+        commentCardRepository.save(commentCard);
+    }
 }
