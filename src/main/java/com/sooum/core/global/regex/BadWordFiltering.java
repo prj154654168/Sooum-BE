@@ -34,9 +34,9 @@ public class BadWordFiltering implements BadWords {
     public boolean checkBadWord(String input) {
         for (Pattern pattern : badWordPatterns.values()) {
             if (pattern.matcher(input).find()) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }

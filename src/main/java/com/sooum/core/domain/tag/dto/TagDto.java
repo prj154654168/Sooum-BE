@@ -17,4 +17,9 @@ public class TagDto{
             this.content = content;
         }
     }
+
+    public record RelatedTag(
+            Integer count,
+            String content
+    ) {}
 }

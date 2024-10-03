@@ -15,4 +15,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "AND LOWER(t.content) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "ORDER BY t.count DESC")
     List<Tag> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+    List<Tag> findAllByIsActiveIsTrue();
 }

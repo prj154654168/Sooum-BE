@@ -26,9 +26,13 @@ public class Tag extends BaseEntity {
     @Column(name = "count")
     private int count;
 
+    @Column(name = "IS_ACTIVE")
+    private Boolean isActive;
+
     @Builder
-    public Tag(String content) {
+    public Tag(String content, Boolean isActive) {
         this.content = content;
-        this.count = 0;
+        this.isActive = isActive;
+        this.count = 1;
     }
 }
