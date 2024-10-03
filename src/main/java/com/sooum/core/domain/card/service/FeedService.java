@@ -1,8 +1,22 @@
 package com.sooum.core.domain.card.service;
 
+import com.sooum.core.domain.card.dto.CreateCardDto;
+import com.sooum.core.domain.card.dto.CreateCommentDto;
+import com.sooum.core.domain.card.dto.CreateFeedCardDto;
 import com.sooum.core.domain.card.entity.*;
+import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
+import com.sooum.core.domain.img.service.ImgService;
+import com.sooum.core.domain.member.entity.Member;
+import com.sooum.core.domain.member.service.MemberService;
+import com.sooum.core.domain.tag.entity.CommentTag;
+import com.sooum.core.domain.tag.entity.FeedTag;
+import com.sooum.core.domain.tag.entity.Tag;
+import com.sooum.core.domain.tag.service.CommentTagService;
+import com.sooum.core.domain.tag.service.FeedTagService;
+import com.sooum.core.domain.tag.service.TagService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +26,94 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FeedService {
-
+    private final MemberService memberService;
     private final CommentCardService commentCardService;
     private final FeedCardService feedCardService;
     private final PopularFeedService popularFeedService;
     private final FeedLikeService feedLikeService;
+    private final TagService tagService;
+    private final FeedTagService feedTagService;
+    private final ImgService imgService;
+    private final CommentTagService commentTagService;
+
+    @Transactional
+    public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto) {
+        if (checkForTagsInStory(cardDto)) {
+            throw new RuntimeException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
+        }
+
+        if(checkImgSaveError(cardDto)) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
+        }
+
+        Member member = memberService.findByPk(memberPk);
+
+        FeedCard feedCard = cardDto.of(member);
+        feedCardService.saveFeedCard(feedCard);
+
+        List<Tag> tagContents = processTags(cardDto);
+        List<FeedTag> feedTagList = tagContents.stream()
+                .map(tag -> FeedTag.builder().feedCard(feedCard).tag(tag).build())
+                .toList();
+        feedTagService.saveAll(feedTagList);
+    }
+
+    @Transactional
+    public void createCommentCard(Long memberPk, Long cardPk, CreateCommentDto cardDto) {
+        if(cardDto.getImgType().equals(ImgType.USER) && !imgService.verifyImgSaved(cardDto.getImgName())) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
+        }
+
+        Member member = memberService.findByPk(memberPk);
+
+        Card card = feedCardService.isExistFeedCard(cardPk)
+                ? feedCardService.findFeedCard(cardPk)
+                : commentCardService.findCommentCard(cardPk);
+
+        CommentCard commentCard;
+        if (card instanceof FeedCard) {
+            commentCard = cardDto.of(CardType.FEED_CARD, cardPk, cardPk, member);
+        } else if (card instanceof CommentCard commentParentCard) {
+            commentCard = cardDto.of(CardType.COMMENT_CARD, commentParentCard.getPk(), commentParentCard.getParentCardPk(), member);
+        } else throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
+
+        commentCardService.saveComment(commentCard);
+
+        List<Tag> tagContents = processTags(cardDto);
+        List<CommentTag> commentTagList = tagContents.stream()
+                .map(tag -> CommentTag.builder().commentCard(commentCard).tag(tag).build())
+                .toList();
+
+        commentTagService.saveAll(commentTagList);
+    }
+
+    private List<Tag> processTags(CreateCardDto cardDto){
+        List<Tag> tagContents = tagService.findTagList(cardDto.getTags());
+        //todo tagContents element count ++
+        List<String> list = tagContents.stream().map(Tag::getContent).toList();
+        cardDto.getTags().removeAll(list);
+
+        List<Tag> tagList = cardDto.getTags().stream()
+                .map(tagContent -> Tag.builder().content(tagContent).build()) //TODO: 필터링 메소드 추가
+                .toList();
+
+        tagService.saveAll(tagList);
+        tagContents.addAll(tagList);
+
+        return tagContents;
+    }
+
+    private boolean checkImgSaveError(CreateFeedCardDto cardDto) {
+        return cardDto.getImgType().equals(ImgType.USER) && !imgService.verifyImgSaved(cardDto.getImgName());
+    }
+
+    private static boolean checkForTagsInStory(CreateFeedCardDto cardDto) {
+        return cardDto.isStory() && hasTags(cardDto);
+    }
+
+    private static boolean hasTags(CreateFeedCardDto cardDto) {
+        return cardDto.getFeedTags() != null && !cardDto.getFeedTags().isEmpty();
+    }
 
     public Card findParentCard(CommentCard commentCard) {
         if(commentCard.getParentCardType().equals(CardType.COMMENT_CARD)){

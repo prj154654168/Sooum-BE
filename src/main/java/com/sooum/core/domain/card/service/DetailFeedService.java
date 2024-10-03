@@ -8,11 +8,10 @@ import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.service.MemberInfoService;
-import com.sooum.core.domain.tag.service.FeedTagService;
+import com.sooum.core.domain.tag.service.TagService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import com.sooum.core.global.util.DistanceUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ import java.util.Optional;
 public class DetailFeedService {
     private final FeedCardService feedCardService;
     private final ImgService imgService;
-    private final FeedTagService feedTagService;
+    private final TagService tagService;
     private final MemberInfoService memberInfoService;
     private final CommentCardService commentCardService;
     private final FeedService feedService;
@@ -50,7 +49,7 @@ public class DetailFeedService {
                     .font(card.getFont())
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
-                    .tags(feedTagService.readTags(card))
+                    .tags(tagService.readTags(card))
                     .build();
         }
         if (card instanceof CommentCard commentCard) {
@@ -63,7 +62,7 @@ public class DetailFeedService {
                     .font(card.getFont())
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
-                    .tags(feedTagService.readTags(card))
+                    .tags(tagService.readTags(card))
                     .previousCardId(feedService.findParentCard(commentCard).getPk())
                     .previousCardImgLink(imgService.findImgUrl(feedService.findParentCard(commentCard).getImgType(),feedService.findParentCard(commentCard).getImgName()))
                     .build();

@@ -53,4 +53,8 @@ public class FeedCardService {
         return feedCardRepository.findById(feedCardPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage()));
     }
+
+    public void saveFeedCard(FeedCard feedCard) {
+        feedCardRepository.save(feedCard);
+    }
 }
