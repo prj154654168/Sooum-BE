@@ -20,6 +20,13 @@ spring:
       port: ${REDIS_PORT}
       host: ${REDIS_HOST}
 
+  batch:
+    job:
+      name: "tagCacheJob"
+    #      name: ["tagCacheJob", "blacklistFetchJob", "rsaKeyGenerateJob"]
+    jdbc:
+      initialize-schema: always
+
   #todo s3 도입 시 삭제
   servlet:
     multipart:
