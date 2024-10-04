@@ -55,5 +55,12 @@ public class CommentLikeService {
 
     public void deleteByCommentCards(List<CommentCard> comments) {
         commentLikeRepository.deleteByCommentCard(comments);
+      
+    public int countLike(Long cardPk) {
+        return commentLikeRepository.countByTargetCard_Pk(cardPk);
+    }
+
+    public boolean isLiked(Long cardPk, Long memberPk) {
+        return commentLikeRepository.existsByTargetCardPkAndLikedMemberPk(cardPk, memberPk);
     }
 }

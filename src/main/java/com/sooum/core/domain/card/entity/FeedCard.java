@@ -20,9 +20,13 @@ public class FeedCard extends Card {
     @Column(name = "IS_STORY")
     private boolean isStory;
 
+    @Column(name = "IS_PUBLIC")
+    private boolean isPublic;
+
     @Builder
-    public FeedCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, boolean isPublic, boolean isStory, Member writer) {
-        super(content, fontSize, font, location, imgType, imgName, isPublic, writer);
-        this.isStory = isStory();
+    public FeedCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, Member writer, boolean isStory, boolean isPublic) {
+        super(content, fontSize, font, location, imgType, imgName, writer);
+        this.isStory = isStory;
+        this.isPublic = isPublic;
     }
 }

@@ -25,6 +25,7 @@ sooum:
     ip: ${IP}
     img:
       path: ${IMG_PATH}
+      default-size: 50
 
 jwt:
   key: ${JWT_KEY}

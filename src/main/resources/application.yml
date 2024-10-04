@@ -20,11 +20,17 @@ spring:
       port: ${REDIS_PORT}
       host: ${REDIS_HOST}
 
+  #todo s3 도입 시 삭제
+  servlet:
+    multipart:
+      max-file-size: 3MB
+
 sooum:
   server:
     ip: ${IP}
     img:
       path: ${IMG_PATH}
+      default-size: 50
 
 jwt:
   key: ${JWT_KEY}

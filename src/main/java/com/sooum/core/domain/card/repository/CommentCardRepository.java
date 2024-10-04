@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CommentCardRepository extends JpaRepository<CommentCard, Long> {
+
     List<CommentCard> findAllByMasterCard(Long masterCardPk);
 
     List<CommentCard> findByMasterCardIn(List<Long> masterCards);

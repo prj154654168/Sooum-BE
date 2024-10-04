@@ -9,7 +9,6 @@ import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.global.util.DistanceUtils;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,13 +37,13 @@ public class LatestFeedService {
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredLatestFeed.stream()
                 .map(feedCard -> LatestFeedCardDto.builder()
-                        .id(feedCard.getPk())
+                        .id(feedCard.getPk().toString())
                         .font(feedCard.getFont())
                         .fontSize(feedCard.getFontSize())
                         .content(feedCard.getContent())
                         .isStory(feedCard.isStory())
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
-                        .backgroundImgUrl(Link.of(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName())))
+                        .backgroundImgUrl(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
                         .isCommentWritten(isWrittenCommentCard(commentCardList, memberPk))
                         .isLiked(isLiked(feedCard, feedLikeList))

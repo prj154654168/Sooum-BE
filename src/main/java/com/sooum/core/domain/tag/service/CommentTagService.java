@@ -37,5 +37,8 @@ public class CommentTagService {
         tags.stream()
                 .map(CommentTag::getTag)
                 .forEach(Tag::minusCount);
+
+    public void saveAll(List<CommentTag> commentTagList) {
+        commentTagRepository.saveAll(commentTagList);
     }
 }

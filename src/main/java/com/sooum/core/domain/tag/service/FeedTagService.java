@@ -27,4 +27,10 @@ public class FeedTagService {
             feedTagRepository.deleteAllInBatch(tags);
         }
     }
+
+
+    public void saveAll(List<FeedTag> feedTagList) {
+        feedTagRepository.saveAll(feedTagList);
+    }
 }
+
