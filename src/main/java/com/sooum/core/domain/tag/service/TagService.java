@@ -48,17 +48,22 @@ public class TagService {
     }
 
     public List<TagDto.RelatedTag> findRelatedTags(String keyword) {
-        try {
-            return cachedTagRepository.findTop5ByContentLikeIgnoreCaseOrderByCountDesc(keyword)
-                    .stream()
-                    .map(tag -> new TagDto.RelatedTag(tag.getCount(), tag.getContent()))
-                    .toList();
-        } catch (Exception ignore) {
-            return tagRepository.findByKeyword(keyword, PageRequest.of(0, 5))
-                    .stream()
-                    .map(tag -> new TagDto.RelatedTag(tag.getCount(), tag.getContent()))
-                    .toList();
-        }
+        return tagRepository.findByKeyword(keyword, PageRequest.of(0, 5))
+                .stream()
+                .map(tag -> new TagDto.RelatedTag(tag.getCount(), tag.getContent()))
+                .toList();
+
+//        try {
+//            return cachedTagRepository.findTop5ByContentLikeIgnoreCaseOrderByCountDesc(keyword)
+//                    .stream()
+//                    .map(tag -> new TagDto.RelatedTag(tag.getCount(), tag.getContent()))
+//                    .toList();
+//        } catch (Exception ignore) {
+//            return tagRepository.findByKeyword(keyword, PageRequest.of(0, 5))
+//                    .stream()
+//                    .map(tag -> new TagDto.RelatedTag(tag.getCount(), tag.getContent()))
+//                    .toList();
+//        }
     }
 
     public void upsert() {
