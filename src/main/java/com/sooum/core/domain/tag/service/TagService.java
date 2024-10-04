@@ -73,4 +73,12 @@ public class TagService {
 
         cachedTagRepository.saveAll(cachedTags);
     }
+
+    public List<Tag> findTagList(List<String> tagContents) {
+        return tagRepository.findTagList(tagContents);
+    }
+
+    public void saveAll(List<Tag> tags) {
+        tagRepository.saveAll(tags);
+    }
 }

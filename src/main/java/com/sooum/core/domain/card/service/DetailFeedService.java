@@ -22,10 +22,10 @@ import java.util.Optional;
 public class DetailFeedService {
     private final FeedCardService feedCardService;
     private final ImgService imgService;
+    private final TagService tagService;
     private final MemberInfoService memberInfoService;
     private final CommentCardService commentCardService;
     private final FeedService feedService;
-    private final TagService tagService;
 
     @Transactional(readOnly = true)
     public CardDetailDto findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
