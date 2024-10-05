@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -40,14 +39,16 @@ public class LocalImgService implements ImgService{
     }
 
     @Override
-    public List<ImgUrlInfo> createDefaultImgRetrieveUrls(Optional<List<String>> previousImgsName) {
+    public List<ImgUrlInfo> createDefaultImgRetrieveUrls(List<String> previousImgsName) {
         List<String> allDefaultImgsName = IntStream.rangeClosed(1, defaultImgSize)
                 .boxed()
                 .map(img -> img + "." + DEFAULT_IMG_EXTENSION)
                 .collect(Collectors.toList());
         Collections.shuffle(allDefaultImgsName);
 
-        previousImgsName.ifPresent(allDefaultImgsName::removeAll);
+        if (!previousImgsName.isEmpty()) {
+            allDefaultImgsName.removeAll(previousImgsName);
+        }
 
         return allDefaultImgsName.subList(0, DEFAULT_IMG_CNT).stream()
                 .map(imgName -> ImgUrlInfo.builder()
@@ -58,8 +59,8 @@ public class LocalImgService implements ImgService{
     }
 
     @Override
-    public List<String> findIssuedDefaultImgsName(List<ImgUrlInfo> imgsUrlInfo) {
-        return imgsUrlInfo.stream().map(ImgUrlInfo::getImgName).toList();
+    public String findIssuedDefaultImgsName(List<ImgUrlInfo> imgsUrlInfo) {
+        return imgsUrlInfo.stream().map(ImgUrlInfo::getImgName).collect(Collectors.joining(","));
     }
 
     @Override
