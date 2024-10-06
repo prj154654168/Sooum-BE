@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -25,10 +25,10 @@ public class Rsa {
     private String privateKey;
 
     @Column(name = "EXPIRED_AT")
-    private Instant expiredAt;
+    private LocalDateTime expiredAt;
 
     @Builder
-    public Rsa(String publicKey, String privateKey, Instant expiredAt) {
+    public Rsa(String publicKey, String privateKey, LocalDateTime expiredAt) {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
         this.expiredAt = expiredAt;

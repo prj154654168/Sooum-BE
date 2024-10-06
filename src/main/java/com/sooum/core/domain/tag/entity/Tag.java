@@ -6,6 +6,7 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,9 +27,16 @@ public class Tag extends BaseEntity {
     @Column(name = "count")
     private int count;
 
+    @Version
+    private Long version;
+
     @Builder
     public Tag(String content) {
         this.content = content;
         this.count = 0;
+    }
+
+    public static void minusCount(Tag tag) {
+        tag.count--;
     }
 }
