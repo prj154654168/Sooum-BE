@@ -58,6 +58,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
+	// Redisearch
+	implementation 'com.redis.om:redis-om-spring:0.9.1'
+	annotationProcessor "com.redis.om:redis-om-spring:0.9.1"
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'

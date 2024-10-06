@@ -4,6 +4,7 @@ import com.sooum.core.domain.tag.dto.TagDto;
 import com.sooum.core.domain.tag.service.FavoriteTagService;
 import com.sooum.core.domain.tag.service.TagService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
+import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,19 @@ public class TagController {
     ResponseEntity<?> findFeedsByTag(@PathVariable("tagPk") Long tagPk) {
         //TODO: 추후 태그별 피드조회 구현
         return null;
+    }
+
+    @GetMapping("/search")
+    ResponseEntity<?> findRelatedTags(@RequestParam String keyword) {
+        return ResponseEntity.ok(ResponseCollectionModel.<TagDto.RelatedTag>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("Find related tags successfully")
+                        .build()
+                )
+                .content(tagService.findRelatedTags(keyword))
+                .build());
     }
 
     @PostMapping("/{tagContent}/favorite")

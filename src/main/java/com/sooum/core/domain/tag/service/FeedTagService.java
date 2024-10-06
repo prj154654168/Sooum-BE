@@ -33,4 +33,3 @@ public class FeedTagService {
         feedTagRepository.saveAll(feedTagList);
     }
 }
-

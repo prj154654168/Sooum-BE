@@ -21,6 +21,11 @@ public class TagDto{
         }
     }
 
+    public record RelatedTag(
+            Integer count,
+            String content
+    ) {}
+
     @Getter
     @Setter
     @NoArgsConstructor
