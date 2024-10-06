@@ -11,9 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.HashMap;
 
 @Service
@@ -28,7 +26,7 @@ public class RsaService {
         HashMap<String, String> keyPair = rsaProvider.generateKeyPair();
 
         // Save to RDB
-        Instant expiredAt = LocalDateTime.now().plusMonths(6).atZone(ZoneId.systemDefault()).toInstant();
+        LocalDateTime expiredAt = LocalDateTime.now().plusMonths(6);
         Rsa rsa = Rsa.builder()
                 .publicKey(keyPair.get("publicKey"))
                 .privateKey(keyPair.get("privateKey"))
@@ -37,8 +35,8 @@ public class RsaService {
         rsaRepository.save(rsa);
 
         // Save to Redis
-        redisTemplate.opsForValue().set("public", rsa.getPublicKey(), Duration.between(Instant.now(), expiredAt));
-        redisTemplate.opsForValue().set("private", rsa.getPrivateKey(), Duration.between(Instant.now(), expiredAt));
+        redisTemplate.opsForValue().set("public", rsa.getPublicKey(), Duration.between(LocalDateTime.now(), expiredAt));
+        redisTemplate.opsForValue().set("private", rsa.getPrivateKey(), Duration.between(LocalDateTime.now(), expiredAt));
 
         return new Key(rsa.getPublicKey());
     }
@@ -49,7 +47,7 @@ public class RsaService {
         try {
             publicKey = redisTemplate.opsForValue().get("public");
         } catch (Exception e) {
-            Rsa rsa = rsaRepository.findByExpiredAtIsAfter(Instant.now())
+            Rsa rsa = rsaRepository.findByExpiredAtIsAfter(LocalDateTime.now())
                     .orElseThrow(EntityNotFoundException::new);
             publicKey = rsa.getPublicKey();
         }
@@ -63,7 +61,7 @@ public class RsaService {
         try {
             privateKey = redisTemplate.opsForValue().get("private");
         } catch (Exception e) {
-            Rsa rsa = rsaRepository.findByExpiredAtIsAfter(Instant.now())
+            Rsa rsa = rsaRepository.findByExpiredAtIsAfter(LocalDateTime.now())
                     .orElseThrow(RsaDecodeException::new);
             privateKey = rsa.getPrivateKey();
         }

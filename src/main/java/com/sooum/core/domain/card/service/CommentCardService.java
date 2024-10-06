@@ -40,6 +40,15 @@ public class CommentCardService {
         commentCardRepository.deleteById(commentCardPk);
     }
 
+    public List<CommentCard> findByMasterCards(List<FeedCard> masterCards) {
+        List<Long> masterCardsPk = masterCards.stream().map(FeedCard::getPk).toList();
+        return commentCardRepository.findByMasterCardIn(masterCardsPk);
+    }
+
+    public List<CommentCard> findByMasterCardPk(Long masterCardPk) {
+        return commentCardRepository.findAllByMasterCard(masterCardPk);
+    }
+
     public List<CommentCard> findByTargetList(List<FeedCard> targetList) {
         List<Long> feedCardPkList = targetList.stream().map(FeedCard::getPk).toList();
         return commentCardRepository.findByTargetList(feedCardPkList);

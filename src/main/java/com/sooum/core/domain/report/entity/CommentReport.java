@@ -1,5 +1,6 @@
 package com.sooum.core.domain.report.entity;
 
+import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.common.entity.BaseEntity;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.report.entity.reporttype.ReportType;
@@ -25,7 +26,7 @@ public class CommentReport extends BaseEntity {
     @NotNull
     @JoinColumn(name = "TARGET_CARD")
     @ManyToOne(fetch = FetchType.LAZY)
-    private CommentReport targetCard;
+    private CommentCard targetCard;
 
     @NotNull
     @JoinColumn(name = "REPORTER")
@@ -33,7 +34,7 @@ public class CommentReport extends BaseEntity {
     private Member reporter;
 
     @Builder
-    public CommentReport(ReportType reportType, CommentReport targetCard, Member reporter) {
+    public CommentReport(ReportType reportType, CommentCard targetCard, Member reporter) {
         this.reportType = reportType;
         this.targetCard = targetCard;
         this.reporter = reporter;
