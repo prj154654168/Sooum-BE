@@ -5,26 +5,28 @@ import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.tag.dto.TagDto;
 import com.sooum.core.domain.tag.entity.CachedTag;
+import com.sooum.core.domain.tag.entity.FavoriteTag;
 import com.sooum.core.domain.tag.entity.Tag;
-import com.sooum.core.domain.tag.repository.CachedTagRepository;
-import com.sooum.core.domain.tag.repository.CommentTagRepository;
-import com.sooum.core.domain.tag.repository.FeedTagRepository;
-import com.sooum.core.domain.tag.repository.TagRepository;
+import com.sooum.core.domain.tag.repository.*;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import com.sooum.core.global.util.NextPageLinkGenerator;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TagService {
     private final FeedTagRepository feedTagRepository;
     private final CommentTagRepository commentTagRepository;
     private final TagRepository tagRepository;
     private final CachedTagRepository cachedTagRepository;
+    private final FavoriteTagRepository favoriteTagRepository;
 
     public List<TagDto.ReadTagResponse> readTags(Card card) {
         List<Tag> tagsByFeedCard = getTagsByCard(card);
@@ -78,7 +80,40 @@ public class TagService {
         return tagRepository.findTagList(tagContents);
     }
 
+    @Transactional
     public void saveAll(List<Tag> tags) {
         tagRepository.saveAll(tags);
+    }
+
+    public boolean isExistFavoriteTag(String tagContent, Long memberPk) {
+        return favoriteTagRepository.existsByTag_ContentAndMember_Pk(tagContent, memberPk);
+    }
+
+    @Transactional
+    public void saveFavoriteTag(FavoriteTag favoriteTag) {
+        favoriteTagRepository.save(favoriteTag);
+    }
+
+    public Tag findTag(String tagContent) {
+        return tagRepository.findByContent(tagContent)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.TAG_NOT_FOUND.getMessage()));
+    }
+
+    public FavoriteTag findFavoriteTag(String tagContent, Long memberPk) {
+        return favoriteTagRepository.findByTag_ContentAndMember_Pk(tagContent, memberPk)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FAVORITE_TAG_NOT_FOUND.getMessage()));
+    }
+
+    @Transactional
+    public void deleteFavoriteTag(FavoriteTag favoriteTag) {
+        favoriteTagRepository.delete(favoriteTag);
+    }
+
+    public TagDto.TagSummary createTagSummary(String tagContent, Long memberPk) {
+        return TagDto.TagSummary.builder()
+                .content(tagContent)
+                .cardCnt(feedTagRepository.countTagFeeds(tagContent))
+                .isFavorite(favoriteTagRepository.existsByTag_ContentAndMember_Pk(tagContent, memberPk))
+                .build();
     }
 }

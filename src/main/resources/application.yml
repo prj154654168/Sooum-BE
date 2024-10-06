@@ -32,6 +32,16 @@ spring:
     multipart:
       max-file-size: 3MB
 
+  cloud:
+    aws:
+      s3:
+        bucket: sooum-img
+      stack.auto: false
+      region: ap-northeast-2
+      credentials:
+        accessKey: ${accessKey}
+        secretKey: ${secretKey}
+
 sooum:
   server:
     ip: ${IP}

@@ -49,6 +49,14 @@ public class CommentLikeService {
         return commentLikeRepository.findByTargetCardIn(commentCards);
     }
 
+    public void deleteAllFeedLikes(Long commentCardPk) {
+        commentLikeRepository.deleteAllInBatch(commentLikeRepository.findAllByTargetCard_Pk(commentCardPk));
+    }
+
+    public void deleteByCommentCards(List<CommentCard> comments) {
+        commentLikeRepository.deleteByCommentCard(comments);
+    }
+      
     public int countLike(Long cardPk) {
         return commentLikeRepository.countByTargetCard_Pk(cardPk);
     }

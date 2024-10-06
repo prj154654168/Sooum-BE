@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,12 +20,17 @@ public class BlacklistService {
     private final TokenProvider tokenProvider;
     private final BlacklistRepository blacklistRepository;
 
-    public void save(String token, Duration timeout) {
-        redisTemplate.opsForValue().set(token, tokenProvider.getId(token).orElseThrow(MemberNotFoundException::new), timeout);
+    public void save(String token, LocalDateTime expiredAt) {
+        redisTemplate.opsForValue()
+                .set(
+                        token,
+                        tokenProvider.getId(token).orElseThrow(MemberNotFoundException::new),
+                        Duration.between(LocalDateTime.now(), expiredAt)
+                );
 
         Blacklist blacklist = Blacklist.builder()
                 .token(token)
-                .expiredAt(Instant.now().plusSeconds(timeout.toSeconds()))
+                .expiredAt(expiredAt)
                 .build();
 
         blacklistRepository.save(blacklist);
@@ -37,7 +42,7 @@ public class BlacklistService {
 
     public void fetch() {
         List<Blacklist> legacy = blacklistRepository.findAll().stream()
-                .filter(blacklist -> blacklist.getExpiredAt().isBefore(Instant.now()))
+                .filter(blacklist -> blacklist.getExpiredAt().isBefore(LocalDateTime.now()))
                 .toList();
 
         blacklistRepository.deleteAllInBatch(legacy);
