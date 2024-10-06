@@ -11,6 +11,7 @@ import com.sooum.core.domain.tag.repository.TagRepository;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,4 +52,7 @@ public class TagService {
         tagRepository.saveAll(tags);
     }
 
+    public List<Tag> findRecommendTags(List<Tag> excludeTags) {
+        return tagRepository.findRecommendTagList(excludeTags, PageRequest.ofSize(10));
+    }
 }
