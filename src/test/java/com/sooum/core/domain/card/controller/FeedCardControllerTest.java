@@ -1,8 +1,9 @@
 package com.sooum.core.domain.card.controller;
 
+import com.sooum.core.domain.card.dto.TagFeedCardDto;
 import com.sooum.core.domain.card.service.DetailFeedService;
-import com.sooum.core.domain.card.service.FeedLikeService;
 import com.sooum.core.domain.card.service.FeedService;
+import com.sooum.core.domain.card.service.TagFeedService;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import com.sooum.core.global.config.mvc.WebMvcConfig;
@@ -17,18 +18,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.hateoas.Link;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.doNothing;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.BDDMockito.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @WebMvcTest(FeedCardController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -43,53 +45,46 @@ class FeedCardControllerTest {
     @Autowired
     MockMvc mockMvc;
     @MockBean
-    FeedLikeService feedLikeService;
-    @MockBean
     FeedService feedService;
     @MockBean
     DetailFeedService detailFeedService;
-    private static final String ACCESS_TOKEN = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjY5Mjk0MzMsImV4cCI6MTAxNzI2OTI5NDMzLCJzdWIiOiJBY2Nlc3NUb2tlbiIsImlkIjo2MjUwNDc5NzMyNTA1MTUxNTMsInJvbGUiOiJVU0VSIn0.aL4Tr3FaSwvu9hOQISAvGJfCHBGCV9jRo_BfTQkBssU";
-    private static final String TOKEN_HEADER = "Authorization";
+    @MockBean
+    TagFeedService tagFeedService;
 
     @Test
-    @DisplayName("피드 카드 좋아요 성공")
+    @DisplayName("태그에 해당하는 글이 존재x")
     @WithMockUser
-    void createFeedLikeSuccess() throws Exception{
+    void findTagFeeds_NotExist() throws Exception{
         // given
-        doNothing().when(feedLikeService).createFeedLike(any(), any());
+        given(tagFeedService.createTagFeedsInfo(any(), any(), any(), any(), any())).willReturn(Collections.emptyList());
 
         // when
         ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/cards/{cardPk}/like", 1L)
-                        .header(TOKEN_HEADER, ACCESS_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .get("/cards/tags/{tagContent}", "태그")
         );
 
         // then
-        resultActions.andDo(MockMvcResultHandlers.print());
-        resultActions.andExpect(MockMvcResultMatchers.status().isCreated());
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.httpCode").value(HttpStatus.CREATED.value()));
+        resultActions.andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
-    @DisplayName("피드 카드 좋아요 삭제")
+    @DisplayName("태그에 해당하는 글이 존재")
     @WithMockUser
-    void deleteFeedLikeSuccess() throws Exception{
+    void findTagFeeds_Exist() throws Exception{
         // given
-        doNothing().when(feedLikeService).deleteFeedLike(any(), any());
+        List<TagFeedCardDto> mockResult = List.of(mock(TagFeedCardDto.class));
+        Link mockLink = linkTo(methodOn(FeedCardController.class).getClass()).slash("/").withSelfRel();
+        given(tagFeedService.createTagFeedsInfo(any(), any(), any(), any(), any())).willReturn(mockResult);
+        given(tagFeedService.createNextTagFeedsUrl(any(), any())).willReturn(mockLink);
 
         // when
         ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .delete("/cards/1/like")
-                        .header(TOKEN_HEADER, ACCESS_TOKEN)
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .get("/cards/tags/{tagContent}", "태그")
         );
 
         // then
-        resultActions.andDo(MockMvcResultHandlers.print());
-        resultActions.andExpect(MockMvcResultMatchers.status().isNoContent());
+        resultActions.andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
