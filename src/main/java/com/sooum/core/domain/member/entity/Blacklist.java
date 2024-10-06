@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -20,10 +20,10 @@ public class Blacklist extends BaseEntity {
     @Column(name = "TOKEN")
     private String token;
 
-    private Instant expiredAt;
+    private LocalDateTime expiredAt;
 
     @Builder
-    public Blacklist(String token, Instant expiredAt) {
+    public Blacklist(String token, LocalDateTime expiredAt) {
         this.token = token;
         this.expiredAt = expiredAt;
     }

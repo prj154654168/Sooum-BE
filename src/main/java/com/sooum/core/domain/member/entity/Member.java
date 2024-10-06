@@ -71,4 +71,9 @@ public class Member extends BaseEntity {
         this.profileCard = null;
         this.role = Role.USER;
     }
+
+    public void ban() {
+        banCount++;
+        role = Role.BANNED;
+    }
 }
