@@ -24,7 +24,7 @@ public class Tag extends BaseEntity {
     @Column(name = "CONTENT")
     private String content;
 
-    @Column(name = "count")
+    @Column(name = "COUNT")
     private int count;
 
     @Column(name = "IS_ACTIVE")
@@ -42,5 +42,9 @@ public class Tag extends BaseEntity {
 
     public static void minusCount(Tag tag) {
         tag.count--;
+    }
+
+    public static void plusCount(Tag tag) {
+        tag.count++;
     }
 }
