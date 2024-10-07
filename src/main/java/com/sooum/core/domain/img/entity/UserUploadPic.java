@@ -1,8 +1,10 @@
 package com.sooum.core.domain.img.entity;
 
+import com.sooum.core.domain.card.entity.Card;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.common.entity.BaseEntity;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -31,14 +33,14 @@ public class UserUploadPic extends BaseEntity {
     private CommentCard commentCard;
 
     @Builder
-    public UserUploadPic(String imgName, FeedCard feedCard) {
+    public UserUploadPic(String imgName, Card card) {
         this.imgName = imgName;
-        this.feedCard = feedCard;
-    }
-
-    @Builder
-    public UserUploadPic(String imgName, CommentCard commentCard) {
-        this.imgName = imgName;
-        this.commentCard = commentCard;
+        if (card instanceof FeedCard feedCard) {
+            this.feedCard = feedCard;
+        } else if (card instanceof CommentCard commentCard) {
+            this.commentCard = commentCard;
+        } else {
+            throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
+        }
     }
 }

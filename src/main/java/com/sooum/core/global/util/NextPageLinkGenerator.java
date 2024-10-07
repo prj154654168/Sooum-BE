@@ -9,7 +9,6 @@ import com.sooum.core.domain.card.dto.LatestFeedCardDto;
 import com.sooum.core.domain.tag.controller.TagController;
 import com.sooum.core.domain.tag.dto.TagDto;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.List;
@@ -47,13 +46,13 @@ public abstract class NextPageLinkGenerator {
                         .withRel("detail"))).toList();
     }
 
-    public static <T extends RepresentationModel<T>> List<T> appendEachTagDetailLink(List<T> tagDtoList) {
+    public static <T extends TagDto.ReadTagResponse> List<T> appendEachTagDetailLink(List<T> tagDtoList) {
         if (tagDtoList.isEmpty()) {
             return tagDtoList;
         }
         return tagDtoList.stream()
                 .peek(tag -> tag.add(WebMvcLinkBuilder.linkTo(TagController.class)
-                        .slash("/"+  ((TagDto.ReadTagResponse) tag).getId())
+                        .slash("/"+  tag.getId())
                         .withRel("tag-feed"))).toList();
     }
 
@@ -63,7 +62,7 @@ public abstract class NextPageLinkGenerator {
         }
         return tagDtoList.stream()
                 .peek(tag -> tag.add(WebMvcLinkBuilder.linkTo(TagController.class)
-                        .slash("/"+   tag.getTagId())
+                        .slash("/"+ tag.getTagId())
                         .withRel("tag-feed"))).toList();
     }
 }

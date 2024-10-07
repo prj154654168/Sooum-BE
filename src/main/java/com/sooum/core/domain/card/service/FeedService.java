@@ -7,6 +7,7 @@ import com.sooum.core.domain.card.entity.*;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.img.service.ImgService;
+import com.sooum.core.domain.img.service.UserImgService;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.domain.tag.entity.CommentTag;
@@ -16,8 +17,12 @@ import com.sooum.core.domain.tag.service.CommentTagService;
 import com.sooum.core.domain.tag.service.FeedTagService;
 import com.sooum.core.domain.tag.service.TagService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import com.sooum.core.global.regex.BadWordFiltering;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +40,14 @@ public class FeedService {
     private final FeedTagService feedTagService;
     private final ImgService imgService;
     private final CommentTagService commentTagService;
+    private final UserImgService userImgService;
+    private final BadWordFiltering badWordFiltering;
 
     @Transactional
+    @Retryable(
+            retryFor = {ObjectOptimisticLockingFailureException.class},
+        maxAttempts = 5,
+        backoff = @Backoff(delay = 25, multiplier = 2))
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto) {
         if (checkForTagsInStory(cardDto)) {
             throw new RuntimeException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
@@ -51,6 +62,10 @@ public class FeedService {
         FeedCard feedCard = cardDto.of(member);
         feedCardService.saveFeedCard(feedCard);
 
+        if (isUserImage(cardDto)){
+            userImgService.saveUserUploadPic(feedCard, cardDto.getImgName());
+        }
+
         List<Tag> tagContents = processTags(cardDto);
         List<FeedTag> feedTagList = tagContents.stream()
                 .map(tag -> FeedTag.builder().feedCard(feedCard).tag(tag).build())
@@ -59,8 +74,12 @@ public class FeedService {
     }
 
     @Transactional
+    @Retryable(
+            retryFor = {ObjectOptimisticLockingFailureException.class},
+            maxAttempts = 5,
+            backoff = @Backoff(100))
     public void createCommentCard(Long memberPk, Long cardPk, CreateCommentDto cardDto) {
-        if(cardDto.getImgType().equals(ImgType.USER) && !imgService.verifyImgSaved(cardDto.getImgName())) {
+        if(checkImgSaveError(cardDto)) {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
         }
 
@@ -79,6 +98,10 @@ public class FeedService {
 
         commentCardService.saveComment(commentCard);
 
+        if (isUserImage(cardDto)){
+            userImgService.saveUserUploadPic(commentCard, cardDto.getImgName());
+        }
+
         List<Tag> tagContents = processTags(cardDto);
         List<CommentTag> commentTagList = tagContents.stream()
                 .map(tag -> CommentTag.builder().commentCard(commentCard).tag(tag).build())
@@ -89,12 +112,13 @@ public class FeedService {
 
     private List<Tag> processTags(CreateCardDto cardDto){
         List<Tag> tagContents = tagService.findTagList(cardDto.getTags());
-        //todo tagContents element count ++
+        tagContents.forEach(Tag::plusCount);
+
         List<String> list = tagContents.stream().map(Tag::getContent).toList();
         cardDto.getTags().removeAll(list);
 
         List<Tag> tagList = cardDto.getTags().stream()
-                .map(tagContent -> Tag.builder().content(tagContent).build()) //TODO: 필터링 메소드 추가
+                .map(tagContent -> Tag.builder().content(tagContent).isActive(badWordFiltering.checkBadWord(tagContent)).build())
                 .toList();
 
         tagService.saveAll(tagList);
@@ -103,8 +127,8 @@ public class FeedService {
         return tagContents;
     }
 
-    private boolean checkImgSaveError(CreateFeedCardDto cardDto) {
-        return cardDto.getImgType().equals(ImgType.USER) && !imgService.verifyImgSaved(cardDto.getImgName());
+    private boolean checkImgSaveError(CreateCardDto cardDto) {
+        return isUserImage(cardDto) && !imgService.verifyImgSaved(cardDto.getImgName()) && !imgService.isModeratingImg(cardDto.getImgName());
     }
 
     private static boolean checkForTagsInStory(CreateFeedCardDto cardDto) {
@@ -113,6 +137,10 @@ public class FeedService {
 
     private static boolean hasTags(CreateFeedCardDto cardDto) {
         return cardDto.getFeedTags() != null && !cardDto.getFeedTags().isEmpty();
+    }
+
+    private static boolean isUserImage(CreateCardDto cardDto) {
+        return cardDto.getImgType().equals(ImgType.USER);
     }
 
     @Transactional
@@ -208,7 +236,7 @@ public class FeedService {
         return commentCard.getParentCardType().equals(CardType.COMMENT_CARD);
     }
 
-    private void deleteFeedCard(Long feedCardPk, Long writerPk) {
+    void deleteFeedCard(Long feedCardPk, Long writerPk) {
         if (isNotFeedCardOwner(feedCardPk, writerPk)) return;
 
         List<CommentCard> childCommentCardList = commentCardService.findChildCommentCardList(feedCardPk);
