@@ -128,7 +128,7 @@ public class FeedService {
     }
 
     private boolean checkImgSaveError(CreateCardDto cardDto) {
-        return isUserImage(cardDto) && !imgService.verifyImgSaved(cardDto.getImgName());
+        return isUserImage(cardDto) && !imgService.verifyImgSaved(cardDto.getImgName()) && !imgService.isModeratingImg(cardDto.getImgName());
     }
 
     private static boolean checkForTagsInStory(CreateFeedCardDto cardDto) {
