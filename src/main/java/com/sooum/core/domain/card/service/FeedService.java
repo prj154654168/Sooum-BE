@@ -47,7 +47,7 @@ public class FeedService {
     @Retryable(
             retryFor = {ObjectOptimisticLockingFailureException.class},
         maxAttempts = 5,
-        backoff = @Backoff(100))
+        backoff = @Backoff(delay = 25, multiplier = 2))
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto) {
         if (checkForTagsInStory(cardDto)) {
             throw new RuntimeException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
