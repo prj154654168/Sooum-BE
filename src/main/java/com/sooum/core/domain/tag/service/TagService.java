@@ -85,6 +85,9 @@ public class TagService {
         tagRepository.saveAll(tags);
     }
 
+    public List<Tag> findRecommendTags(List<Tag> excludeTags) {
+        return tagRepository.findRecommendTagList(excludeTags, PageRequest.ofSize(10));
+    }
     public boolean isExistFavoriteTag(String tagContent, Long memberPk) {
         return favoriteTagRepository.existsByTag_ContentAndMember_Pk(tagContent, memberPk);
     }

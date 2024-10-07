@@ -7,6 +7,7 @@ import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
+import com.sooum.core.domain.tag.service.RecommendTagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tags")
 public class TagController {
     private final FavoriteTagService favoriteTagService;
     private final TagService tagService;
+    private final RecommendTagService recommendTagService;
 
     @GetMapping("/{tagPk}")
     ResponseEntity<?> findFeedsByTag(@PathVariable("tagPk") Long tagPk) {
@@ -74,6 +78,25 @@ public class TagController {
                                 .responseMessage("Tag summary retrieve successfully")
                                 .build())
                         .content(tagSummary)
+                        .build()
+        );
+    }
+
+    @GetMapping("/recommendation")
+    ResponseEntity<?> findRecommendationsByTag(@CurrentUser Long memberPk) {
+        List<TagDto.RecommendTag> recommendedTags = recommendTagService.findRecommendedTags(memberPk);
+        if (recommendedTags.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(
+                ResponseCollectionModel.<TagDto.RecommendTag>builder()
+                        .status(ResponseStatus.builder()
+                                .httpStatus(HttpStatus.OK)
+                                .httpCode(HttpStatus.OK.value())
+                                .responseMessage("Retrieve recommended tag list data")
+                                .build()
+                        )
+                        .content(recommendedTags)
                         .build()
         );
     }

@@ -21,6 +21,20 @@ public class TagDto{
         }
     }
 
+    @Getter
+    public static class RecommendTag extends RepresentationModel<RecommendTag> {
+        private final String tagId;
+        private final String tagContent;
+        private final String tagUsageCnt;
+
+        @Builder
+        public RecommendTag(String tagId, String tagContent, String tagUsageCnt) {
+            this.tagId = tagId;
+            this.tagContent = tagContent;
+            this.tagUsageCnt = tagUsageCnt;
+        }
+    }
+
     public record RelatedTag(
             Integer count,
             String content
