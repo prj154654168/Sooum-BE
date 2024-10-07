@@ -34,13 +34,20 @@ spring:
 
   cloud:
     aws:
+      region: ap-northeast-2
+      stack.auto: false
+      rekognition:
+        credentials:
+          accessKey: ${accessKey}
+          secretKey: ${secretKey}
       s3:
         bucket: sooum-img
-      stack.auto: false
-      region: ap-northeast-2
-      credentials:
-        accessKey: ${accessKey}
-        secretKey: ${secretKey}
+        credentials:
+          accessKey: ${accessKey}
+          secretKey: ${secretKey}
+
+
+
 
 sooum:
   server:

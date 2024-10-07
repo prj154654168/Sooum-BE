@@ -2,12 +2,18 @@ package com.sooum.core.domain.img.service;
 
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.img.dto.ImgUrlInfo;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.rekognition.RekognitionClient;
+import software.amazon.awssdk.services.rekognition.model.DetectModerationLabelsRequest;
+import software.amazon.awssdk.services.rekognition.model.Image;
+import software.amazon.awssdk.services.rekognition.model.ModerationLabel;
+import software.amazon.awssdk.services.rekognition.model.S3Object;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
@@ -36,6 +42,7 @@ public class AWSImgService implements ImgService{
 
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
+    private final RekognitionClient rekognitionClient;
 
     private static final String DEFAULT_IMG = "card/default/";
     private static final String USER_IMG = "card/user/";
@@ -43,7 +50,43 @@ public class AWSImgService implements ImgService{
     private static final int DEFAULT_IMG_CNT = 8;
     private static final String DEFAULT_IMG_EXTENSION = "jpeg";
 
+    /***
+     *
+     * @param imgName 확장자를 포함한 이미지 이름을 넣어주세요. Ex) dfjEiG-esi-2342j.jpeg
+     * @return true인 경우 사용 불가능한 사진입니다.
+     */
+    @Override
+    public boolean isModeratingImg(String imgName) {
+        DetectModerationLabelsRequest build = DetectModerationLabelsRequest.builder()
+                .minConfidence(70F)
+                .image(Image.builder()
+                        .s3Object(S3Object.builder()
+                                .bucket(bucket)
+                                .name(USER_IMG + imgName)
+                                .build())
+                        .build())
+                .build();
 
+        List<ModerationLabel> moderationLabels = rekognitionClient.detectModerationLabels(build).moderationLabels();
+        for (ModerationLabel label : moderationLabels) {
+            if (isExplicitNudity(label) || isExplicitSexualActivity(label) || isSexToys(label)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isSexToys(ModerationLabel label) {
+        return label.name().equalsIgnoreCase("Sex Toys") && label.taxonomyLevel().equals(2);
+    }
+
+    private static boolean isExplicitSexualActivity(ModerationLabel label) {
+        return label.name().equalsIgnoreCase("Explicit Sexual Activity") && label.taxonomyLevel().equals(2);
+    }
+
+    private static boolean isExplicitNudity(ModerationLabel label) {
+        return label.name().equalsIgnoreCase("Explicit Nudity") && label.taxonomyLevel().equals(2);
+    }
 
     @Override
     public Link findImgUrl(ImgType imgType, String imgName) {
@@ -94,6 +137,9 @@ public class AWSImgService implements ImgService{
 
     @Override
     public ImgUrlInfo createUserUploadUrl(String extension) {
+        if (!extension.equalsIgnoreCase("jpeg")) {
+            throw new UnsupportedOperationException(ExceptionMessage.UNSUPPORTED_IMAGE_FORMAT.getMessage());
+        }
         String imgName = UUID.randomUUID() + "." + extension;
         return ImgUrlInfo.builder()
                 .imgName(imgName)
@@ -117,7 +163,7 @@ public class AWSImgService implements ImgService{
                     .build());
             s3Client.close();
         } catch (Exception e) {
-            log.info("{}",e.getMessage());
+            log.error("{}",e.getMessage());
             return false;
         }
         return true;
