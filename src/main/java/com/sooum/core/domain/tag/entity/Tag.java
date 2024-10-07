@@ -27,6 +27,7 @@ public class Tag extends BaseEntity {
     @Column(name = "COUNT")
     private int count;
 
+    @NotNull
     @Column(name = "IS_ACTIVE")
     private boolean isActive;
 
