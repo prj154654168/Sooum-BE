@@ -18,8 +18,12 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     List<Tag> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     List<Tag> findAllByIsActiveIsTrue();
-  
+
     @Query("select t from Tag t where t.content in :tagContents")
     List<Tag> findTagList(@Param("tagContents") List<String> tagContents);
+
+    @Query("select t from Tag t where t not in :excludeTags order by t.count")
+    List<Tag> findRecommendTagList(@Param("excludeTags") List<Tag> excludeTags, Pageable pageable);
+
     Optional<Tag> findByContent(String content);
 }

@@ -56,4 +56,14 @@ public abstract class NextPageLinkGenerator {
                         .slash("/"+  ((TagDto.ReadTagResponse) tag).getId())
                         .withRel("tag-feed"))).toList();
     }
+
+    public static <T extends TagDto.RecommendTag> List<T> appendEachRecommendTagDetailLink(List<T> tagDtoList) {
+        if (tagDtoList.isEmpty()) {
+            return tagDtoList;
+        }
+        return tagDtoList.stream()
+                .peek(tag -> tag.add(WebMvcLinkBuilder.linkTo(TagController.class)
+                        .slash("/"+   tag.getTagId())
+                        .withRel("tag-feed"))).toList();
+    }
 }
