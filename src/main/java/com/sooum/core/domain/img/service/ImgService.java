@@ -12,4 +12,7 @@ public interface ImgService {
     String findIssuedDefaultImgsName(List<ImgUrlInfo> imgsUrlInfo);
     ImgUrlInfo createUserUploadUrl(String extension);
     boolean verifyImgSaved(String imgName);
+    default boolean isModeratingImg(String imgName){
+        return false;
+    }
 }
