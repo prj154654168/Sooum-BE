@@ -114,15 +114,17 @@ public class FeedService {
         List<Tag> tagContents = tagService.findTagList(cardDto.getTags());
         tagContents.forEach(Tag::plusCount);
 
-        List<String> list = tagContents.stream().map(Tag::getContent).toList();
-        cardDto.getTags().removeAll(list);
+        if(hasTags(cardDto)) {
+            List<String> list = tagContents.stream().map(Tag::getContent).toList();
+            cardDto.getTags().removeAll(list);
 
-        List<Tag> tagList = cardDto.getTags().stream()
-                .map(tagContent -> Tag.builder().content(tagContent).isActive(badWordFiltering.checkBadWord(tagContent)).build())
-                .toList();
+            List<Tag> tagList = cardDto.getTags().stream()
+                    .map(tagContent -> Tag.builder().content(tagContent).isActive(badWordFiltering.checkBadWord(tagContent)).build())
+                    .toList();
 
-        tagService.saveAll(tagList);
-        tagContents.addAll(tagList);
+            tagService.saveAll(tagList);
+            tagContents.addAll(tagList);
+        }
 
         return tagContents;
     }
@@ -135,8 +137,8 @@ public class FeedService {
         return cardDto.isStory() && hasTags(cardDto);
     }
 
-    private static boolean hasTags(CreateFeedCardDto cardDto) {
-        return cardDto.getFeedTags() != null && !cardDto.getFeedTags().isEmpty();
+    private static boolean hasTags(CreateCardDto cardDto) {
+        return cardDto.getTags() != null && !cardDto.getTags().isEmpty();
     }
 
     private static boolean isUserImage(CreateCardDto cardDto) {
