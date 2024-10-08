@@ -53,8 +53,8 @@ public class FeedService {
             throw new RuntimeException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
         }
 
-        if(checkImgSaveError(cardDto)) {
-            throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
+        if (isUserImage(cardDto)) {
+            validateUserImage(cardDto);
         }
 
         Member member = memberService.findByPk(memberPk);
@@ -79,8 +79,8 @@ public class FeedService {
             maxAttempts = 5,
             backoff = @Backoff(100))
     public void createCommentCard(Long memberPk, Long cardPk, CreateCommentDto cardDto) {
-        if(checkImgSaveError(cardDto)) {
-            throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
+        if (isUserImage(cardDto)) {
+            validateUserImage(cardDto);
         }
 
         Member member = memberService.findByPk(memberPk);
@@ -129,8 +129,14 @@ public class FeedService {
         return tagContents;
     }
 
-    private boolean checkImgSaveError(CreateCardDto cardDto) {
-        return isUserImage(cardDto) && !imgService.verifyImgSaved(cardDto.getImgName()) && !imgService.isModeratingImg(cardDto.getImgName());
+    private void validateUserImage(CreateCardDto cardDto) {
+        if (imgService.isModeratingImg(cardDto.getImgName())) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
+        }
+
+        if(!imgService.verifyImgSaved(cardDto.getImgName())) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
+        }
     }
 
     private static boolean checkForTagsInStory(CreateFeedCardDto cardDto) {
