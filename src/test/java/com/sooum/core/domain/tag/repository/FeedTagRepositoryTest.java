@@ -10,12 +10,15 @@ import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import com.sooum.core.domain.member.repository.MemberRepository;
 import com.sooum.core.domain.tag.entity.FeedTag;
 import com.sooum.core.domain.tag.entity.Tag;
+import com.sooum.core.global.config.redis.RedisConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ import java.util.List;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(RedisConfig.class)
+@MockBean(CachedTagRepository.class)
 class FeedTagRepositoryTest {
     private static final List<String> tagContents = List.of(
             "우정", "사랑", "고민"
@@ -48,7 +53,7 @@ class FeedTagRepositoryTest {
         createFeedTags(tags, feedCards);
         PageRequest pageRequest = PageRequest.of(0, FEED_SIZE);
         // when
-        List<FeedCard> findTagFeeds = feedTagRepository.findFeeds("고민", pageRequest);
+        List<FeedCard> findTagFeeds = feedTagRepository.findFeeds(tags.get(2).getPk(), pageRequest);
 
         // then
         Assertions.assertThat(isSatisfyTagFeedCond(findTagFeeds)).isTrue();
@@ -70,7 +75,7 @@ class FeedTagRepositoryTest {
         List<Tag> tags = createTags();
         createFeedTags(tags, feedCards);
         // when
-        Integer tagFeedCnt = feedTagRepository.countTagFeeds("고민");
+        Integer tagFeedCnt = feedTagRepository.countTagFeeds(tags.get(2).getPk());
 
         // then
         Assertions.assertThat(tagFeedCnt).isEqualTo(FEED_SIZE / tagContents.size());

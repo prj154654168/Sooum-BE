@@ -6,17 +6,22 @@ import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import com.sooum.core.domain.member.repository.MemberRepository;
 import com.sooum.core.domain.tag.entity.FavoriteTag;
 import com.sooum.core.domain.tag.entity.Tag;
+import com.sooum.core.global.config.redis.RedisConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 
 import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(RedisConfig.class)
+@MockBean(CachedTagRepository.class)
 class FavoriteTagRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
@@ -38,7 +43,7 @@ class FavoriteTagRepositoryTest {
         createFavoriteTag(tag, member);
 
         // when
-        boolean isExist = favoriteTagRepository.existsByTag_ContentAndMember_Pk(TAG, member.getPk());
+        boolean isExist = favoriteTagRepository.existsByTag_PkAndMember_Pk(tag.getPk(), member.getPk());
 
         // then
         Assertions.assertThat(isExist).isTrue();
@@ -51,7 +56,7 @@ class FavoriteTagRepositoryTest {
         Member member = createMember();
 
         // when
-        boolean isExist = favoriteTagRepository.existsByTag_ContentAndMember_Pk(TAG, member.getPk());
+        boolean isExist = favoriteTagRepository.existsByTag_PkAndMember_Pk(1L, member.getPk());
 
         // then
         Assertions.assertThat(isExist).isFalse();
@@ -66,7 +71,7 @@ class FavoriteTagRepositoryTest {
         createFavoriteTag(tag, member);
 
         // when
-        Optional<FavoriteTag> findFavoriteTag = favoriteTagRepository.findByTag_ContentAndMember_Pk(TAG, member.getPk());
+        Optional<FavoriteTag> findFavoriteTag = favoriteTagRepository.findByTag_PkAndMember_Pk(tag.getPk(), member.getPk());
 
         // then
         Assertions.assertThat(findFavoriteTag.isPresent()).isTrue();
@@ -80,7 +85,7 @@ class FavoriteTagRepositoryTest {
         Tag tag = createTag();
 
         // when
-        Optional<FavoriteTag> findFavoriteTag = favoriteTagRepository.findByTag_ContentAndMember_Pk(TAG, member.getPk());
+        Optional<FavoriteTag> findFavoriteTag = favoriteTagRepository.findByTag_PkAndMember_Pk(tag.getPk(), member.getPk());
 
         // then
         Assertions.assertThat(findFavoriteTag.isEmpty()).isTrue();

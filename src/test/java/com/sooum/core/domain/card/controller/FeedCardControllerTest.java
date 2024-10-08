@@ -4,9 +4,11 @@ import com.sooum.core.domain.card.dto.TagFeedCardDto;
 import com.sooum.core.domain.card.service.DetailFeedService;
 import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.domain.card.service.TagFeedService;
+import com.sooum.core.domain.tag.repository.CachedTagRepository;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import com.sooum.core.global.config.mvc.WebMvcConfig;
+import com.sooum.core.global.config.redis.RedisConfig;
 import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +42,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @MockBean(JobExplorer.class)
 @MockBean(JobOperator.class)
 @MockBean(JobRepository.class)
-@Import(SecurityConfig.class)
+@MockBean(CachedTagRepository.class)
+@Import(value = { SecurityConfig.class, RedisConfig.class})
 class FeedCardControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -61,7 +64,7 @@ class FeedCardControllerTest {
         // when
         ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/cards/tags/{tagContent}", "태그")
+                        .get("/cards/tags/{tagPk}", 1L)
         );
 
         // then
@@ -81,7 +84,7 @@ class FeedCardControllerTest {
         // when
         ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get("/cards/tags/{tagContent}", "태그")
+                        .get("/cards/tags/{tagPk}", 1L)
         );
 
         // then

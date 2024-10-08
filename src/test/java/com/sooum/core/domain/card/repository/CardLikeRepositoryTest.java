@@ -11,16 +11,22 @@ import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import com.sooum.core.domain.member.repository.MemberRepository;
+import com.sooum.core.domain.tag.repository.CachedTagRepository;
+import com.sooum.core.global.config.redis.RedisConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
+@Import(RedisConfig.class)
+@MockBean(CachedTagRepository.class)
 class CardLikeRepositoryTest {
     @Autowired
     MemberRepository memberRepository;

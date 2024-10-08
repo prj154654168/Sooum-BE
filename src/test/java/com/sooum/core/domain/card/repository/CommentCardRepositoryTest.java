@@ -9,6 +9,8 @@ import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import com.sooum.core.domain.member.repository.MemberRepository;
+import com.sooum.core.domain.tag.repository.CachedTagRepository;
+import com.sooum.core.global.config.redis.RedisConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -23,8 +27,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(RedisConfig.class)
+@MockBean(CachedTagRepository.class)
 class CommentCardRepositoryTest {
     @Autowired
     MemberRepository memberRepository;

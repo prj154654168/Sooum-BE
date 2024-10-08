@@ -11,7 +11,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,7 +37,7 @@ class LocalImgServiceTest {
         List<String> previousDefaultImgs = allDefaultImgs.subList(0, DEFAULT_IMG_CNT);
 
         // when
-        List<ImgUrlInfo> result = localImgService.createDefaultImgRetrieveUrls(Optional.of(previousDefaultImgs));
+        List<ImgUrlInfo> result = localImgService.createDefaultImgRetrieveUrls(previousDefaultImgs);
 
         // then
         List<String> resultImgNames = result.stream().map(ImgUrlInfo::getImgName).toList();
@@ -52,7 +51,7 @@ class LocalImgServiceTest {
         // given
 
         // when
-        List<ImgUrlInfo> result = localImgService.createDefaultImgRetrieveUrls(Optional.empty());
+        List<ImgUrlInfo> result = localImgService.createDefaultImgRetrieveUrls(Collections.emptyList());
 
         // then
         Assertions.assertThat(result.size()).isEqualTo(DEFAULT_IMG_CNT);
