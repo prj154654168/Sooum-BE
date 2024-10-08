@@ -25,12 +25,6 @@ public class TagController {
     private final TagService tagService;
     private final RecommendTagService recommendTagService;
 
-    @GetMapping("/{tagPk}")
-    ResponseEntity<?> findFeedsByTag(@PathVariable("tagPk") Long tagPk) {
-        //TODO: 추후 태그별 피드조회 구현
-        return null;
-    }
-
     @GetMapping("/search")
     ResponseEntity<?> findRelatedTags(@RequestParam String keyword) {
         return ResponseEntity.ok(ResponseCollectionModel.<TagDto.RelatedTag>builder()
@@ -44,10 +38,10 @@ public class TagController {
                 .build());
     }
 
-    @PostMapping("/{tagContent}/favorite")
-    public ResponseEntity<ResponseStatus> saveFavoriteTag(@PathVariable String tagContent,
+    @PostMapping("/{tagPk}/favorite")
+    public ResponseEntity<ResponseStatus> saveFavoriteTag(@PathVariable Long tagPk,
                                                           @CurrentUser Long memberPk) {
-        favoriteTagService.saveFavoriteTag(tagContent, memberPk);
+        favoriteTagService.saveFavoriteTag(tagPk, memberPk);
 
         return ResponseEntity.created(URI.create(""))
                 .body(ResponseStatus.builder()
@@ -57,18 +51,18 @@ public class TagController {
                         .build());
     }
 
-    @DeleteMapping("/{tagContent}/favorite")
-    public ResponseEntity<ResponseStatus> deleteFavoriteTag(@PathVariable String tagContent,
+    @DeleteMapping("/{tagPk}/favorite")
+    public ResponseEntity<ResponseStatus> deleteFavoriteTag(@PathVariable Long tagPk,
                                                             @CurrentUser Long memberPk) {
-        favoriteTagService.deleteFavoriteTag(tagContent, memberPk);
+        favoriteTagService.deleteFavoriteTag(tagPk, memberPk);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{tagContent}/summary")
-    public ResponseEntity<ResponseEntityModel<TagDto.TagSummary>> createTagSummary(@PathVariable String tagContent,
+    @GetMapping("/{tagPk}/summary")
+    public ResponseEntity<ResponseEntityModel<TagDto.TagSummary>> createTagSummary(@PathVariable Long tagPk,
                                                                                    @CurrentUser Long memberPk) {
-        TagDto.TagSummary tagSummary = tagService.createTagSummary(tagContent, memberPk);
+        TagDto.TagSummary tagSummary = tagService.createTagSummary(tagPk, memberPk);
 
         return ResponseEntity.ok(
                 ResponseEntityModel.<TagDto.TagSummary>builder()
