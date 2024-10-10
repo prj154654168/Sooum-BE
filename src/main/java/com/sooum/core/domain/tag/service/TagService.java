@@ -49,8 +49,8 @@ public class TagService {
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
     }
 
-    public List<TagDto.RelatedTag> findRelatedTags(String keyword) {
-        return tagRepository.findByKeyword(keyword, PageRequest.of(0, 5))
+    public List<TagDto.RelatedTag> findRelatedTags(String keyword, Integer size) {
+        return tagRepository.findByKeyword(keyword, PageRequest.of(0, size))
                 .stream()
                 .map(tag -> new TagDto.RelatedTag(tag.getCount(), tag.getContent()))
                 .toList();
