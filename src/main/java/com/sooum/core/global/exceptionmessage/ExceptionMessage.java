@@ -16,6 +16,7 @@ public enum ExceptionMessage {
     TAG_NOT_FOUND("태그를 찾을 수 없습니다."),
     ALREADY_TAG_FAVORITE("이미 즐겨찾기한 태그입니다"),
     UNSUPPORTED_IMAGE_FORMAT("지원하지 않는 확장자입니다."),
+    IMAGE_REJECTED_BY_MODERATION("부적절한 이미지 파일입니다."),
     FAVORITE_TAG_NOT_FOUND("즐겨찾기한 기록을 찾을 수 없습니다.");
 
     private final String message;
