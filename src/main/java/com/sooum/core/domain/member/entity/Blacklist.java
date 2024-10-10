@@ -20,6 +20,7 @@ public class Blacklist extends BaseEntity {
     @Column(name = "TOKEN")
     private String token;
 
+    @Column(name = "EXPIRED_AT")
     private LocalDateTime expiredAt;
 
     @Builder
