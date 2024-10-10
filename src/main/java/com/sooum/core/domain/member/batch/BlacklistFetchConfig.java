@@ -18,15 +18,17 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
-import org.springframework.batch.item.redis.RedisItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Configuration
@@ -69,7 +71,7 @@ public class BlacklistFetchConfig {
     @JobScope
     public Step blacklistCacheStep() {
         return new StepBuilder(SECOND_STEP_NAME, jobRepository)
-                .<Blacklist, Void>chunk(CHUNK_SIZE, transactionManager)
+                .<Blacklist, Blacklist>chunk(CHUNK_SIZE, transactionManager)
                 .reader(blacklistReader())
                 .writer(blacklistCacheWriter())
                 .build();
@@ -105,12 +107,21 @@ public class BlacklistFetchConfig {
     }
 
     @Bean
-    public RedisItemWriter<String, Object> blacklistCacheWriter() {
-        return null;    // 추후 생성
+    public ItemWriter<Blacklist> blacklistCacheWriter() {
+        return blacklists -> {
+            redisTemplate.executePipelined((RedisCallback<?>) (redisConnection) -> {
+                for (Blacklist blacklist : blacklists) {
+                    String key = "blacklist:" + blacklist.getToken();
+                    long ttl = calculateTTLForBlacklist(blacklist);
+                    redisTemplate.opsForValue().setIfAbsent(key, blacklist, ttl, TimeUnit.SECONDS);
+                }
+                return null;
+            });
+        };
     }
 
     private long calculateTTLForBlacklist(Blacklist blacklist) {
-        return blacklist.getExpiredAt().getSecond() - LocalDateTime.now().getSecond();
+        return Duration.between(LocalDateTime.now(), blacklist.getExpiredAt()).getSeconds();
     }
 
 

@@ -15,11 +15,12 @@ public class BlacklistService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final BlacklistRepository blacklistRepository;
+    private static final String PREFIX = "blacklist:";
 
     public void save(String token, LocalDateTime expiredAt) {
         redisTemplate.opsForValue()
                 .set(
-                        token,
+                        PREFIX + token,
                         "",
                         Duration.between(LocalDateTime.now(), expiredAt)
                 );
@@ -33,6 +34,6 @@ public class BlacklistService {
     }
 
     public Boolean isExist(String token) {
-        return redisTemplate.hasKey(token);
+        return redisTemplate.hasKey(PREFIX + token);
     }
 }
