@@ -56,15 +56,15 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
     @Query("select f from FeedCard f where f.pk = :feedCardPk")
     FeedCard findFeedCard(@Param("feedCardPk") Long feedCardPk);
 
-    @Query(value = "SELECT ra.* " +
+    @Query(value = "SELECT * " +
             "FROM ( " +
             "   SELECT fc.*, " +
             "    RANK() OVER (PARTITION BY ft.tag ORDER BY fc.pk DESC) AS rn " +
             "   FROM feed_card fc " +
             "   INNER JOIN feed_tag ft ON fc.pk = ft.feed_card " +
-            "   WHERE ft.tag IN (SELECT fot.tag FROM favorite_tag fot WHERE fot.member = :memberPk) " +
+            "   WHERE ft.tag IN :favoriteTagList " +
             " ) AS ra " +
             "WHERE ra.rn <= 5",
             nativeQuery = true)
-    List<FeedCard> findTop5FeedCardsByMemberPk(@Param("memberPk") Long memberPk);
+    List<FeedCard> findTop5FeedCardsByMemberPk(@Param("favoriteTagList") List<Long> favoriteTagList);
 }
