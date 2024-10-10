@@ -93,4 +93,21 @@ public class TagController {
                         .build()
         );
     }
+
+    @GetMapping("/favorite")
+    ResponseEntity<?> findFavoriteTags(@CurrentUser Long memberPk) {
+        List<TagDto.FavoriteTag> myFavoriteTags = favoriteTagService.findMyFavoriteTags(memberPk);
+        if (myFavoriteTags.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(ResponseCollectionModel.<TagDto.FavoriteTag>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("SUCCESS")
+                        .build()
+                ).content(myFavoriteTags)
+                .build()
+        );
+    }
 }
