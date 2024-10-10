@@ -26,7 +26,7 @@ public class TagController {
     private final RecommendTagService recommendTagService;
 
     @GetMapping("/search")
-    ResponseEntity<?> findRelatedTags(@RequestParam String keyword) {
+    ResponseEntity<?> findRelatedTags(@RequestParam String keyword, @RequestParam Integer size) {
         return ResponseEntity.ok(ResponseCollectionModel.<TagDto.RelatedTag>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
@@ -34,7 +34,7 @@ public class TagController {
                         .responseMessage("Find related tags successfully")
                         .build()
                 )
-                .content(tagService.findRelatedTags(keyword))
+                .content(tagService.findRelatedTags(keyword, size))
                 .build());
     }
 
