@@ -1,6 +1,6 @@
 package com.sooum.core.domain.card.service;
 
-import com.sooum.core.domain.card.dto.CardDetailDto;
+import com.sooum.core.domain.card.dto.CardDto;
 import com.sooum.core.domain.card.dto.CommentDetailCardDto;
 import com.sooum.core.domain.card.dto.FeedDetailCardDto;
 import com.sooum.core.domain.card.entity.Card;
@@ -28,7 +28,7 @@ public class DetailFeedService {
     private final FeedService feedService;
 
     @Transactional(readOnly = true)
-    public CardDetailDto findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+    public CardDto findDetailFeedCard (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
         Card card = feedCardService.isExistFeedCard(cardPk)
                 ? feedCardService.findFeedCard(cardPk)
                 : commentCardService.findCommentCard(cardPk);
@@ -36,8 +36,7 @@ public class DetailFeedService {
         return createDetailCardDto(card, memberPk, latitude, longitude);
     }
 
-    public CardDetailDto createDetailCardDto(Card card, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
-
+    public CardDto createDetailCardDto(Card card, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
         if (card instanceof FeedCard) {
             return FeedDetailCardDto.builder()
                     .id(card.getPk().toString())
@@ -47,6 +46,7 @@ public class DetailFeedService {
                     .content(card.getContent())
                     .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))
                     .font(card.getFont())
+                    .fontSize(card.getFontSize())
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
                     .tags(tagService.readTags(card))
@@ -60,10 +60,11 @@ public class DetailFeedService {
                     .content(card.getContent())
                     .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))
                     .font(card.getFont())
+                    .fontSize(card.getFontSize())
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
                     .tags(tagService.readTags(card))
-                    .previousCardId(feedService.findParentCard(commentCard).getPk())
+                    .previousCardId(feedService.findParentCard(commentCard).getPk().toString())
                     .previousCardImgLink(imgService.findImgUrl(feedService.findParentCard(commentCard).getImgType(),feedService.findParentCard(commentCard).getImgName()))
                     .build();
         }
