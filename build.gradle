@@ -65,6 +65,9 @@ dependencies {
 	implementation 'com.redis.om:redis-om-spring:0.9.1'
 	annotationProcessor "com.redis.om:redis-om-spring:0.9.1"
 
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
