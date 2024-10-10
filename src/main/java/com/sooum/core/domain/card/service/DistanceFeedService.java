@@ -57,7 +57,7 @@ public class DistanceFeedService {
                         .backgroundImgUrl(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
                         .isCommentWritten(isWrittenCommentCard(commentCardList, memberPk))
-                        .isLiked(isLiked(feedCard, feedLikeList))
+                        .isLiked(isLiked(feedCard, feedLikeList, memberPk))
                         .likeCnt(countLikes(feedCard, feedLikeList))
                         .commentCnt(countComments(feedCard, commentCardList))
                         .build()

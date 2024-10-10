@@ -54,7 +54,7 @@ public class PopularFeedService {
                         .fontSize(feed.getFontSize())
                         .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))
                         .createdAt(feed.getCreatedAt())
-                        .isLiked(isLiked(feed, feedLikes))
+                        .isLiked(isLiked(feed, feedLikes, memberPk))
                         .likeCnt(countLikes(feed, feedLikes))
                         .isCommentWritten(isWrittenCommentCard(comments, memberPk))
                         .commentCnt(countComments(feed, comments))

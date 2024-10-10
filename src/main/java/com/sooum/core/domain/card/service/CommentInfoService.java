@@ -49,7 +49,7 @@ public class CommentInfoService {
                         .fontSize(comment.getFontSize())
                         .distance(DistanceUtils.calculate(comment.getLocation(), latitude, longitude))
                         .createdAt(comment.getCreatedAt())
-                        .isLiked(FeedService.isLiked(comment, commentLikes))
+                        .isLiked(FeedService.isLiked(comment, commentLikes, memberPk))
                         .likeCnt(FeedService.countLikes(comment, commentLikes))
                         .isCommentWritten(FeedService.isWrittenCommentCard(childComments, memberPk))
                         .commentCnt(FeedService.countComments(comment, childComments))
