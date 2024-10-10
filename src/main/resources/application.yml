@@ -22,7 +22,7 @@ spring:
 
   batch:
     job:
-      name: "tagCacheJob"
+      name: "blacklistFetchJob"
     #      name: ["tagCacheJob", "blacklistFetchJob", "rsaKeyGenerateJob"]
     jdbc:
       initialize-schema: always

@@ -68,11 +68,7 @@ public class TagService {
 //        }
     }
 
-    public void upsert() {
-        List<CachedTag> cachedTags = tagRepository.findAllByIsActiveIsTrue().stream()
-                .map(tag -> new CachedTag(tag.getContent(), tag.getCount()))
-                .toList();
-
+    public void upsert(List<? extends CachedTag> cachedTags) {
         cachedTagRepository.saveAll(cachedTags);
     }
 
