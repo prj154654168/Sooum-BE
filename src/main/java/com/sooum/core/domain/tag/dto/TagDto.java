@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+
+import java.util.List;
 
 public class TagDto{
 
@@ -54,6 +57,37 @@ public class TagDto{
             this.content = content;
             this.cardCnt = cardCnt;
             this.isFavorite = isFavorite;
+        }
+    }
+
+    @Getter
+    public static class FavoriteTag extends RepresentationModel<FavoriteTag> {
+        private String id;
+        private String tagContent;
+        private String tagUsageCnt;
+        private List<PreviewCard> previewCards;
+
+        @Builder
+        public FavoriteTag(String tagContent, String tagUsageCnt, List<PreviewCard> previewCards, String id) {
+            this.id = id;
+            this.tagContent = tagContent;
+            this.tagUsageCnt = tagUsageCnt;
+            this.previewCards = previewCards;
+        }
+
+        @Getter
+        public static class PreviewCard extends RepresentationModel<PreviewCard> {
+            private String id;
+            private String content;
+            private Link backgroundImgUrl;
+
+
+            @Builder
+            public PreviewCard(String id, String content, Link backgroundImgUrl) {
+                this.id = id;
+                this.content = content;
+                this.backgroundImgUrl = backgroundImgUrl;
+            }
         }
     }
 }
