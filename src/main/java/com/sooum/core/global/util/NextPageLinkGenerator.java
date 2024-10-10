@@ -65,4 +65,25 @@ public abstract class NextPageLinkGenerator {
                         .slash("/tags/"+ tag.getTagId())
                         .withRel("tag-feed"))).toList();
     }
+
+    public static <T extends TagDto.FavoriteTag> List<T> appendEachFavoriteTagDetailLink(List<T> tagDtoList) {
+        if (tagDtoList.isEmpty()) {
+            return tagDtoList;
+        }
+        return tagDtoList.stream()
+                .peek(tag -> tag.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
+                        .slash("/tags/"+ tag.getId())
+                        .withRel("tag-feed"))).toList();
+    }
+
+    public static <E extends TagDto.FavoriteTag.PreviewCard> List<E> appendEachPreviewCardDetailLink(List<E> cardDtoList) {
+        if (cardDtoList.isEmpty()) {
+            return cardDtoList;
+        }
+
+        return cardDtoList.stream()
+                .peek(previewCard -> previewCard.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
+                        .slash("/" + previewCard.getId() + "/detail")
+                        .withRel("detail"))).toList();
+    }
 }
