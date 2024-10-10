@@ -3,9 +3,11 @@ package com.sooum.core.domain.card.controller;
 import com.sooum.core.domain.card.service.CardService;
 import com.sooum.core.domain.card.service.FeedLikeService;
 import com.sooum.core.domain.card.service.FeedService;
+import com.sooum.core.domain.tag.repository.CachedTagRepository;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import com.sooum.core.global.config.mvc.WebMvcConfig;
+import com.sooum.core.global.config.redis.RedisConfig;
 import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +40,8 @@ import static org.mockito.BDDMockito.doNothing;
 @MockBean(JobExplorer.class)
 @MockBean(JobOperator.class)
 @MockBean(JobRepository.class)
-@Import(SecurityConfig.class)
+@MockBean(CachedTagRepository.class)
+@Import(value = { SecurityConfig.class, RedisConfig.class})
 class CardControllerTest {
     @Autowired
     MockMvc mockMvc;

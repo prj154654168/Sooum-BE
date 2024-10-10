@@ -21,13 +21,13 @@ public class FavoriteTagService {
     private final MemberService memberService;
 
     @Transactional
-    public void saveFavoriteTag(String tagContent, Long memberPk) {
-        if (tagService.isExistFavoriteTag(tagContent, memberPk)) {
+    public void saveFavoriteTag(Long tagPk, Long memberPk) {
+        if (tagService.isExistFavoriteTag(tagPk, memberPk)) {
             throw new EntityExistsException(ExceptionMessage.ALREADY_TAG_FAVORITE.getMessage());
         }
 
         FavoriteTag favoriteTag = FavoriteTag.builder()
-                .tag(tagService.findTag(tagContent))
+                .tag(tagService.findTag(tagPk))
                 .member(memberService.findByPk(memberPk))
                 .build();
         tagService.saveFavoriteTag(favoriteTag);
@@ -39,8 +39,8 @@ public class FavoriteTagService {
     }
 
     @Transactional
-    public void deleteFavoriteTag(String tagContent, Long memberPk) {
-        FavoriteTag findFavoriteTag = tagService.findFavoriteTag(tagContent, memberPk);
+    public void deleteFavoriteTag(Long tagPk, Long memberPk) {
+        FavoriteTag findFavoriteTag = tagService.findFavoriteTag(tagPk, memberPk);
         tagService.deleteFavoriteTag(findFavoriteTag);
     }
 }

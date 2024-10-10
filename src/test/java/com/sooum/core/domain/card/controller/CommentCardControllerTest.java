@@ -6,9 +6,11 @@ import com.sooum.core.domain.card.service.CommentCardService;
 import com.sooum.core.domain.card.service.CommentInfoService;
 import com.sooum.core.domain.card.service.CommentLikeService;
 import com.sooum.core.domain.card.service.FeedService;
+import com.sooum.core.domain.tag.repository.CachedTagRepository;
 import com.sooum.core.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.core.global.config.jwt.TokenProvider;
 import com.sooum.core.global.config.mvc.WebMvcConfig;
+import com.sooum.core.global.config.redis.RedisConfig;
 import com.sooum.core.global.config.security.SecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JobExplorer.class)
 @MockBean(JobOperator.class)
 @MockBean(JobRepository.class)
-@Import(SecurityConfig.class)
+@MockBean(CachedTagRepository.class)
+@Import(value = { SecurityConfig.class, RedisConfig.class})
 class CommentCardControllerTest {
     @Autowired
     MockMvc mockMvc;

@@ -88,8 +88,8 @@ public class TagService {
     public List<Tag> findRecommendTags(List<Tag> excludeTags) {
         return tagRepository.findRecommendTagList(excludeTags, PageRequest.ofSize(10));
     }
-    public boolean isExistFavoriteTag(String tagContent, Long memberPk) {
-        return favoriteTagRepository.existsByTag_ContentAndMember_Pk(tagContent, memberPk);
+    public boolean isExistFavoriteTag(Long tagPk, Long memberPk) {
+        return favoriteTagRepository.existsByTag_PkAndMember_Pk(tagPk, memberPk);
     }
 
     @Transactional
@@ -97,13 +97,13 @@ public class TagService {
         favoriteTagRepository.save(favoriteTag);
     }
 
-    public Tag findTag(String tagContent) {
-        return tagRepository.findByContent(tagContent)
+    public Tag findTag(Long tagPk) {
+        return tagRepository.findById(tagPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.TAG_NOT_FOUND.getMessage()));
     }
 
-    public FavoriteTag findFavoriteTag(String tagContent, Long memberPk) {
-        return favoriteTagRepository.findByTag_ContentAndMember_Pk(tagContent, memberPk)
+    public FavoriteTag findFavoriteTag(Long tagPk, Long memberPk) {
+        return favoriteTagRepository.findByTag_PkAndMember_Pk(tagPk, memberPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FAVORITE_TAG_NOT_FOUND.getMessage()));
     }
 
@@ -112,11 +112,11 @@ public class TagService {
         favoriteTagRepository.delete(favoriteTag);
     }
 
-    public TagDto.TagSummary createTagSummary(String tagContent, Long memberPk) {
+    public TagDto.TagSummary createTagSummary(Long tagPk, Long memberPk) {
         return TagDto.TagSummary.builder()
-                .content(tagContent)
-                .cardCnt(feedTagRepository.countTagFeeds(tagContent))
-                .isFavorite(favoriteTagRepository.existsByTag_ContentAndMember_Pk(tagContent, memberPk))
+                .content(findTag(tagPk).getContent())
+                .cardCnt(feedTagRepository.countTagFeeds(tagPk))
+                .isFavorite(favoriteTagRepository.existsByTag_PkAndMember_Pk(tagPk, memberPk))
                 .build();
     }
 }

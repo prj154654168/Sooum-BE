@@ -35,19 +35,19 @@ public class TagFeedService {
     private static final int MAX_PAGE_SIZE = 100;
     private final static int DEFAULT_PAGE_SIZE = 50;
 
-    public List<FeedCard> findTagFeeds(Optional<Long> lastPk, String tagContent) {
+    public List<FeedCard> findTagFeeds(Long tagPk, Optional<Long> lastPk) {
         PageRequest pageRequest = PageRequest.of(0, MAX_PAGE_SIZE);
         return lastPk.isEmpty()
-                ? feedTagRepository.findFeeds(tagContent, pageRequest)
-                : feedTagRepository.findFeeds(tagContent, lastPk.get(), pageRequest);
+                ? feedTagRepository.findFeeds(tagPk, pageRequest)
+                : feedTagRepository.findFeeds(tagPk, lastPk.get(), pageRequest);
     }
 
-    public List<TagFeedCardDto> createTagFeedsInfo(String tagContent,
+    public List<TagFeedCardDto> createTagFeedsInfo(Long tagPk,
                                                    Optional<Long> lastPk,
                                                    Optional<Double> latitude,
                                                    Optional<Double> longitude,
                                                    Long memberPk) {
-        List<FeedCard> filteredTagFeeds = findFilteredTagFeeds(tagContent, lastPk, memberPk);
+        List<FeedCard> filteredTagFeeds = findFilteredTagFeeds(tagPk, lastPk, memberPk);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredTagFeeds);
         List<CommentCard> commentCards = commentCardService.findByTargetList(filteredTagFeeds);
@@ -71,11 +71,11 @@ public class TagFeedService {
     }
 
 
-    private List<FeedCard> findFilteredTagFeeds(String tagContent, Optional<Long> lastPk, Long memberId) {
+    private List<FeedCard> findFilteredTagFeeds(Long tagPk, Optional<Long> lastPk, Long memberId) {
         List<FeedCard> resultFeedCards = new ArrayList<>();
 
         while (resultFeedCards.size() < DEFAULT_PAGE_SIZE) {
-            List<FeedCard> findTagFeeds = findTagFeeds(lastPk, tagContent);
+            List<FeedCard> findTagFeeds = findTagFeeds(tagPk, lastPk);
 
             if (!findTagFeeds.isEmpty()) {
                 lastPk = Optional.of(findTagFeeds.get(findTagFeeds.size() - 1).getPk());
@@ -95,9 +95,9 @@ public class TagFeedService {
         return findTagFeeds.size() < MAX_PAGE_SIZE;
     }
 
-    public Link createNextTagFeedsUrl(String tagContent, List<TagFeedCardDto> tagFeedsInfo) {
+    public Link createNextTagFeedsUrl(Long tagPk, List<TagFeedCardDto> tagFeedsInfo) {
         String lastPk = tagFeedsInfo.get(tagFeedsInfo.size() - 1).getId();
         return linkTo(methodOn(FeedCardController.class).getClass())
-                .slash("/tags/" + tagContent + "?lastPk=" + lastPk).withRel("next");
+                .slash("/tags/" + tagPk + "?lastPk=" + lastPk).withRel("next");
     }
 }

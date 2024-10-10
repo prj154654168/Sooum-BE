@@ -27,11 +27,6 @@ spring:
     jdbc:
       initialize-schema: always
 
-  #todo s3 도입 시 삭제
-  servlet:
-    multipart:
-      max-file-size: 3MB
-
   cloud:
     aws:
       region: ap-northeast-2

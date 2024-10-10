@@ -74,13 +74,13 @@ public class FeedCardController {
                         .build());
     }
 
-    @GetMapping("/tags/{tagContent}")
+    @GetMapping("/tags/{tagPk}")
     public ResponseEntity<?> findTagFeeds(@RequestParam(required = false) Optional<Double> latitude,
                                           @RequestParam(required = false) Optional<Double> longitude,
                                           @RequestParam(required = false) Optional<Long> lastPk,
-                                          @PathVariable String tagContent,
+                                          @PathVariable Long tagPk,
                                           @CurrentUser Long memberPk) {
-        List<TagFeedCardDto> tagFeedsInfo = tagFeedService.createTagFeedsInfo(tagContent, lastPk, latitude, longitude, memberPk);
+        List<TagFeedCardDto> tagFeedsInfo = tagFeedService.createTagFeedsInfo(tagPk, lastPk, latitude, longitude, memberPk);
 
         if (tagFeedsInfo.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -94,7 +94,7 @@ public class FeedCardController {
                         .build()
                 ).content(tagFeedsInfo)
                 .build()
-                .add(tagFeedService.createNextTagFeedsUrl(tagContent, tagFeedsInfo))
+                .add(tagFeedService.createNextTagFeedsUrl(tagPk, tagFeedsInfo))
         );
 
     }
