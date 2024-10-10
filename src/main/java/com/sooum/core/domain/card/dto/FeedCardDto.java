@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class FeedCardDto extends RepresentationModel<FeedCardDto> {
     private long id;
-    @JsonProperty(value = "isStory")
-    private boolean isStory;
     private LocalDateTime storyExpirationTime;
     private String content;
     private LocalDateTime createdAt;
@@ -31,7 +29,6 @@ public abstract class FeedCardDto extends RepresentationModel<FeedCardDto> {
 
     public FeedCardDto(long id, boolean isStory, LocalDateTime storyExpirationTime, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize) {
         this.id = id;
-        this.isStory = isStory;
         this.storyExpirationTime = storyExpirationTime;
         this.content = content;
         this.createdAt = createdAt;

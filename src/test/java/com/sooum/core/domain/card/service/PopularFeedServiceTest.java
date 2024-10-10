@@ -67,7 +67,6 @@ class PopularFeedServiceTest {
             Assertions.assertThat(popularFeeds.get(i).getContent()).isEqualTo(feedCards.get(i).getContent());
             Assertions.assertThat(popularFeeds.get(i).getFont()).isEqualTo(feedCards.get(i).getFont());
             Assertions.assertThat(popularFeeds.get(i).getFontSize()).isEqualTo(feedCards.get(i).getFontSize());
-            Assertions.assertThat(popularFeeds.get(i).isStory()).isEqualTo(feedCards.get(i).isStory());
         }
     }
 

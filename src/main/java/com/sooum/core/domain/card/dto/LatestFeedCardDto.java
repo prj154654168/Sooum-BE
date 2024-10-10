@@ -1,6 +1,5 @@
 package com.sooum.core.domain.card.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import lombok.Builder;
@@ -12,14 +11,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class LatestFeedCardDto extends CardDto {
-    @JsonProperty(value = "isStory")
-    private boolean isStory;
     private LocalDateTime storyExpirationTime;
     private final Double distance;
     @Builder
     public LatestFeedCardDto(String id, boolean isStory, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, Double distance) {
         super(id, content, createdAt, likeCnt, isLiked, commentCnt, isCommentWritten, backgroundImgUrl, font, fontSize);
-        this.isStory = isStory;
         this.storyExpirationTime = isStory ? createdAt.plusDays(1L) : null;
         this.distance = distance;
     }

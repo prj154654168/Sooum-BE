@@ -65,6 +65,9 @@ dependencies {
 	implementation 'com.redis.om:redis-om-spring:0.9.1'
 	annotationProcessor "com.redis.om:redis-om-spring:0.9.1"
 
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -90,4 +93,8 @@ tasks.named('test') {
 	systemProperty 'sooum.server.img.path', project.getProperty("sooum.server.img.path")
 	systemProperty 'spring.data.redis.port', project.getProperty("spring.data.redis.port")
 	systemProperty 'spring.data.redis.host', project.getProperty("spring.data.redis.host")
+	systemProperty 'cloud.aws.s3.credentials.accessKey', project.getProperty("cloud.aws.s3.credentials.accessKey")
+	systemProperty 'cloud.aws.s3.credentials.secretKey', project.getProperty("cloud.aws.s3.credentials.secretKey")
+	systemProperty 'cloud.aws.rekognition.credentials.accessKey', project.getProperty("cloud.aws.rekognition.credentials.accessKey")
+	systemProperty 'cloud.aws.rekognition.credentials.secretKey', project.getProperty("cloud.aws.rekognition.credentials.secretKey")
 }

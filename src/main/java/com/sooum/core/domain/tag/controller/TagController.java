@@ -2,19 +2,18 @@ package com.sooum.core.domain.tag.controller;
 
 import com.sooum.core.domain.tag.dto.TagDto;
 import com.sooum.core.domain.tag.service.FavoriteTagService;
+import com.sooum.core.domain.tag.service.RecommendTagService;
 import com.sooum.core.domain.tag.service.TagService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
-import com.sooum.core.domain.tag.service.RecommendTagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-
 import java.util.List;
 
 @RestController
