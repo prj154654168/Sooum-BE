@@ -302,12 +302,16 @@ public class FeedService {
         return commentCardList.stream().anyMatch(commentCard -> commentCard.getWriter().getPk().equals(memberPk));
     }
 
-    public static boolean isLiked(FeedCard feed, List<FeedLike> feedLikes) {
-        return feedLikes.stream().anyMatch(feedLike -> feedLike.getTargetCard().getPk().equals(feed.getPk()));
+    public static boolean isLiked(FeedCard feed, List<FeedLike> feedLikes, Long memberPk) {
+        return feedLikes.stream().anyMatch(feedLike ->
+                feedLike.getTargetCard().getPk().equals(feed.getPk()) && feedLike.getLikedMember().getPk().equals(memberPk)
+        );
     }
 
-    public static boolean isLiked(CommentCard comment, List<CommentLike> commentLikes) {
-        return commentLikes.stream().anyMatch(commentLike -> commentLike.getTargetCard().getPk().equals(comment.getPk()));
+    public static boolean isLiked(CommentCard comment, List<CommentLike> commentLikes, Long memberPk) {
+        return commentLikes.stream().anyMatch(commentLike ->
+                commentLike.getTargetCard().getPk().equals(comment.getPk())&& commentLike.getLikedMember().getPk().equals(memberPk)
+        );
     }
 
     public static int countLikes(FeedCard feed, List<FeedLike> feedLikes) {

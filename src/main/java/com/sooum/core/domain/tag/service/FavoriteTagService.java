@@ -2,10 +2,10 @@ package com.sooum.core.domain.tag.service;
 
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.domain.tag.entity.FavoriteTag;
-import com.sooum.core.global.exceptionmessage.ExceptionMessage;
-import jakarta.persistence.EntityExistsException;
 import com.sooum.core.domain.tag.entity.Tag;
 import com.sooum.core.domain.tag.repository.FavoriteTagRepository;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,6 +1,5 @@
 package com.sooum.core.domain.tag.repository;
 
-import com.sooum.core.domain.tag.entity.FeedTag;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.tag.entity.FeedTag;
 import com.sooum.core.domain.tag.entity.Tag;
@@ -19,12 +18,11 @@ public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
     @Query("SELECT ft.tag FROM FeedTag ft WHERE ft.feedCard = :feedCard")
     List<Tag> findTagsByFeedCard(@Param("feedCard") FeedCard feedCard);
     @Query("select ft.feedCard from FeedTag ft where ft.tag.pk = :tagPk " +
-            "and ft.feedCard.isDeleted = false and ft.feedCard.isPublic = false and ft.feedCard.isStory = false " +
+            "and ft.feedCard.isDeleted = false and ft.feedCard.isStory = false " +
             "order by ft.feedCard.pk desc")
     List<FeedCard> findFeeds(@Param("tagPk") Long tagPk, Pageable pageable);
-
     @Query("select ft.feedCard from FeedTag ft where ft.tag.pk = :tagPk and ft.feedCard.pk < :lastPk " +
-            "and ft.feedCard.isDeleted = false and ft.feedCard.isPublic = false and ft.feedCard.isStory = false " +
+            "and ft.feedCard.isDeleted = false and ft.feedCard.isStory = false " +
             "order by ft.feedCard.pk desc")
     List<FeedCard> findFeeds(@Param("tagPk") Long tagPk, @Param("lastPk") Long lastPk, Pageable pageable);
     @Query("select count(ft) from FeedTag ft where ft.tag.pk = :tagPk " +

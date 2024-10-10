@@ -62,7 +62,7 @@ public class TagFeedService {
                         .backgroundImgUrl(imgService.findImgUrl(feedCard.getImgType(), feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
                         .isCommentWritten(FeedService.isWrittenCommentCard(commentCards, memberPk))
-                        .isLiked(FeedService.isLiked(feedCard, feedLikes))
+                        .isLiked(FeedService.isLiked(feedCard, feedLikes, memberPk))
                         .likeCnt(FeedService.countLikes(feedCard, feedLikes))
                         .commentCnt(FeedService.countComments(feedCard, commentCards))
                         .build()
