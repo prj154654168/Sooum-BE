@@ -93,4 +93,8 @@ tasks.named('test') {
 	systemProperty 'sooum.server.img.path', project.getProperty("sooum.server.img.path")
 	systemProperty 'spring.data.redis.port', project.getProperty("spring.data.redis.port")
 	systemProperty 'spring.data.redis.host', project.getProperty("spring.data.redis.host")
+	systemProperty 'cloud.aws.s3.credentials.accessKey', project.getProperty("cloud.aws.s3.credentials.accessKey")
+	systemProperty 'cloud.aws.s3.credentials.secretKey', project.getProperty("cloud.aws.s3.credentials.secretKey")
+	systemProperty 'cloud.aws.rekognition.credentials.accessKey', project.getProperty("cloud.aws.rekognition.credentials.accessKey")
+	systemProperty 'cloud.aws.rekognition.credentials.secretKey', project.getProperty("cloud.aws.rekognition.credentials.secretKey")
 }
