@@ -1,6 +1,5 @@
 package com.sooum.core.domain.tag.repository;
 
-import com.sooum.core.domain.tag.entity.FeedTag;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.tag.entity.FeedTag;
 import com.sooum.core.domain.tag.entity.Tag;

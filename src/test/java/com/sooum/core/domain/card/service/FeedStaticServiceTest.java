@@ -65,7 +65,7 @@ public class FeedStaticServiceTest {
         List<CommentLike> commentLikes = createCommentLike(commentCards, members);
 
         // when
-        boolean isLiked = FeedService.isLiked(commentCards.get(0), commentLikes);
+        boolean isLiked = FeedService.isLiked(commentCards.get(0), commentLikes, members.get(0).getPk());
 
         // then
         Assertions.assertThat(isLiked).isTrue();
@@ -82,7 +82,7 @@ public class FeedStaticServiceTest {
         CommentCard outerCommentCard = createCommentCard(feedCards, createOuterMember());
 
         // when
-        boolean isLiked = FeedService.isLiked(outerCommentCard, commentLikes);
+        boolean isLiked = FeedService.isLiked(outerCommentCard, commentLikes, members.get(0).getPk());
 
         // then
         Assertions.assertThat(isLiked).isFalse();
