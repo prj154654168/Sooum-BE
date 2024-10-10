@@ -51,8 +51,8 @@ public abstract class NextPageLinkGenerator {
             return tagDtoList;
         }
         return tagDtoList.stream()
-                .peek(tag -> tag.add(WebMvcLinkBuilder.linkTo(TagController.class)
-                        .slash("/"+  tag.getId())
+                .peek(tag -> tag.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
+                        .slash("/tags/"+  tag.getId())
                         .withRel("tag-feed"))).toList();
     }
 
@@ -61,8 +61,8 @@ public abstract class NextPageLinkGenerator {
             return tagDtoList;
         }
         return tagDtoList.stream()
-                .peek(tag -> tag.add(WebMvcLinkBuilder.linkTo(TagController.class)
-                        .slash("/"+ tag.getTagId())
+                .peek(tag -> tag.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
+                        .slash("/tags/"+ tag.getTagId())
                         .withRel("tag-feed"))).toList();
     }
 }
