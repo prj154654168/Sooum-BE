@@ -14,6 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class FollowService {
     private final FollowRepository followRepository;
 
+    public boolean isAlreadyFollowing(Member fromMember, Member toMember) {
+        return followRepository.findFollow(fromMember, toMember).isPresent();
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveFollower(Member fromMember, Member toMember) {
         followRepository.save(Follow.builder()
