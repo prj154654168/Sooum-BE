@@ -30,9 +30,10 @@ public class BlockController {
                         .build());
     }
 
-    @DeleteMapping("/{toMemberId}/bloclk")
+    @DeleteMapping("/{toMemberId}")
     ResponseEntity<Void> removeBlockMember(@PathVariable Long toMemberId, @CurrentUser Long fromMemberPk) {
         blockMemberService.deleteBlockMember(fromMemberPk, toMemberId);
+        return ResponseEntity.noContent().build();
     }
 
 

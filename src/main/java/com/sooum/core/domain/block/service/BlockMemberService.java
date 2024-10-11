@@ -37,4 +37,10 @@ public class BlockMemberService {
                 .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
                 .toList();
     }
+
+    public void deleteBlockMember(Long fromMemberPk, Long toMemberId) {
+        Member fromMember = memberService.findByPk(fromMemberPk);
+        Member toMember = memberService.findByPk(toMemberId);
+        blockRepository.deleteBlockMember(fromMember, toMember);
+    }
 }
