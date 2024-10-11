@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/block")
+@RequestMapping("/blocks")
 @RequiredArgsConstructor
 public class BlockController {
     private final BlockMemberService blockMemberService;
