@@ -46,6 +46,7 @@ public class AWSImgService implements ImgService{
 
     private static final String DEFAULT_IMG = "card/default/";
     private static final String USER_IMG = "card/user/";
+    private static final String PROFILE_IMG = "profile/";
     private static final Duration EXPIRY_TIME = Duration.ofMinutes(1L);
     private static final int DEFAULT_IMG_CNT = 8;
     private static final String DEFAULT_IMG_EXTENSION = "jpeg";
@@ -167,5 +168,13 @@ public class AWSImgService implements ImgService{
             return false;
         }
         return true;
+    }
+
+    @Override
+    public Link findProfileImgUrl(String imgName) {
+        if (imgName == null) {
+            return null;
+        }
+        return createGetPresignedLink(PROFILE_IMG, imgName);
     }
 }

@@ -34,4 +34,12 @@ public class MemberService {
     public Member save(MemberInfo dto, String deviceId) {
         return memberRepository.save(memberMapper.from(dto, deviceId));
     }
+
+    public void incrementTotalVisitorCnt(Member profileOwnerMember) {
+        memberRepository.incrementTotalVisitorCnt(profileOwnerMember);
+    }
+
+    public Long findTotalVisitorCnt(Member profileOwnerMember) {
+        return memberRepository.findTotalVisitorCnt(profileOwnerMember);
+    }
 }

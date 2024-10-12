@@ -6,13 +6,12 @@ import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,6 +41,10 @@ public class Member extends BaseEntity {
     @Column(name = "BAN_COUNT")
     private int banCount;
 
+    @NotNull
+    @Column(name = "TOTAL_VISITOR_CNT")
+    private long totalVisitorCnt;
+
     @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
 
@@ -52,11 +55,9 @@ public class Member extends BaseEntity {
     @Column(name = "ROLE")
     private Role role;
 
-    @JoinColumn(name = "PROFILE_CARD")
-    @OneToOne(fetch = FetchType.LAZY)
-    private FeedCard profileCard;
-
-    //TODO: profileImageUrl 추가
+    @Setter
+    @Column(name = "PROFILE_IMG_NAME")
+    private String profileImgName;
 
     @Builder
     public Member(String deviceId, DeviceType deviceType, String firebaseToken, String nickname, boolean isAllowNotify) {
@@ -66,9 +67,10 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
         this.isAllowNotify = isAllowNotify;
         this.banCount = 0;
+        this.totalVisitorCnt = 0;
         this.deletedAt = null;
         this.untilBan = null;
-        this.profileCard = null;
+        this.profileImgName = null;
         this.role = Role.USER;
     }
 
