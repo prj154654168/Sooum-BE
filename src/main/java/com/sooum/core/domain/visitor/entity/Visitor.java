@@ -14,7 +14,7 @@ import java.time.LocalDate;
 
 @Getter
 @Entity
-@Table(indexes = @Index(name = "IDX_VISIT_DATE", columnList = "createdAt"))
+@Table(indexes = @Index(name = "IDX_VISIT_DATE", columnList = "visitDate"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Visitor extends BaseEntity {
     @Id @Tsid
