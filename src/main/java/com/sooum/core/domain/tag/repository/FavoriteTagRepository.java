@@ -2,6 +2,7 @@ package com.sooum.core.domain.tag.repository;
 
 import com.sooum.core.domain.tag.entity.FavoriteTag;
 import com.sooum.core.domain.tag.entity.Tag;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,4 +16,10 @@ public interface FavoriteTagRepository extends JpaRepository<FavoriteTag, Long> 
 
     @Query("select ft.tag from FavoriteTag ft where ft.member.pk = :memberPk")
     List<Tag> findFavoriteTag(@Param("memberPk") Long memberPk);
+
+    @Query("select ft.tag.pk from FavoriteTag ft where ft.member.pk = :memberPk order by ft.tag.pk")
+    List<Long> findFirstPageTagPks(@Param("memberPk") Long memberPk, Pageable pageable);
+
+    @Query("select ft.tag.pk from FavoriteTag ft where ft.member.pk = :memberPk and ft.tag.pk < :lastTagPk order by ft.tag.pk")
+    List<Long> findNextPageTagPks(@Param("memberPk") Long memberPk, @Param("lastTagPk") Long lastTagPk, Pageable pageable);
 }

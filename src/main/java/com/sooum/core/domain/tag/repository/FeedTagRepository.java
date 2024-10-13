@@ -28,4 +28,13 @@ public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
     @Query("select count(ft) from FeedTag ft where ft.tag.pk = :tagPk " +
             "and ft.feedCard.isDeleted = false and ft.feedCard.isPublic = false and ft.feedCard.isStory = false")
     Integer countTagFeeds(@Param("tagPk") Long tagPk);
+
+   @Query(value = """
+    select ranking.feed_card, ranking.tag, ranking.created_at, ranking.pk
+    from (select *, rank() over (partition by tag order by feed_card desc) as rn from feed_tag) as ranking
+    where ranking.rn <= 5 and ranking.tag in :favoriteTagList and ranking.feed_card not in :blockedFeedCardIds
+    """, nativeQuery = true)
+    List<FeedTag> findTop5FeedCardsByMemberPk(@Param("favoriteTagList") List<Long> favoriteTagList,
+                                              @Param("blockedFeedCardIds") List<Long> blockedFeedCardIds);
+
 }
