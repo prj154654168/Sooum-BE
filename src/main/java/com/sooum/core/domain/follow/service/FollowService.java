@@ -30,4 +30,12 @@ public class FollowService {
     public void deleteFollower(Member fromMember, Member toMember) {
         followRepository.deleteFollower(fromMember, toMember);
     }
+
+    public Long findFollowerCnt(Member profileOwner) {
+        return followRepository.findFollowerCnt(profileOwner);
+    }
+
+    public Long findFollowingCnt(Member profileOwner) {
+        return followRepository.findFollowingCnt(profileOwner);
+    }
 }

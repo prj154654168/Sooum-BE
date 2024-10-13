@@ -15,4 +15,5 @@ public interface ImgService {
     default boolean isModeratingImg(String imgName){
         return false;
     }
+    default Link findProfileImgUrl(String imgName){return null;}
 }
