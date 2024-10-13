@@ -130,4 +130,8 @@ public class TagService {
         Long lastFavoriteTagPk = findFavoriteTag(lastTagPk, memberPk).getPk();
         return favoriteTagRepository.findNextPageTagPks(memberPk, lastFavoriteTagPk, pageRequest);
     }
+
+    public List<Tag> findTagListByTakPks(List<Long> tagPks) {
+        return tagRepository.findByPkIn(tagPks);
+    }
 }

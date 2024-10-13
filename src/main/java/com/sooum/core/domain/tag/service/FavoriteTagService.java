@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,16 +61,19 @@ public class FavoriteTagService {
         List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberPk);
         List<FeedTag> top5FeedCardsByMemberPk = tagService.findTop5FeedCardsByMemberPk(favoriteTagPks, allBlockToPk);
 
+        Map<Long, Tag> tagMap = tagService.findTagListByTakPks(favoriteTagPks).stream()
+                .collect(Collectors.toMap(Tag::getPk, tag -> tag));
+
         List<TagDto.FavoriteTag> favoriteTagList = favoriteTagPks.stream()
-                .map(tagPk -> createFavoriteTag(tagPk, top5FeedCardsByMemberPk))
+                .map(tagPk -> createFavoriteTag(tagMap.get(tagPk), top5FeedCardsByMemberPk))
                 .toList();
 
         return NextPageLinkGenerator.appendEachFavoriteTagDetailLink(favoriteTagList);
     }
 
-    private TagDto.FavoriteTag createFavoriteTag(Long tagPk, List<FeedTag> top5FeedCards) {
+    private TagDto.FavoriteTag createFavoriteTag(Tag tag, List<FeedTag> top5FeedCards) {
         List<FeedTag> relatedFeedTags = top5FeedCards.stream()
-                .filter(feedTag -> feedTag.getTag().getPk().equals(tagPk))
+                .filter(feedTag -> feedTag.getTag().getPk().equals(tag.getPk()))
                 .toList();
 
         List<TagDto.FavoriteTag.PreviewCard> previewCards = relatedFeedTags.isEmpty()
@@ -77,7 +82,6 @@ public class FavoriteTagService {
                 .map(this::createPreviewCard)
                 .toList();
 
-        Tag tag = tagService.findTag(tagPk);
         return TagDto.FavoriteTag.builder()
                 .id(tag.getPk().toString())
                 .tagContent(tag.getContent())

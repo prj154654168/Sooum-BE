@@ -26,4 +26,6 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     List<Tag> findRecommendTagList(@Param("excludeTags") List<Tag> excludeTags, Pageable pageable);
 
     Optional<Tag> findByContent(String content);
+
+    List<Tag> findByPkIn(List<Long> tagPks);
 }
