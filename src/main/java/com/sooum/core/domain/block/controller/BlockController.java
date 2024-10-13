@@ -8,15 +8,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
 @RestController
-@RequestMapping("/block")
+@RequestMapping("/blocks")
 @RequiredArgsConstructor
 public class BlockController {
     private final BlockMemberService blockMemberService;
@@ -32,4 +29,14 @@ public class BlockController {
                         .responseMessage("Member blocked successfully")
                         .build());
     }
+
+    @DeleteMapping("/{toMemberId}")
+    ResponseEntity<Void> removeBlockMember(@PathVariable Long toMemberId, @CurrentUser Long fromMemberPk) {
+        blockMemberService.deleteBlockMember(fromMemberPk, toMemberId);
+        return ResponseEntity.noContent().build();
+    }
+
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.sooum.core.domain.member.service;
 
+import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.dto.AuthDTO.Login;
 import com.sooum.core.domain.member.dto.AuthDTO.LoginResponse;
 import com.sooum.core.domain.member.dto.AuthDTO.ReissuedToken;
@@ -33,6 +34,7 @@ public class MemberInfoService {
     private final MemberService memberService;
     private final BlacklistService blacklistService;
     private final RsaService rsaService;
+    private final ImgService imgService;
 
     public LoginResponse login(Login dto) {
         String deviceId = rsaService.decodeDeviceId(dto.encryptedDeviceId());
@@ -77,7 +79,7 @@ public class MemberInfoService {
         return MemberDto.DefaultMemberResponse.builder()
                 .id(member.getPk().toString())
                 .nickname(member.getNickname())
-                .profileImgUrl(null) //TODO: 프로필 이미지 URL 추가
+                .profileImgUrl(imgService.findProfileImgUrl(member.getProfileImgName()))
                 .build();
     }
 }

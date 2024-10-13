@@ -1,6 +1,7 @@
 package com.sooum.core.domain.card.repository;
 
 import com.sooum.core.domain.card.entity.FeedCard;
+import com.sooum.core.domain.member.entity.Member;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -55,6 +56,9 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
 
     @Query("select f from FeedCard f where f.pk = :feedCardPk")
     FeedCard findFeedCard(@Param("feedCardPk") Long feedCardPk);
+
+    @Query("select count(f) from FeedCard f where f.writer = :cardOwnerMember")
+    Long findFeedCardCnt(@Param("cardOwnerMember") Member cardOwnerMember);
 
     @Query("select fc.pk from FeedCard fc where fc.writer.pk in :memberPks")
     List<Long> findFeedCardIdsByWriterIn(@Param("memberPks") List<Long> memberPks);

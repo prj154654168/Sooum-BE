@@ -38,6 +38,12 @@ public class BlockMemberService {
                 .toList();
     }
 
+    public void deleteBlockMember(Long fromMemberPk, Long toMemberId) {
+        Member fromMember = memberService.findByPk(fromMemberPk);
+        Member toMember = memberService.findByPk(toMemberId);
+        blockRepository.deleteBlockMember(fromMember, toMember);
+    }
+
     public List<Long> findAllBlockToPk(Long memberPk) {
         return blockRepository.findAllBlockToPk(memberPk);
     }

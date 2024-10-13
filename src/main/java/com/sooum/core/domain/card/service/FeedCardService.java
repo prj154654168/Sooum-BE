@@ -2,6 +2,7 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.repository.FeedCardRepository;
+import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,10 @@ public class FeedCardService {
 
     public void saveFeedCard(FeedCard feedCard) {
         feedCardRepository.save(feedCard);
+    }
+
+    public Long findFeedCardCnt(Member cardOwnerMember) {
+        return feedCardRepository.findFeedCardCnt(cardOwnerMember);
     }
 
     public List<Long> findFeedCardIdsByMemberPk(List<Long> memberPks) {
