@@ -6,6 +6,7 @@ import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.tag.dto.TagDto;
 import com.sooum.core.domain.tag.entity.CachedTag;
 import com.sooum.core.domain.tag.entity.FavoriteTag;
+import com.sooum.core.domain.tag.entity.FeedTag;
 import com.sooum.core.domain.tag.entity.Tag;
 import com.sooum.core.domain.tag.repository.*;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
@@ -13,6 +14,7 @@ import com.sooum.core.global.util.NextPageLinkGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,5 +116,17 @@ public class TagService {
                 .cardCnt(feedTagRepository.countTagFeeds(tagPk))
                 .isFavorite(favoriteTagRepository.existsByTag_PkAndMember_Pk(tagPk, memberPk))
                 .build();
+    }
+
+    public List<FeedTag> findTop5FeedCardsByMemberPk(List<Long> favoriteTagIds, List<Long> blockedFeedCardIds) {
+        return feedTagRepository.findTop5FeedCardsByMemberPk(favoriteTagIds, blockedFeedCardIds);
+    }
+
+    public List<Long> findTagIdsByLastId(Long lastTagPk, Long memberPk) {
+        Pageable pageRequest = PageRequest.of(0, 20);
+        if (lastTagPk.equals(0L)) {
+            return favoriteTagRepository.findFirstPageTagPks(memberPk, pageRequest);
+        }
+        return favoriteTagRepository.findNextPageTagPks(memberPk, lastTagPk, pageRequest);
     }
 }

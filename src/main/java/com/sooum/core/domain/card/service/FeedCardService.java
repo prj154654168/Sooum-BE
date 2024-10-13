@@ -57,4 +57,8 @@ public class FeedCardService {
     public void saveFeedCard(FeedCard feedCard) {
         feedCardRepository.save(feedCard);
     }
+
+    public List<Long> findFeedCardIdsByMemberPk(List<Long> memberPks) {
+        return feedCardRepository.findFeedCardIdsByWriterIn(memberPks);
+    }
 }
