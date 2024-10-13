@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -27,7 +28,6 @@ public class FavoriteTagService {
     private final TagService tagService;
     private final MemberService memberService;
     private final ImgService imgService;
-    private final FeedCardService feedCardService;
     private final BlockMemberService blockMemberService;
 
     @Transactional
@@ -57,8 +57,7 @@ public class FavoriteTagService {
         List<Long> favoriteTagPks = findMyFavoriteTagPks(memberPk, lastTagPk);
 
         List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberPk);
-        List<Long> blockedFeedCardIds = feedCardService.findFeedCardIdsByMemberPk(allBlockToPk);
-        List<FeedTag> top5FeedCardsByMemberPk = tagService.findTop5FeedCardsByMemberPk(favoriteTagPks, blockedFeedCardIds);
+        List<FeedTag> top5FeedCardsByMemberPk = tagService.findTop5FeedCardsByMemberPk(favoriteTagPks, allBlockToPk);
 
         List<TagDto.FavoriteTag> favoriteTagList = favoriteTagPks.stream()
                 .map(tagPk -> createFavoriteTag(tagPk, top5FeedCardsByMemberPk))
@@ -72,11 +71,13 @@ public class FavoriteTagService {
                 .filter(feedTag -> feedTag.getTag().getPk().equals(tagPk))
                 .toList();
 
-        List<TagDto.FavoriteTag.PreviewCard> previewCards = relatedFeedTags.stream()
+        List<TagDto.FavoriteTag.PreviewCard> previewCards = relatedFeedTags.isEmpty()
+                ? Collections.emptyList()
+                : relatedFeedTags.stream()
                 .map(this::createPreviewCard)
                 .toList();
 
-        Tag tag = relatedFeedTags.get(0).getTag();
+        Tag tag = tagService.findTag(tagPk);
         return TagDto.FavoriteTag.builder()
                 .id(tag.getPk().toString())
                 .tagContent(tag.getContent())

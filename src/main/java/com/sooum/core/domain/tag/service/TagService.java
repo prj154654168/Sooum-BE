@@ -118,8 +118,8 @@ public class TagService {
                 .build();
     }
 
-    public List<FeedTag> findTop5FeedCardsByMemberPk(List<Long> favoriteTagIds, List<Long> blockedFeedCardIds) {
-        return feedTagRepository.findTop5FeedCardsByMemberPk(favoriteTagIds, blockedFeedCardIds);
+    public List<FeedTag> findTop5FeedCardsByMemberPk(List<Long> favoriteTagIds, List<Long> blockedMemberPks) {
+        return feedTagRepository.findTop5FeedCardsByMemberPk(favoriteTagIds, blockedMemberPks);
     }
 
     public List<Long> findTagPksByLastPk(Long lastTagPk, Long memberPk) {

@@ -31,12 +31,12 @@ public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
 
    @Query(value = """
     select ranking.feed_card, ranking.tag, ranking.created_at, ranking.pk
-    from (select ft.*, rank() over (partition by tag order by feed_card desc) as rn from feed_tag ft
-    join feed_card fc on ft.feed_card = fc.pk where fc.is_public = true and fc.is_deleted = false) 
-        as ranking where ranking.rn <= 5 and ranking.tag in :favoriteTagList 
-                     and (ranking.feed_card not in :blockedFeedCardIds or :blockedFeedCardIds is null)
+    from (select ft.*, fc.writer, rank() over (partition by tag order by feed_card desc) as rn from feed_tag ft
+    join feed_card fc on ft.feed_card = fc.pk where fc.is_public = true and fc.is_deleted = false)
+        as ranking where ranking.rn <= 5 and ranking.tag in :favoriteTagList
+    and (:blockedMemberPks IS NULL or ranking.writer not in :blockedMemberPks)
     """, nativeQuery = true)
     List<FeedTag> findTop5FeedCardsByMemberPk(@Param("favoriteTagList") List<Long> favoriteTagList,
-                                              @Param("blockedFeedCardIds") List<Long> blockedFeedCardIds);
+                                              @Param("blockedMemberPks") List<Long> blockedMemberPks);
 
 }
