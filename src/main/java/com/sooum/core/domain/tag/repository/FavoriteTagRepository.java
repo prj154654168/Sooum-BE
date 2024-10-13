@@ -20,6 +20,6 @@ public interface FavoriteTagRepository extends JpaRepository<FavoriteTag, Long> 
     @Query("select ft.tag.pk from FavoriteTag ft where ft.member.pk = :memberPk order by ft.tag.pk")
     List<Long> findFirstPageTagPks(@Param("memberPk") Long memberPk, Pageable pageable);
 
-    @Query("select ft.tag.pk from FavoriteTag ft where ft.member.pk = :memberPk and ft.tag.pk < :lastTagPk order by ft.tag.pk")
+    @Query("select ft.tag.pk from FavoriteTag ft where ft.member.pk = :memberPk and ft.tag.pk < :lastTagPk order by ft.tag.pk desc")
     List<Long> findNextPageTagPks(@Param("memberPk") Long memberPk, @Param("lastTagPk") Long lastTagPk, Pageable pageable);
 }
