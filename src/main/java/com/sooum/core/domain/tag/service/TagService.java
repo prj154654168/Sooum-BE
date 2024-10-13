@@ -122,11 +122,12 @@ public class TagService {
         return feedTagRepository.findTop5FeedCardsByMemberPk(favoriteTagIds, blockedFeedCardIds);
     }
 
-    public List<Long> findTagIdsByLastId(Long lastTagPk, Long memberPk) {
+    public List<Long> findTagPksByLastPk(Long lastTagPk, Long memberPk) {
         Pageable pageRequest = PageRequest.of(0, 20);
         if (lastTagPk.equals(0L)) {
             return favoriteTagRepository.findFirstPageTagPks(memberPk, pageRequest);
         }
-        return favoriteTagRepository.findNextPageTagPks(memberPk, lastTagPk, pageRequest);
+        Long lastFavoriteTagPk = findFavoriteTag(lastTagPk, memberPk).getPk();
+        return favoriteTagRepository.findNextPageTagPks(memberPk, lastFavoriteTagPk, pageRequest);
     }
 }

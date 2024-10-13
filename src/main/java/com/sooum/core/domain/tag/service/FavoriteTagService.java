@@ -54,22 +54,22 @@ public class FavoriteTagService {
     }
 
     public List<TagDto.FavoriteTag> findMyFavoriteTags(Long memberPk, Long lastTagPk) {
-        List<Long> favoriteTagIds = findMyFavoriteTagIds(memberPk, lastTagPk);
+        List<Long> favoriteTagPks = findMyFavoriteTagPks(memberPk, lastTagPk);
 
         List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberPk);
         List<Long> blockedFeedCardIds = feedCardService.findFeedCardIdsByMemberPk(allBlockToPk);
-        List<FeedTag> top5FeedCardsByMemberPk = tagService.findTop5FeedCardsByMemberPk(favoriteTagIds, blockedFeedCardIds);
+        List<FeedTag> top5FeedCardsByMemberPk = tagService.findTop5FeedCardsByMemberPk(favoriteTagPks, blockedFeedCardIds);
 
-        List<TagDto.FavoriteTag> favoriteTagList = favoriteTagIds.stream()
-                .map(tagId -> createFavoriteTag(tagId, top5FeedCardsByMemberPk))
+        List<TagDto.FavoriteTag> favoriteTagList = favoriteTagPks.stream()
+                .map(tagPk -> createFavoriteTag(tagPk, top5FeedCardsByMemberPk))
                 .toList();
 
         return NextPageLinkGenerator.appendEachFavoriteTagDetailLink(favoriteTagList);
     }
 
-    private TagDto.FavoriteTag createFavoriteTag(Long tagId, List<FeedTag> top5FeedCards) {
+    private TagDto.FavoriteTag createFavoriteTag(Long tagPk, List<FeedTag> top5FeedCards) {
         List<FeedTag> relatedFeedTags = top5FeedCards.stream()
-                .filter(feedTag -> feedTag.getTag().getPk().equals(tagId))
+                .filter(feedTag -> feedTag.getTag().getPk().equals(tagPk))
                 .toList();
 
         List<TagDto.FavoriteTag.PreviewCard> previewCards = relatedFeedTags.stream()
@@ -95,24 +95,24 @@ public class FavoriteTagService {
                 .build();
     }
 
-    public List<Long> findMyFavoriteTagIds(Long memberPk, Long lastTagPk) {
-        List<Long> resultTagIds = new ArrayList<>();
+    public List<Long> findMyFavoriteTagPks(Long memberPk, Long lastTagPk) {
+        List<Long> resultTagPks = new ArrayList<>();
+        while (resultTagPks.size() < 20) {
 
-        while (resultTagIds.size() < 20) {
-            List<Long> favoriteTagIds = tagService.findTagIdsByLastId(lastTagPk, memberPk);
+            List<Long> favoriteTagPks = tagService.findTagPksByLastPk(lastTagPk, memberPk);
 
-            if (!favoriteTagIds.isEmpty()) {
-                lastTagPk = favoriteTagIds.get(favoriteTagIds.size() - 1);
+            if (!favoriteTagPks.isEmpty()) {
+                lastTagPk = favoriteTagPks.get(favoriteTagPks.size() - 1);
             }
 
-            resultTagIds.addAll(favoriteTagIds);
-            if (isEndOfPage(favoriteTagIds)) {
+            resultTagPks.addAll(favoriteTagPks);
+            if (isEndOfPage(favoriteTagPks)) {
                 break;
             }
         }
-        return resultTagIds.size() > 20 ? resultTagIds.subList(0, 20) : resultTagIds;
+        return resultTagPks.size() > 20 ? resultTagPks.subList(0, 20) : resultTagPks;
     }
-    private static boolean isEndOfPage(List<Long> byLastId) {
-        return byLastId.size() < 20;
+    private static boolean isEndOfPage(List<Long> tagPks) {
+        return tagPks.size() < 20;
     }
 }
