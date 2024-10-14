@@ -124,9 +124,13 @@ public class TagService {
 
     public List<Long> findTagPksByLastPk(Long lastTagPk, Long memberPk) {
         Pageable pageRequest = PageRequest.ofSize(20);
-        if (lastTagPk.equals(0L)) {
+        if (isFirstPageRequest(lastTagPk)) {
             return favoriteTagRepository.findFirstPageTagPks(memberPk, pageRequest);
         }
         return favoriteTagRepository.findNextPageTagPks(memberPk, lastTagPk, pageRequest);
+    }
+
+    private static boolean isFirstPageRequest(Long lastTagPk) {
+        return lastTagPk.equals(0L);
     }
 }
