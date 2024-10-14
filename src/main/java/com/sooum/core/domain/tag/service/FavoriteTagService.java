@@ -1,7 +1,6 @@
 package com.sooum.core.domain.tag.service;
 
 import com.sooum.core.domain.block.service.BlockMemberService;
-import com.sooum.core.domain.card.service.FeedCardService;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.domain.tag.dto.TagDto;
@@ -16,11 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -61,27 +56,28 @@ public class FavoriteTagService {
         List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberPk);
         List<FeedTag> top5FeedCardsByMemberPk = tagService.findTop5FeedCardsByMemberPk(favoriteTagPks, allBlockToPk);
 
-        Map<Long, Tag> tagMap = tagService.findTagListByTakPks(favoriteTagPks).stream()
-                .collect(Collectors.toMap(Tag::getPk, tag -> tag));
-
         List<TagDto.FavoriteTag> favoriteTagList = favoriteTagPks.stream()
-                .map(tagPk -> createFavoriteTag(tagMap.get(tagPk), top5FeedCardsByMemberPk))
+                .map(tagPk -> createFavoriteTag(tagPk, top5FeedCardsByMemberPk))
+                .filter(Objects::nonNull)
                 .toList();
 
         return NextPageLinkGenerator.appendEachFavoriteTagDetailLink(favoriteTagList);
     }
 
-    private TagDto.FavoriteTag createFavoriteTag(Tag tag, List<FeedTag> top5FeedCards) {
+    private TagDto.FavoriteTag createFavoriteTag(Long tagPk, List<FeedTag> top5FeedCards) {
         List<FeedTag> relatedFeedTags = top5FeedCards.stream()
-                .filter(feedTag -> feedTag.getTag().getPk().equals(tag.getPk()))
+                .filter(feedTag -> feedTag.getTag().getPk().equals(tagPk))
                 .toList();
 
-        List<TagDto.FavoriteTag.PreviewCard> previewCards = relatedFeedTags.isEmpty()
-                ? Collections.emptyList()
-                : relatedFeedTags.stream()
+        if (relatedFeedTags.isEmpty()) {
+            return null;
+        }
+
+        List<TagDto.FavoriteTag.PreviewCard> previewCards = relatedFeedTags.stream()
                 .map(this::createPreviewCard)
                 .toList();
 
+        Tag tag = relatedFeedTags.get(0).getTag();
         return TagDto.FavoriteTag.builder()
                 .id(tag.getPk().toString())
                 .tagContent(tag.getContent())
