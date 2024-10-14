@@ -95,7 +95,7 @@ public class TagController {
         );
     }
 
-    @GetMapping({"/favorite", "/favorite/{last}"})
+    @GetMapping({"/favorites", "/favorites/{last}"})
     ResponseEntity<?> findFavoriteTags(@PathVariable(required = false, value = "last") Optional<Long> last,
                                        @CurrentUser Long memberPk) {
         List<TagDto.FavoriteTag> myFavoriteTags = favoriteTagService.findMyFavoriteTags(memberPk, last.orElse(0L));
