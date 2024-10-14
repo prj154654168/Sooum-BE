@@ -123,15 +123,10 @@ public class TagService {
     }
 
     public List<Long> findTagPksByLastPk(Long lastTagPk, Long memberPk) {
-        Pageable pageRequest = PageRequest.of(0, 20);
+        Pageable pageRequest = PageRequest.ofSize(20);
         if (lastTagPk.equals(0L)) {
             return favoriteTagRepository.findFirstPageTagPks(memberPk, pageRequest);
         }
-        Long lastFavoriteTagPk = findFavoriteTag(lastTagPk, memberPk).getPk();
-        return favoriteTagRepository.findNextPageTagPks(memberPk, lastFavoriteTagPk, pageRequest);
-    }
-
-    public List<Tag> findTagListByTakPks(List<Long> tagPks) {
-        return tagRepository.findByPkIn(tagPks);
+        return favoriteTagRepository.findNextPageTagPks(memberPk, lastTagPk, pageRequest);
     }
 }
