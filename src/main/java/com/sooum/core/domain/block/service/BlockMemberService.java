@@ -32,7 +32,7 @@ public class BlockMemberService {
     }
 
     public <T extends Card> List<T> filterBlockedMembers (List<T> cards, Long memberPk) {
-        List<Long> allBlockToPk = blockRepository.findAllBlockToPk(memberPk);
+        List<Long> allBlockToPk = findAllBlockToPk(memberPk);
         return cards.stream()
                 .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
                 .toList();
@@ -42,5 +42,9 @@ public class BlockMemberService {
         Member fromMember = memberService.findByPk(fromMemberPk);
         Member toMember = memberService.findByPk(toMemberId);
         blockRepository.deleteBlockMember(fromMember, toMember);
+    }
+
+    public List<Long> findAllBlockToPk(Long memberPk) {
+        return blockRepository.findAllBlockToPk(memberPk);
     }
 }

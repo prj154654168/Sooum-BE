@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -91,6 +92,24 @@ public class TagController {
                         )
                         .content(recommendedTags)
                         .build()
+        );
+    }
+
+    @GetMapping({"/favorites", "/favorites/{last}"})
+    ResponseEntity<?> findFavoriteTags(@PathVariable(required = false, value = "last") Optional<Long> last,
+                                       @CurrentUser Long memberPk) {
+        List<TagDto.FavoriteTag> myFavoriteTags = favoriteTagService.findMyFavoriteTags(memberPk, last.orElse(0L));
+        if (myFavoriteTags.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(ResponseCollectionModel.<TagDto.FavoriteTag>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("Favorite tags retrieved successfully.")
+                        .build()
+                ).content(myFavoriteTags)
+                .build()
         );
     }
 }

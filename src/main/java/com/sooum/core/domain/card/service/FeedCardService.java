@@ -62,4 +62,8 @@ public class FeedCardService {
     public Long findFeedCardCnt(Member cardOwnerMember) {
         return feedCardRepository.findFeedCardCnt(cardOwnerMember);
     }
+
+    public List<Long> findFeedCardIdsByMemberPk(List<Long> memberPks) {
+        return feedCardRepository.findFeedCardIdsByWriterIn(memberPks);
+    }
 }

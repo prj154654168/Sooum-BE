@@ -59,4 +59,9 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
 
     @Query("select count(f) from FeedCard f where f.writer = :cardOwnerMember")
     Long findFeedCardCnt(@Param("cardOwnerMember") Member cardOwnerMember);
+
+    @Query("select fc.pk from FeedCard fc where fc.writer.pk in :memberPks")
+    List<Long> findFeedCardIdsByWriterIn(@Param("memberPks") List<Long> memberPks);
+
+
 }
