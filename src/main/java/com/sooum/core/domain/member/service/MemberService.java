@@ -1,5 +1,6 @@
 package com.sooum.core.domain.member.service;
 
+import com.sooum.core.domain.member.dto.MemberDto;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.mapper.MemberMapper;
 import com.sooum.core.domain.member.repository.MemberRepository;
@@ -41,5 +42,11 @@ public class MemberService {
 
     public Long findTotalVisitorCnt(Member profileOwnerMember) {
         return memberRepository.findTotalVisitorCnt(profileOwnerMember);
+    }
+
+    public MemberDto.MemberStatus findMemberStatus(Long memberPk) {
+        return MemberDto.MemberStatus.builder()
+                .banEndAt(findByPk(memberPk).getUntilBan())
+                .build();
     }
 }

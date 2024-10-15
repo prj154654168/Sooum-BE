@@ -2,8 +2,11 @@ package com.sooum.core.domain.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+
+import java.time.LocalDateTime;
 
 public class MemberDto {
 
@@ -18,6 +21,17 @@ public class MemberDto {
             this.id = id;
             this.nickname = nickname;
             this.profileImgUrl = profileImgUrl;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class MemberStatus {
+        private LocalDateTime banEndAt;
+
+        @Builder
+        public MemberStatus(LocalDateTime banEndAt) {
+            this.banEndAt = banEndAt;
         }
     }
 }
