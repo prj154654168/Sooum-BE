@@ -41,4 +41,7 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
     List<CommentCard> findCommentsInfoByLastPk(@Param("parentCardPk") Long parentCardPk,
                                                @Param("lastPk") Long lastPk,
                                                Pageable pageable);
+
+    @Query("select cc from CommentCard cc where cc.isDeleted = false and cc.writer.pk = :memberPk order by cc.pk desc ")
+    List<CommentCard> findCommentCardsByMemberPk(@Param("memberPk") Long memberPK);
 }
