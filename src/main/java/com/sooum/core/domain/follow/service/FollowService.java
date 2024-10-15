@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class FollowService {
     private final FollowRepository followRepository;
 
@@ -18,7 +17,7 @@ public class FollowService {
         return followRepository.findFollow(fromMember, toMember).isPresent();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void saveFollower(Member fromMember, Member toMember) {
         followRepository.save(Follow.builder()
                 .fromMember(fromMember)
@@ -26,7 +25,7 @@ public class FollowService {
                 .build());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void deleteFollower(Member fromMember, Member toMember) {
         followRepository.deleteFollower(fromMember, toMember);
     }

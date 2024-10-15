@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class FollowManagementService {
     private final FollowService followService;
     private final MemberService memberService;
 
+    @Transactional
     public void saveFollower(final Long fromMemberId, final Long toMemberId) {
         Member fromMember = memberService.findByPk(fromMemberId);
         Member toMember = memberService.findByPk(toMemberId);
@@ -26,6 +26,7 @@ public class FollowManagementService {
         followService.saveFollower(fromMember, toMember);
     }
 
+    @Transactional
     public void deleteFollower(final Long fromMemberId, final Long toMemberId) {
         Member fromMember = memberService.findByPk(fromMemberId);
         Member toMember = memberService.findByPk(toMemberId);
