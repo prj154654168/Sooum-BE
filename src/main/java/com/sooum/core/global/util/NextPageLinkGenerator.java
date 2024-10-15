@@ -6,7 +6,7 @@ import com.sooum.core.domain.card.controller.LatestFeedController;
 import com.sooum.core.domain.card.dto.CardDto;
 import com.sooum.core.domain.card.dto.DistanceCardDto;
 import com.sooum.core.domain.card.dto.LatestFeedCardDto;
-import com.sooum.core.domain.tag.controller.TagController;
+import com.sooum.core.domain.card.dto.MyCardDto;
 import com.sooum.core.domain.tag.dto.TagDto;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -84,6 +84,17 @@ public abstract class NextPageLinkGenerator {
         return cardDtoList.stream()
                 .peek(previewCard -> previewCard.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
                         .slash("/" + previewCard.getId() + "/detail")
+                        .withRel("detail"))).toList();
+    }
+
+    public static <E extends MyCardDto> List<E> appendEachMyCardDetailLink(List<E> feedCardInfoList) {
+        if (feedCardInfoList.isEmpty()) {
+            return feedCardInfoList;
+        }
+
+        return feedCardInfoList.stream()
+                .peek(feedCard -> feedCard.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
+                        .slash("/" + feedCard.getId() + "/detail")
                         .withRel("detail"))).toList();
     }
 }

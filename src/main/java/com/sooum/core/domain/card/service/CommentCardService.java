@@ -95,4 +95,8 @@ public class CommentCardService {
     public void saveComment(CommentCard commentCard) {
         commentCardRepository.save(commentCard);
     }
+
+    public List<CommentCard> findCommentList(Long memberPk) {
+        return commentCardRepository.findCommentCardsByMemberPk(memberPk);
+    }
 }

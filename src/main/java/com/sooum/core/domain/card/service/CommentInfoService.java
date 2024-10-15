@@ -3,6 +3,7 @@ package com.sooum.core.domain.card.service;
 import com.sooum.core.domain.block.service.BlockMemberService;
 import com.sooum.core.domain.card.controller.CommentCardController;
 import com.sooum.core.domain.card.dto.CommentDto;
+import com.sooum.core.domain.card.dto.MyCommentCardDto;
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.CommentLike;
 import com.sooum.core.domain.img.service.ImgService;
@@ -83,5 +84,18 @@ public class CommentInfoService {
         String lastPk = commentsInfoDto.get(commentsInfoDto.size() - 1).getId();
         return linkTo(methodOn(CommentCardController.class).getClass())
                 .slash("/current/" + currentCardPk + "?lastId=" + lastPk).withRel("next");
+    }
+
+    public List<MyCommentCardDto> getMyCommentCards(Long memberPk) {
+        List<CommentCard> commentList = commentCardService.findCommentList(memberPk);
+
+        return NextPageLinkGenerator.appendEachMyCardDetailLink(commentList.stream()
+                .map(comment -> MyCommentCardDto.builder()
+                        .id(comment.getPk().toString())
+                        .content(comment.getContent())
+                        .backgroundImgUrl(imgService.findImgUrl(comment.getImgType(), comment.getImgName()))
+                        .font(comment.getFont())
+                        .fontSize(comment.getFontSize()).build())
+                .toList());
     }
 }
