@@ -48,8 +48,9 @@ public class CommentCardController {
     }
 
     @GetMapping("/mine")
-    public ResponseEntity<?> getMyCommentsCards(@CurrentUser Long memberPk) {
-        List<MyCommentCardDto> myCommentCards = commentInfoService.getMyCommentCards(memberPk);
+    public ResponseEntity<?> getMyCommentsCards(@CurrentUser Long memberPk,
+                                                @RequestParam(required = false) Optional<Long> lastId) {
+        List<MyCommentCardDto> myCommentCards = commentInfoService.getMyCommentCards(memberPk, lastId);
 
         if (myCommentCards.isEmpty()) {
             return ResponseEntity.noContent().build();

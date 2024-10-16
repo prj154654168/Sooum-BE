@@ -86,8 +86,8 @@ public class CommentInfoService {
                 .slash("/current/" + currentCardPk + "?lastId=" + lastPk).withRel("next");
     }
 
-    public List<MyCommentCardDto> getMyCommentCards(Long memberPk) {
-        List<CommentCard> commentList = commentCardService.findCommentList(memberPk);
+    public List<MyCommentCardDto> getMyCommentCards(Long memberPk, Optional<Long> lastPk) {
+        List<CommentCard> commentList = commentCardService.findCommentList(memberPk, lastPk);
 
         return NextPageLinkGenerator.appendEachMyCardDetailLink(commentList.stream()
                 .map(comment -> MyCommentCardDto.builder()
