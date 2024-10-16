@@ -162,10 +162,11 @@ public class AWSImgService implements ImgService{
                     .bucket(bucket)
                     .key(USER_IMG + imgName)
                     .build());
-            s3Client.close();
         } catch (Exception e) {
             log.error("{}",e.getMessage());
             return false;
+        } finally {
+            s3Client.close();
         }
         return true;
     }
