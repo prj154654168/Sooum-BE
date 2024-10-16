@@ -125,7 +125,7 @@ public abstract class NextPageLinkGenerator {
         }
 
         return feedCardInfoList.stream()
-                .peek(feedCard -> feedCard.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
+                .peek(feedCard -> feedCard.add(linkTo(FeedCardController.class)
                         .slash("/" + feedCard.getId() + "/detail")
                         .withRel("detail"))).toList();
     }
