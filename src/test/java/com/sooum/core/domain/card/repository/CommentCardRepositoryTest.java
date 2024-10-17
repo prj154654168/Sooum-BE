@@ -23,9 +23,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -102,24 +101,46 @@ class CommentCardRepositoryTest {
     @DisplayName("사용자가 작성한 댓글 카드 첫 번째 페이지 조회")
     void findMyComments() throws Exception{
         //given
-        Member member = memberRepository.findAll().get(0);
+        Member member = Member.builder()
+                .deviceType(DeviceType.ANDROID)
+                .deviceId("firstPageTestMember")
+                .firebaseToken("token")
+                .nickname("nickname")
+                .isAllowNotify(true)
+                .build();
+        memberRepository.save(member);
+        FeedCard feedCard = createFeedCard(member);
+        List<CommentCard> comments = createCommentCardsForMyComments(feedCard, member);
+        Collections.reverse(comments);
 
         //when
-        List<CommentCard> result = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.ofSize(TEST_PAGE_SIZE));
+        List<CommentCard> result = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.ofSize(30));
 
         //then
-        Assertions.assertThat(result.size()).isEqualTo(TEST_PAGE_SIZE);
-        result.forEach(comment -> {
-            Assertions.assertThat(comment.getWriter().getPk()).isEqualTo(member.getPk());
-        });
+        long count = IntStream.range(0, result.size()).filter(idx -> {
+            Long resultPk = result.get(idx).getPk();
+            Long commentPk = comments.get(idx).getPk();
+            return resultPk.equals(commentPk);
+        }).count();
+        Assertions.assertThat(count).isEqualTo(30);
     }
 
     @Test
     @DisplayName("사용자가 작성한 댓글 카드 두번째 페이지 조회")
     void findMyCommentsByLastId() throws Exception{
-
         //given
-        Member member = memberRepository.findAll().get(0);
+        Member member = Member.builder()
+                .deviceType(DeviceType.ANDROID)
+                .deviceId("firstPageTestMember")
+                .firebaseToken("token")
+                .nickname("nickname")
+                .isAllowNotify(true)
+                .build();
+        memberRepository.save(member);
+        FeedCard feedCard = createFeedCard(member);
+
+        createCommentCards(feedCard, member);
+
         List<CommentCard> allComments = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.of(0, TEST_PAGE_SIZE));
         long lastPk = allComments.get(allComments.size() - 5).getPk();
 
@@ -135,6 +156,26 @@ class CommentCardRepositoryTest {
         boolean isNotExistedLastPkComment = result.stream().noneMatch(comment -> comment.getPk().equals(lastPk));
         Assertions.assertThat(isNotExistedLastPkComment).isTrue();
 
+    }
+    private List<CommentCard> createCommentCardsForMyComments(FeedCard feedCard, Member member) {
+        ArrayList<CommentCard> commentCards = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            CommentCard commentCard = CommentCard.builder()
+                    .content("카드 내용 " + i)
+                    .fontSize(FontSize.BIG)
+                    .font(Font.PRETENDARD)
+                    .location(null)
+                    .imgType(ImgType.DEFAULT)
+                    .imgName(i + ".jpg")
+                    .writer(member)
+                    .masterCard(feedCard.getPk())
+                    .parentCardType(i % 2 == 0 ? CardType.FEED_CARD : CardType.COMMENT_CARD)
+                    .parentCardPk(feedCard.getPk())
+                    .build();
+            commentCards.add(commentCard);
+//            commentCardRepository.save(commentCard);
+        }
+        return commentCardRepository.saveAll(commentCards);
     }
 
     private void createCommentCards(FeedCard feedCard, Member member) {
