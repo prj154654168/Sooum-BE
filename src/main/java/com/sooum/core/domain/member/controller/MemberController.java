@@ -5,6 +5,7 @@ import com.sooum.core.domain.card.service.CommentInfoService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseStatus;
+import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class MemberController {
                 )
                 .content(myCommentCards)
                 .build()
+                .add(NextPageLinkGenerator.generateMyCardNextPageLink(myCommentCards))
         );
     }
-
 }

@@ -3,13 +3,11 @@ package com.sooum.core.global.util;
 import com.sooum.core.domain.card.controller.DistanceCardController;
 import com.sooum.core.domain.card.controller.FeedCardController;
 import com.sooum.core.domain.card.controller.LatestFeedController;
-import com.sooum.core.domain.card.dto.CardDto;
-import com.sooum.core.domain.card.dto.DistanceCardDto;
-import com.sooum.core.domain.card.dto.LatestFeedCardDto;
+import com.sooum.core.domain.card.dto.*;
 import com.sooum.core.domain.follow.dto.FollowDto;
 import com.sooum.core.domain.follow.dto.FollowInfoDto;
+import com.sooum.core.domain.member.controller.MemberController;
 import com.sooum.core.domain.member.controller.ProfileController;
-import com.sooum.core.domain.card.dto.MyCardDto;
 import com.sooum.core.domain.tag.dto.TagDto;
 import org.springframework.hateoas.Link;
 
@@ -119,14 +117,31 @@ public abstract class NextPageLinkGenerator {
                         .withRel("profile"))).toList();
     }
 
-    public static <E extends MyCardDto> List<E> appendEachMyCardDetailLink(List<E> feedCardInfoList) {
-        if (feedCardInfoList.isEmpty()) {
-            return feedCardInfoList;
+    public static <E extends MyCardDto> List<E> appendEachMyCardDetailLink(List<E> myCardDtoList) {
+        if (myCardDtoList.isEmpty()) {
+            return myCardDtoList;
         }
 
-        return feedCardInfoList.stream()
+        return myCardDtoList.stream()
                 .peek(feedCard -> feedCard.add(linkTo(FeedCardController.class)
                         .slash("/" + feedCard.getId() + "/detail")
                         .withRel("detail"))).toList();
+    }
+
+    public static <E extends MyCardDto> Link generateMyCardNextPageLink (List<E> myCardDtoList) {
+        if (myCardDtoList.isEmpty()) {
+            return Link.of("Not found");
+        }
+
+        int lastIdx = myCardDtoList.size() - 1;
+        String lastCardIdx = myCardDtoList.get(lastIdx).getId();
+        E myCardDto = myCardDtoList.get(0);
+
+        if (myCardDto instanceof MyCommentCardDto) {
+            return linkTo(methodOn(MemberController.class).getClass())
+                    .slash("/comment-cards?lastId=" +lastCardIdx)
+                    .withRel("next");
+        }
+        return Link.of("Not found");
     }
 }

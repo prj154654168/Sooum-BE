@@ -101,15 +101,8 @@ class CommentCardRepositoryTest {
     @DisplayName("사용자가 작성한 댓글 카드 첫 번째 페이지 조회")
     void findMyComments() throws Exception{
         //given
-        Member member = Member.builder()
-                .deviceType(DeviceType.ANDROID)
-                .deviceId("firstPageTestMember")
-                .firebaseToken("token")
-                .nickname("nickname")
-                .isAllowNotify(true)
-                .build();
-        memberRepository.save(member);
-        FeedCard feedCard = createFeedCard(member);
+        Member member = createMemberForMyComments();
+        FeedCard feedCard = createFeedCardForMyComments(member);
         List<CommentCard> comments = createCommentCardsForMyComments(feedCard, member);
         Collections.reverse(comments);
 
@@ -126,9 +119,32 @@ class CommentCardRepositoryTest {
     }
 
     @Test
-    @DisplayName("사용자가 작성한 댓글 카드 두번째 페이지 조회")
+    @DisplayName("사용자가 작성한 댓글 카드 두번째 페이지 조회 - 25번째 카드 이후 반환")
     void findMyCommentsByLastId() throws Exception{
         //given
+        Member member = createMemberForMyComments();
+        FeedCard feedCard = createFeedCardForMyComments(member);
+        List<CommentCard> comments = createCommentCardsForMyComments(feedCard, member);
+        Collections.reverse(comments);
+
+        List<CommentCard> allComments = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.of(0, 30));
+        long lastPk = allComments.get(24).getPk();
+
+        //when
+        List<CommentCard> result = commentCardRepository.findCommentCardsNextPage(member.getPk(), lastPk, PageRequest.of(0, 30));
+        List<CommentCard> expectedComments = comments.subList(25, comments.size());
+
+        //then
+
+        long count = IntStream.range(0, result.size()).filter(idx -> {
+            Long resultPk = result.get(idx).getPk();
+            Long commentPk = expectedComments.get(idx).getPk();
+            return resultPk.equals(commentPk);
+        }).count();
+        Assertions.assertThat(count).isEqualTo(25);
+    }
+
+    private Member createMemberForMyComments() {
         Member member = Member.builder()
                 .deviceType(DeviceType.ANDROID)
                 .deviceId("firstPageTestMember")
@@ -136,27 +152,25 @@ class CommentCardRepositoryTest {
                 .nickname("nickname")
                 .isAllowNotify(true)
                 .build();
-        memberRepository.save(member);
-        FeedCard feedCard = createFeedCard(member);
-
-        createCommentCards(feedCard, member);
-
-        List<CommentCard> allComments = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.of(0, TEST_PAGE_SIZE));
-        long lastPk = allComments.get(allComments.size() - 5).getPk();
-
-        //when
-        List<CommentCard> result = commentCardRepository.findCommentCardsNextPage(member.getPk(), lastPk, PageRequest.of(0, TEST_PAGE_SIZE));
-
-        //then
-        Assertions.assertThat(result.size()).isLessThanOrEqualTo(30);
-
-        boolean isAfterLastPk = result.stream().allMatch(comment -> comment.getPk() < lastPk);
-        Assertions.assertThat(isAfterLastPk).isTrue();
-
-        boolean isNotExistedLastPkComment = result.stream().noneMatch(comment -> comment.getPk().equals(lastPk));
-        Assertions.assertThat(isNotExistedLastPkComment).isTrue();
-
+        return memberRepository.save(member);
     }
+
+    private FeedCard createFeedCardForMyComments(Member member) {
+        FeedCard feedCard = FeedCard.builder()
+                .content("content")
+                .fontSize(FontSize.BIG)
+                .font(Font.PRETENDARD)
+                .location(null)
+                .imgType(ImgType.DEFAULT)
+                .imgName(1 + ".jpg")
+                .isPublic(true)
+                .isStory(false)
+                .writer(member)
+                .build();
+        return feedCardRepository.save(feedCard);
+    }
+
+
     private List<CommentCard> createCommentCardsForMyComments(FeedCard feedCard, Member member) {
         ArrayList<CommentCard> commentCards = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
@@ -173,7 +187,6 @@ class CommentCardRepositoryTest {
                     .parentCardPk(feedCard.getPk())
                     .build();
             commentCards.add(commentCard);
-//            commentCardRepository.save(commentCard);
         }
         return commentCardRepository.saveAll(commentCards);
     }
