@@ -1,10 +1,14 @@
 package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.dto.CardSummary;
+import com.sooum.core.domain.card.dto.MyFeedCardDto;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -13,6 +17,7 @@ public class CardService {
     private final FeedLikeService feedLikeService;
     private final CommentLikeService commentLikeService;
     private final CommentCardService commentCardService;
+    private final FeedCardService feedCardService;
 
     public CardSummary findCardSummary(Long parentCardPk, Long memberPk) {
         CardType parentCardType = commentCardService.findCardType(parentCardPk);
@@ -34,5 +39,9 @@ public class CardService {
         return cardType.equals(CardType.FEED_CARD)
                 ? feedLikeService.isLiked(cardPk, memberPk)
                 : commentLikeService.isLiked(cardPk, memberPk);
+    }
+
+    public List<MyFeedCardDto> findMyCards(Long memberPk, Pageable pageable) {
+        return feedCardService.findByMemberPk(memberPk, pageable);
     }
 }
