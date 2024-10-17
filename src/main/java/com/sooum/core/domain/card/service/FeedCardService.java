@@ -1,7 +1,9 @@
 package com.sooum.core.domain.card.service;
 
+import com.sooum.core.domain.card.dto.MyFeedCardDto;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.repository.FeedCardRepository;
+import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +20,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FeedCardService {
+    private final ImgService imgService;
     private final FeedCardRepository feedCardRepository;
     private static final int MAX_PAGE_SIZE = 100;
 
@@ -65,5 +68,17 @@ public class FeedCardService {
 
     public List<Long> findFeedCardIdsByMemberPk(List<Long> memberPks) {
         return feedCardRepository.findFeedCardIdsByWriterIn(memberPks);
+    }
+
+    public List<MyFeedCardDto> findByMemberPk(Long memberPk, Pageable pageable) {
+        return feedCardRepository.findByMemberPk(memberPk, pageable).stream()
+                .map(feed -> MyFeedCardDto.builder()
+                        .id(feed.getPk().toString())
+                        .content(feed.getContent())
+                        .backgroundImgUrl(imgService.findImgUrl(feed.getImgType(), feed.getImgName()))
+                        .font(feed.getFont())
+                        .fontSize(feed.getFontSize())
+                        .build())
+                .toList();
     }
 }

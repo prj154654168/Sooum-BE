@@ -9,8 +9,10 @@ import com.sooum.core.domain.card.dto.LatestFeedCardDto;
 import com.sooum.core.domain.follow.dto.FollowDto;
 import com.sooum.core.domain.follow.dto.FollowInfoDto;
 import com.sooum.core.domain.member.controller.ProfileController;
+import com.sooum.core.domain.card.dto.MyCardDto;
 import com.sooum.core.domain.tag.dto.TagDto;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import java.util.List;
 
@@ -116,5 +118,16 @@ public abstract class NextPageLinkGenerator {
                 .peek(follow -> follow.add(linkTo(ProfileController.class)
                         .slash("/" + follow.getId())
                         .withRel("profile"))).toList();
+    }
+
+    public static <E extends MyCardDto> List<E> appendEachMyCardDetailLink(List<E> feedCardInfoList) {
+        if (feedCardInfoList.isEmpty()) {
+            return feedCardInfoList;
+        }
+
+        return feedCardInfoList.stream()
+                .peek(feedCard -> feedCard.add(WebMvcLinkBuilder.linkTo(FeedCardController.class)
+                        .slash("/" + feedCard.getId() + "/detail")
+                        .withRel("detail"))).toList();
     }
 }

@@ -98,6 +98,45 @@ class CommentCardRepositoryTest {
         Assertions.assertThat(isNotExistedLastPkComment).isTrue();
     }
 
+    @Test
+    @DisplayName("사용자가 작성한 댓글 카드 첫 번째 페이지 조회")
+    void findMyComments() throws Exception{
+        //given
+        Member member = memberRepository.findAll().get(0);
+
+        //when
+        List<CommentCard> result = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.ofSize(TEST_PAGE_SIZE));
+
+        //then
+        Assertions.assertThat(result.size()).isEqualTo(TEST_PAGE_SIZE);
+        result.forEach(comment -> {
+            Assertions.assertThat(comment.getWriter().getPk()).isEqualTo(member.getPk());
+        });
+    }
+
+    @Test
+    @DisplayName("사용자가 작성한 댓글 카드 두번째 페이지 조회")
+    void findMyCommentsByLastId() throws Exception{
+
+        //given
+        Member member = memberRepository.findAll().get(0);
+        List<CommentCard> allComments = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.of(0, TEST_PAGE_SIZE));
+        long lastPk = allComments.get(allComments.size() - 5).getPk();
+
+        //when
+        List<CommentCard> result = commentCardRepository.findCommentCardsNextPage(member.getPk(), lastPk, PageRequest.of(0, TEST_PAGE_SIZE));
+
+        //then
+        Assertions.assertThat(result.size()).isLessThanOrEqualTo(30);
+
+        boolean isAfterLastPk = result.stream().allMatch(comment -> comment.getPk() < lastPk);
+        Assertions.assertThat(isAfterLastPk).isTrue();
+
+        boolean isNotExistedLastPkComment = result.stream().noneMatch(comment -> comment.getPk().equals(lastPk));
+        Assertions.assertThat(isNotExistedLastPkComment).isTrue();
+
+    }
+
     private void createCommentCards(FeedCard feedCard, Member member) {
         ArrayList<CommentCard> commentCards = new ArrayList<>();
         for (int i = 0; i < CARD_SIZE; i++) {

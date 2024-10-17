@@ -64,4 +64,7 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
     List<Long> findFeedCardIdsByWriterIn(@Param("memberPks") List<Long> memberPks);
 
 
+
+    @Query("select fc from FeedCard fc where fc.writer.pk = :memberPk")
+    List<FeedCard> findByMemberPk(@Param("memberPk") Long memberPk, Pageable pageable);
 }
