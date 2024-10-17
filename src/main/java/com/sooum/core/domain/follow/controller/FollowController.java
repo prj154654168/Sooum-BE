@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/follower")
+@RequestMapping("/followers")
 @RequiredArgsConstructor
 public class FollowController {
     private final FollowManagementService followManagementService;
