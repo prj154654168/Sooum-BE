@@ -52,7 +52,7 @@ public class AccountTransferService {
 
     @Transactional
     public ProfileDto.AccountTransferCodeResponse updateAccountTransfer(Long memberPk) {
-        AccountTransfer findAccountTransfer = findAccountTransfer(memberPk);
+        AccountTransfer findAccountTransfer = findAvailableAccountTransfer(memberPk);
         Member member = memberService.findByPk(memberPk);
 
         findAccountTransfer.updateTransferId(member.getNickname());
@@ -62,21 +62,21 @@ public class AccountTransferService {
                 .build();
     }
 
-    public AccountTransfer findAccountTransfer(Long memberPk) {
+    public AccountTransfer findAvailableAccountTransfer(Long memberPk) {
         return accountTransferRepository.findByMember_Pk(memberPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.ACCOUNT_TRANSFER_NOT_FOUND.getMessage()));
     }
 
     @Transactional
     public void transferAccount(AccountTransferDto.TransferAccount transferAccount) {
-        AccountTransfer findAccountTransfer = findAccountTransfer(transferAccount.getTransferId());
+        AccountTransfer findAccountTransfer = findAvailableAccountTransfer(transferAccount.getTransferId());
 
         String decryptedDeviceId = rsaService.decodeDeviceId(transferAccount.getEncryptedDeviceId());
         findAccountTransfer.getMember().updateDeviceId(decryptedDeviceId);
     }
 
-    public AccountTransfer findAccountTransfer(String transferId) {
-        return accountTransferRepository.findByTransferId(transferId)
+    public AccountTransfer findAvailableAccountTransfer(String transferId) {
+        return accountTransferRepository.findAvailableAccountTransfer(transferId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.ACCOUNT_TRANSFER_NOT_FOUND.getMessage()));
     }
 }
