@@ -45,18 +45,34 @@ public class ImgController {
         );
     }
 
-    @GetMapping("/upload/user")
-    public ResponseEntity<ResponseEntityModel<ImgUrlInfo>> createMemberImgUploadUrl(@RequestParam String extension) {
+    @GetMapping("/card/upload")
+    public ResponseEntity<ResponseEntityModel<ImgUrlInfo>> createCardImgUploadUrl(@RequestParam String extension) {
         return ResponseEntity.ok(
                 ResponseEntityModel.<ImgUrlInfo>builder()
                         .status(
                                 ResponseStatus.builder()
                                         .httpCode(HttpStatus.OK.value())
                                         .httpStatus(HttpStatus.OK)
-                                        .responseMessage("Member img upload url was issued successfully")
+                                        .responseMessage("Card img upload url was issued successfully")
                                         .build()
                         )
-                        .content(imgService.createUserUploadUrl(extension))
+                        .content(imgService.createCardImgUploadUrl(extension))
+                        .build()
+        );
+    }
+
+    @GetMapping("/profile/upload")
+    public ResponseEntity<ResponseEntityModel<ImgUrlInfo>> createProfileImgUploadUrl(@RequestParam String extension) {
+        return ResponseEntity.ok(
+                ResponseEntityModel.<ImgUrlInfo>builder()
+                        .status(
+                                ResponseStatus.builder()
+                                        .httpCode(HttpStatus.OK.value())
+                                        .httpStatus(HttpStatus.OK)
+                                        .responseMessage("Profile img upload url was issued successfully")
+                                        .build()
+                        )
+                        .content(imgService.createProfileImgUploadUrl(extension))
                         .build()
         );
     }

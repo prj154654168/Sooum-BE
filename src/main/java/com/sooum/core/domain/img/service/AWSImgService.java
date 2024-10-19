@@ -137,7 +137,16 @@ public class AWSImgService implements ImgService{
     }
 
     @Override
-    public ImgUrlInfo createUserUploadUrl(String extension) {
+    public ImgUrlInfo createCardImgUploadUrl(String extension) {
+        return createUploadUrl(USER_IMG, extension);
+    }
+
+    @Override
+    public ImgUrlInfo createProfileImgUploadUrl(String extension) {
+        return createUploadUrl(PROFILE_IMG, extension);
+    }
+
+    private ImgUrlInfo createUploadUrl(String filePath, String extension) {
         if (!extension.equalsIgnoreCase("jpeg")) {
             throw new UnsupportedOperationException(ExceptionMessage.UNSUPPORTED_IMAGE_FORMAT.getMessage());
         }
@@ -147,7 +156,7 @@ public class AWSImgService implements ImgService{
                 .url(Link.of(s3Presigner.presignPutObject(PutObjectPresignRequest.builder()
                                 .putObjectRequest(PutObjectRequest.builder()
                                         .bucket(bucket)
-                                        .key(USER_IMG + imgName)
+                                        .key(filePath + imgName)
                                         .build())
                                 .signatureDuration(EXPIRY_TIME)
                                 .build())
