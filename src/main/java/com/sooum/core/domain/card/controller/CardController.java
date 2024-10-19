@@ -21,7 +21,6 @@ import java.net.URI;
 public class CardController {
     private final CardService cardService;
     private final FeedService feedService;
-    private final FeedLikeService feedLikeService;
 
     @GetMapping("/current/{parentCardPk}/summary")
     public ResponseEntity<ResponseEntityModel<CardSummary>> countCommentsByParentCard(@PathVariable Long parentCardPk,
@@ -47,7 +46,7 @@ public class CardController {
     @PostMapping("/{cardPk}/like")
     public ResponseEntity<ResponseStatus> createFeedLike(@PathVariable(value = "cardPk") @NotNull Long cardPk,
                                                          @CurrentUser Long memberPk) {
-        feedLikeService.createCardLike(cardPk, memberPk);
+        cardService.createCardLike(cardPk, memberPk);
 
         return ResponseEntity.created(URI.create(""))
                 .body(
@@ -62,7 +61,7 @@ public class CardController {
     @DeleteMapping("/{cardPk}/like")
     public ResponseEntity<?> deleteFeedLike(@PathVariable(value = "cardPk") @NotNull Long cardPk,
                                             @CurrentUser Long memberPk) {
-        feedLikeService.deleteCardLike(cardPk, memberPk);
+        cardService.deleteCardLike(cardPk, memberPk);
 
         return ResponseEntity.noContent().build();
     }

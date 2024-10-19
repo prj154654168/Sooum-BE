@@ -1,15 +1,9 @@
 package com.sooum.core.domain.card.service;
 
-import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
-import com.sooum.core.domain.card.entity.font.Font;
-import com.sooum.core.domain.card.entity.fontsize.FontSize;
-import com.sooum.core.domain.card.entity.imgtype.ImgType;
-import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.card.repository.FeedLikeRepository;
 import com.sooum.core.domain.member.entity.Member;
-import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import com.sooum.core.domain.member.service.MemberService;
 import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.Assertions;
@@ -37,94 +31,75 @@ class FeedLikeServiceTest {
 
     @Test
     @DisplayName("피드 카드 좋아요 성공")
-    void feedLikeSaveSuccess() throws Exception{
+    void feedLikeSave_Success() throws Exception{
         // given
-        Member member = createMember();
-        FeedCard feedCard = createFeedCard(member);
-        FeedLike feedLike = createFeedLike(feedCard, member);
-        given(feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(any(), any())).willReturn(false);
-        given(memberService.findByPk(any())).willReturn(member);
-        given(feedCardService.findByPk(any())).willReturn(feedCard);
-        given(feedLikeRepository.save(any())).willReturn(feedLike);
+        Member mockMember = mock(Member.class);
+        FeedCard mockFeedCard = mock(FeedCard.class);
+        FeedLike mockFeedLike = mock(FeedLike.class);
+        given(feedLikeRepository.findFeedLiked(any(), any())).willReturn(Optional.empty());
+        given(memberService.findByPk(any())).willReturn(mockMember);
+        given(feedCardService.findByPk(any())).willReturn(mockFeedCard);
+        given(feedLikeRepository.save(any())).willReturn(mockFeedLike);
 
         // when
-        feedLikeService.createFeedLike(1L, 1L);
+        feedLikeService.createFeedLike(any(), any());
 
         // then
         verify(feedLikeRepository).save(any());
     }
 
     @Test
-    @DisplayName("피드 카드 좋아요 실패")
-    void feedLikeSaveFail() throws Exception{
+    @DisplayName("이미 존재하는 피드 카드 좋아요인 경우 exception")
+    void feedLikeSave_isAlreadyExist() throws Exception{
         // given
-        given(feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(any(), any())).willReturn(true);
+        FeedLike mockFeedLike = mock(FeedLike.class);
+        given(feedLikeRepository.findFeedLiked(any(), any())).willReturn(Optional.of(mockFeedLike));
+        given(mockFeedLike.isDeleted()).willReturn(false);
 
         // when, then
         Assertions.assertThrows(EntityExistsException.class,
-                () -> feedLikeService.createFeedLike(1L, 1L));
+                () -> feedLikeService.createFeedLike(any(), any()));
     }
 
     @Test
-    @DisplayName("피드 카드 좋아요 삭제 성공")
-    void feedLikeDeleteSuccess() throws Exception{
+    @DisplayName("피드 카드 좋아요가 soft delete된 상태면 재생성")
+    void softDeleteFeedLike_restore() throws Exception{
         // given
-        Member member = createMember();
-        FeedCard feedCard = createFeedCard(member);
-        FeedLike feedLike = createFeedLike(feedCard, member);
-        given(feedLikeRepository.findFeedLiked(any(), any())).willReturn(Optional.of(feedLike));
-        doNothing().when(feedLikeRepository).delete(any());
+        FeedLike mockFeedLike = mock(FeedLike.class);
+        given(feedLikeRepository.findFeedLiked(any(), any())).willReturn(Optional.of(mockFeedLike));
+        given(mockFeedLike.isDeleted()).willReturn(true);
+
+        // when
+        feedLikeService.createFeedLike(any(), any());
+
+        // then
+        verify(mockFeedLike).create();
+    }
+
+    @Test
+    @DisplayName("피드 카드 좋아요 soft delete 성공")
+    void feedLikeDelete_Success() throws Exception{
+        // given
+        FeedLike mockFeedLike = mock(FeedLike.class);
+        given(feedLikeRepository.findFeedLiked(any(), any())).willReturn(Optional.of(mockFeedLike));
 
         // when
         feedLikeService.deleteFeedLike(1L, 1L);
 
         // then
-        verify(feedLikeRepository).delete(any());
+        verify(mockFeedLike).delete();
     }
 
-    private FeedLike createFeedLike(FeedCard feedCard, Member member) {
-        return FeedLike.builder()
-                .targetCard(feedCard)
-                .likedMember(member)
-                .build();
-    }
+    @Test
+    @DisplayName("삭제된 피드 카드 좋아요 재 삭제 요청할 경우 exception")
+    void feedLikeDelete_isAlreadyDeleted() throws Exception{
+        // given
+        FeedLike mockFeedLike = mock(FeedLike.class);
+        given(feedLikeRepository.findFeedLiked(any(), any())).willReturn(Optional.of(mockFeedLike));
+        given(mockFeedLike.isDeleted()).willReturn(true);
 
-    private FeedCard createFeedCard(Member member) {
-        return FeedCard.builder()
-                .content("카드 내용 ")
-                .fontSize(FontSize.BIG)
-                .font(Font.PRETENDARD)
-                .location(null)
-                .imgType(ImgType.DEFAULT)
-                .imgName("1.jpg")
-                .isPublic(true)
-                .isStory(false)
-                .writer(member)
-                .build();
-    }
-
-    private CommentCard createCommentCard(FeedCard feedCard, Member writer) {
-        return CommentCard.builder()
-                .content("카드 내용 ")
-                .fontSize(FontSize.BIG)
-                .font(Font.PRETENDARD)
-                .location(null)
-                .imgType(ImgType.DEFAULT)
-                .imgName("1.jpg")
-                .writer(writer)
-                .parentCardType(CardType.FEED_CARD)
-                .parentCardPk(feedCard.getPk())
-                .masterCard(feedCard.getPk())
-                .build();
-    }
-
-    private Member createMember() {
-        return Member.builder()
-                .deviceId("device")
-                .deviceType(DeviceType.IOS)
-                .firebaseToken("firbaseDummy")
-                .nickname("nickname")
-                .isAllowNotify(true)
-                .build();
+        // when, then
+        Assertions.assertThrows(EntityExistsException.class,
+                () -> feedLikeService.deleteFeedLike(1L, 1L));
     }
 }

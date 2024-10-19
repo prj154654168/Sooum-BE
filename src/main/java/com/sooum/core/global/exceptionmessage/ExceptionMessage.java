@@ -19,7 +19,8 @@ public enum ExceptionMessage {
     IMAGE_REJECTED_BY_MODERATION("부적절한 이미지 파일입니다."),
     FAVORITE_TAG_NOT_FOUND("즐겨찾기한 기록을 찾을 수 없습니다."),
     ALREADY_Following("이미 팔로우하고 있는 사용자입니다."),
-    ACCOUNT_TRANSFER_NOT_FOUND("계정 이관 코드를 존재하지 않습니다.");
+    ACCOUNT_TRANSFER_NOT_FOUND("계정 이관 코드를 존재하지 않습니다."),
+    ALREADY_DELETE_CARD_LIKE("이미 삭제된 좋아요입니다.");
 
     private final String message;
 

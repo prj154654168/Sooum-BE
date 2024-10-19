@@ -27,9 +27,20 @@ public class FeedLike extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member likedMember;
 
+    @Column(name = "IS_DELETED")
+    private boolean isDeleted;
+
     @Builder
     public FeedLike(FeedCard targetCard, Member likedMember) {
         this.targetCard = targetCard;
         this.likedMember = likedMember;
+    }
+
+    public void create() {
+        this.isDeleted = false;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }
