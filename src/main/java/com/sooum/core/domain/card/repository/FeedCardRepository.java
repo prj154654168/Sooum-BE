@@ -14,20 +14,13 @@ import java.util.List;
 public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
     @Query("select f " +
             "from FeedCard f " +
-            "where f.pk < :lastId " +
+            "where :lastId is null or f.pk < :lastId " +
+                "and f.writer.pk not in :blockMemberPkList " +
                 "and (f.isStory=false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day))) " +
                 "and f.isDeleted = false " +
                 "and f.isPublic = true " +
             "order by f.pk desc")
-    List<FeedCard> findByNextPage(@Param("lastId") Long lastId, Pageable pageable);
-
-    @Query("select f " +
-            "from FeedCard f " +
-            "where (f.isStory=false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day))) " +
-                "and f.isDeleted = false " +
-                "and f.isPublic = true " +
-            "order by f.pk desc")
-    List<FeedCard> findFirstPage(Pageable pageable);
+    List<FeedCard> findByNextPage(@Param("lastId") Long lastId, @Param("blockMemberPkList") List<Long> blockMemberPkList, Pageable pageable);
 
     @Query("SELECT f FROM FeedCard f " +
             "WHERE (St_Distance(f.location, :userLocation) <= :maxDist " +
