@@ -45,4 +45,8 @@ public class CommentReportService {
                 .reportType(reportType)
                 .build());
     }
+
+    public void deleteReport(CommentCard cardPk) {
+        commentReportRepository.deleteAllByCommentCardPk(cardPk);
+    }
 }

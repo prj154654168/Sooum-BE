@@ -17,4 +17,8 @@ public class UserImgService {
                 .card(card).build();
         imgRepository.save(userUploadPic);
     }
+
+    public void deleteUserUploadPic(String imgName) {
+        imgRepository.deleteByImgName(imgName);
+    }
 }

@@ -10,6 +10,9 @@ import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.img.service.UserImgService;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberService;
+import com.sooum.core.domain.report.service.CommentReportService;
+import com.sooum.core.domain.report.service.FeedReportService;
+import com.sooum.core.domain.report.service.ReportService;
 import com.sooum.core.domain.tag.entity.CommentTag;
 import com.sooum.core.domain.tag.entity.FeedTag;
 import com.sooum.core.domain.tag.entity.Tag;
@@ -42,6 +45,10 @@ public class FeedService {
     private final CommentTagService commentTagService;
     private final UserImgService userImgService;
     private final BadWordFiltering badWordFiltering;
+    private final CommentLikeService commentLikeService;
+    private final ReportService reportService;
+    private final CommentReportService commentReportService;
+    private final FeedReportService feedReportService;
 
     @Transactional
     @Retryable(
@@ -147,15 +154,6 @@ public class FeedService {
         return cardDto.getImgType().equals(ImgType.USER);
     }
 
-    @Transactional
-    public void deleteCard(Long cardPk, Long writerPk) {
-        CardType cardType = commentCardService.findCardType(cardPk);
-        switch (cardType) {
-            case FEED_CARD -> deleteFeedCard(cardPk, writerPk);
-            case COMMENT_CARD -> deleteCommentCard(cardPk, writerPk);
-            default -> throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
-        }
-    }
 
     public Card findParentCard(CommentCard commentCard) {
         if(commentCard.getParentCardType().equals(CardType.COMMENT_CARD)){
@@ -167,131 +165,45 @@ public class FeedService {
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_TYPE.getMessage());
     }
 
+    @Transactional
+    public void deleteCard(Long cardPk, Long writerPk) {
+        CardType cardType = commentCardService.findCardType(cardPk);
+        switch (cardType) {
+            case FEED_CARD -> deleteFeedCard(cardPk, writerPk);
+            case COMMENT_CARD -> deleteCommentCard(cardPk, writerPk);
+            default -> throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
+        }
+    }
 
     private void deleteCommentCard(Long commentCardPk, Long writerPk) {
         if (isNotCommentCardOwner(commentCardPk, writerPk)) return;
-
         CommentCard commentCard = commentCardService.findCommentCard(commentCardPk);
-        commentCardService.deleteOnlyDeletedChild(commentCard.getPk());
-        if (commentCardService.hasChildCard(commentCard.getPk())) {
-            commentCard.changeDeleteStatus();
-            while (isParentDeletable(commentCard)) {
-                if (isParentCommentType(commentCard)) {
-                    CommentCard parent = commentCardService.findCommentCard(commentCard.getParentCardPk());
-                    commentCardService.deleteCommentCard(parent.getPk());
-                    commentCard = parent;
-                }
-                else if (isParentFeedType(commentCard)) {
-                    FeedCard parent = feedCardService.findFeedCard(commentCard.getParentCardPk());
-                    if (hasOnlyOneChild(parent)) {
-                        feedCardService.deleteFeedCard(parent.getPk());
-                    }
-                    break;
-                }
-            }
-        }else {
-            while (isParentDeletable(commentCard)) {
-                if (isParentCommentType(commentCard)) {
-                    CommentCard parent = commentCardService.findCommentCard(commentCard.getParentCardPk());
-                    commentCardService.deleteCommentCard(commentCard.getPk());
-                    commentCard = parent;
-                }
-                else if (isParentFeedType(commentCard)) {
-                    FeedCard parent = feedCardService.findFeedCard(commentCard.getParentCardPk());
-                    if (hasOnlyOneChild(parent)) {
-                        feedCardService.deleteFeedCard(parent.getPk());
-                    }
-                    commentCardService.deleteCommentCard(commentCardPk);
-                    break;
-                }
-            }
-            if (hasParentCard(commentCard) && isOnlyChild(commentCard)) {
-                commentCardService.deleteCommentCard(commentCard.getPk());
-            }
-        }
+        commentCard.setDeleted(true);
+        commentTagService.deleteByCommentCardPk(commentCardPk);
+        userImgService.deleteUserUploadPic(commentCard.getImgName());
+        commentLikeService.deleteAllFeedLikes(commentCardPk);
+        commentReportService.deleteReport(commentCard);
+        //todo notification delete
     }
 
     private boolean isNotCommentCardOwner(Long commentCardPk, Long writerPk) {
         return !commentCardService.findCommentCard(commentCardPk).getWriter().getPk().equals(writerPk);
     }
 
-    private boolean isParentDeletable(CommentCard commentCard) {
-        return hasParentCard(commentCard) && isParentInDeletedState(commentCard) && isOnlyChild(commentCard);
-    }
-
-    private boolean isParentInDeletedState(Card card) {
-        if (card instanceof CommentCard commentCard) {
-            if (commentCard.getParentCardType().equals(CardType.FEED_CARD) && feedCardService.isExistFeedCard(commentCard.getParentCardPk())) {
-                return feedCardService.findFeedCard(commentCard.getParentCardPk()).isDeleted();
-
-            }
-            if (commentCard.getParentCardType().equals(CardType.COMMENT_CARD) && commentCardService.isExistCommentCard(commentCard.getParentCardPk())) {
-                return commentCardService.findCommentCard(commentCard.getParentCardPk()).isDeleted();
-            }
-        }
-        return false;
-    }
-
-    private static boolean isParentFeedType(CommentCard commentCard) {
-        return commentCard.getParentCardType().equals(CardType.FEED_CARD);
-    }
-
-    private static boolean isParentCommentType(CommentCard commentCard) {
-        return commentCard.getParentCardType().equals(CardType.COMMENT_CARD);
-    }
 
     void deleteFeedCard(Long feedCardPk, Long writerPk) {
         if (isNotFeedCardOwner(feedCardPk, writerPk)) return;
-
-        List<CommentCard> childCommentCardList = commentCardService.findChildCommentCardList(feedCardPk);
-        if (isCommentDeletable(childCommentCardList)) {
-            feedCardService.deleteFeedCard(feedCardPk);
-            return;
-        }
-        if (commentCardService.hasChildCard(feedCardPk)) {
-            FeedCard feedCard = feedCardService.findFeedCard(feedCardPk);
-            feedCard.changeDeleteStatus();
-        }else{
-            deleteFeedCardAndAssociations(feedCardPk);
-            feedCardService.deleteFeedCard(feedCardPk);
-        }
+        FeedCard feedCard = feedCardService.findFeedCard(feedCardPk);
+        feedCard.setDeleted(true);
+        feedTagService.deleteByFeedCardPk(feedCardPk);
+        userImgService.deleteUserUploadPic(feedCard.getImgName());
+        feedLikeService.deleteAllFeedLikes(feedCardPk);
+        feedReportService.deleteReport(feedCardPk);
+        //todo notification delete
     }
 
     private boolean isNotFeedCardOwner(Long feedCardPk, Long writerPk) {
         return !feedCardService.findFeedCard(feedCardPk).getWriter().getPk().equals(writerPk);
-    }
-
-    private static boolean isCommentDeletable(List<CommentCard> childCommentCardList) {
-        return childCommentCardList.size() == 1 && childCommentCardList.get(0).isDeleted();
-    }
-
-    private void deleteFeedCardAndAssociations(Long feedCardPk) {
-        popularFeedService.deletePopularCard(feedCardPk);
-        feedLikeService.deleteAllFeedLikes(feedCardPk);
-        //todo 피드 신고 추가되면 같이 삭제되도록 로직 추가
-        //todo tag 추가되면 같이 삭제되도록 로직 추가
-        //todo userimg 추가되면 같이 삭제되도록 로직 추가
-    }
-
-    private boolean hasOnlyOneChild(FeedCard parent) {
-        return commentCardService.findChildCommentCardList(parent.getPk()).size() == 1;
-    }
-
-    private boolean isOnlyChild(Card card) {
-        if (card instanceof CommentCard commentCard) {
-            return commentCardService.findChildCommentCardList(commentCard.getParentCardPk())
-                    .size() == 1;
-        }
-
-        if (card instanceof FeedCard feedCard) {
-            return commentCardService.findChildCommentCardList(feedCard.getPk())
-                    .size() == 1;
-        }
-        return false;
-    }
-
-    private static boolean hasParentCard(CommentCard commentCard) {
-        return commentCard.getParentCardPk() != null;
     }
 
     public static boolean isWrittenCommentCard(List<CommentCard> commentCardList, Long memberPk) {

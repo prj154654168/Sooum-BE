@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
 
-    @Query("select ft from FeedTag ft where ft.feedCard.pk = :cardPk")
+    @Query("select ft from FeedTag ft join fetch ft.tag where ft.feedCard.pk = :cardPk")
     List<FeedTag> findAllByFeedCardPk(@Param("cardPk") Long cardPk);
 
     @Query("SELECT ft.tag FROM FeedTag ft WHERE ft.feedCard = :feedCard")

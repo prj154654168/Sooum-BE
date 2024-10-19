@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CommentTagRepository extends JpaRepository<CommentTag, Long> {
 
-    @Query("select ct from CommentTag ct where ct.commentCard.pk = :cardPk")
+    @Query("select ct from CommentTag ct join fetch ct.tag where ct.commentCard.pk = :cardPk")
     List<CommentTag> findAllByCommentCardPk(@Param("cardPk") Long cardPk);
 
     @Query("select ct from CommentTag ct where ct.commentCard in :cards")

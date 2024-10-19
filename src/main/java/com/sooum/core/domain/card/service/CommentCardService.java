@@ -21,13 +21,6 @@ public class CommentCardService {
     private final CommentCardRepository commentCardRepository;
     private final static int MAX_PAGE_SIZE = 100;
 
-    public void deleteOnlyDeletedChild(Long commentCardPk) {
-        List<CommentCard> childCards = commentCardRepository.findChildCards(commentCardPk);
-        if (childCards.size() == 1 && childCards.get(0).isDeleted()) {
-            commentCardRepository.delete(childCards.get(0));
-        }
-    }
-
     public boolean hasChildCard(Long parentCardPk) {
         return !findChildCommentCardList(parentCardPk).isEmpty();
     }
@@ -38,11 +31,6 @@ public class CommentCardService {
 
     public void deleteCommentCard(Long commentCardPk) {
         commentCardRepository.deleteById(commentCardPk);
-    }
-
-    public List<CommentCard> findByMasterCards(List<FeedCard> masterCards) {
-        List<Long> masterCardsPk = masterCards.stream().map(FeedCard::getPk).toList();
-        return commentCardRepository.findByMasterCardIn(masterCardsPk);
     }
 
     public List<CommentCard> findByMasterCardPk(Long masterCardPk) {
