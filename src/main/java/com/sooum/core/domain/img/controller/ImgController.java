@@ -45,7 +45,7 @@ public class ImgController {
         );
     }
 
-    @GetMapping("/card/upload")
+    @GetMapping("/cards/upload")
     public ResponseEntity<ResponseEntityModel<ImgUrlInfo>> createCardImgUploadUrl(@RequestParam String extension) {
         return ResponseEntity.ok(
                 ResponseEntityModel.<ImgUrlInfo>builder()
@@ -61,7 +61,7 @@ public class ImgController {
         );
     }
 
-    @GetMapping("/profile/upload")
+    @GetMapping("/profiles/upload")
     public ResponseEntity<ResponseEntityModel<ImgUrlInfo>> createProfileImgUploadUrl(@RequestParam String extension) {
         return ResponseEntity.ok(
                 ResponseEntityModel.<ImgUrlInfo>builder()

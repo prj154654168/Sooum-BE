@@ -11,4 +11,5 @@ public interface AccountTransferRepository extends JpaRepository<AccountTransfer
     Optional<AccountTransfer> findByMember_Pk(Long memberPk);
     @Query("select at from AccountTransfer at where at.transferId = :transferId and at.expirationDate > current_timestamp")
     Optional<AccountTransfer> findAvailableAccountTransfer(@Param("transferId") String transferId);
+    boolean existsByTransferId(String transferId);
 }

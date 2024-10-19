@@ -33,25 +33,14 @@ public class AccountTransfer extends BaseEntity {
     private Member member;
 
     @Builder
-    public AccountTransfer(Member member) {
-        this.transferId = createTransferId(member.getNickname());
+    public AccountTransfer(Member member, String transferId) {
+        this.transferId = transferId;
         this.expirationDate = LocalDateTime.now().plusDays(1L);
         this.member = member;
     }
 
-    private String createTransferId(String nickname) {
-        String[] uuidSplit = UUID.randomUUID().toString().split("-");
-        StringBuilder uuidResult = new StringBuilder();
-
-        for (String uuid : uuidSplit) {
-            uuidResult.append(uuid.charAt(0));
-        }
-
-        return nickname + uuidResult;
-    }
-
-    public void updateTransferId (String nickname) {
-        this.transferId = createTransferId(nickname);
+    public void updateTransferId (String transferId) {
+        this.transferId = transferId;
         this.expirationDate = LocalDateTime.now().plusDays(1L);
     }
 
