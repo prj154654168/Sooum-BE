@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FeedCardService {
     private final FeedCardRepository feedCardRepository;
-    private static final int MAX_PAGE_SIZE = 100;
+    private static final int MAX_PAGE_SIZE = 50;
 
     List<FeedCard> findByLastId(Optional<Long> lastId, List<Long> blockMemberPkList) {
         Pageable pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
@@ -28,7 +28,7 @@ public class FeedCardService {
     }
 
     List<FeedCard> findFeedsByDistance(Point userLocation, Long lastId, double minDist, double maxDist) {
-        Pageable pageRequest = PageRequest.of(0, MAX_PAGE_SIZE);
+        Pageable pageRequest = PageRequest.of(0, 100);
         if (lastId.equals(0L)) {
             return feedCardRepository.findFirstByDistance(userLocation, minDist, maxDist, pageRequest);
         }
