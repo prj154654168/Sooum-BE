@@ -20,9 +20,6 @@ import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import com.sooum.core.global.regex.BadWordFiltering;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,10 +41,6 @@ public class FeedService {
     private final BadWordFiltering badWordFiltering;
 
     @Transactional
-    @Retryable(
-            retryFor = {ObjectOptimisticLockingFailureException.class},
-        maxAttempts = 5,
-        backoff = @Backoff(delay = 25, multiplier = 2))
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto) {
         if (checkForTagsInStory(cardDto)) {
             throw new RuntimeException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
