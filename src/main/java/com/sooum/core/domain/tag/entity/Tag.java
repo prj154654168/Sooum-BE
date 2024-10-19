@@ -44,8 +44,4 @@ public class Tag extends BaseEntity {
     public static void minusCount(Tag tag) {
         tag.count--;
     }
-
-    public static void plusCount(Tag tag) {
-        tag.count++;
-    }
 }

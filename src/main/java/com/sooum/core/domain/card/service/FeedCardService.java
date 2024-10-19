@@ -13,24 +13,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FeedCardService {
     private final FeedCardRepository feedCardRepository;
-    private static final int MAX_PAGE_SIZE = 100;
+    private static final int MAX_PAGE_SIZE = 50;
 
-    List<FeedCard> findByLastId(Long lastId) {
-        Pageable pageRequest = PageRequest.of(0, MAX_PAGE_SIZE);
-        if (lastId.equals(0L)) {
-            return feedCardRepository.findFirstPage(pageRequest);
-        }
-        return feedCardRepository.findByNextPage(lastId, pageRequest);
+    List<FeedCard> findByLastId(Optional<Long> lastId, List<Long> blockMemberPkList) {
+        Pageable pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
+        return feedCardRepository.findByNextPage(lastId.orElse(null), blockMemberPkList, pageRequest);
     }
 
     List<FeedCard> findFeedsByDistance(Point userLocation, Long lastId, double minDist, double maxDist) {
-        Pageable pageRequest = PageRequest.of(0, MAX_PAGE_SIZE);
+        Pageable pageRequest = PageRequest.of(0, 100);
         if (lastId.equals(0L)) {
             return feedCardRepository.findFirstByDistance(userLocation, minDist, maxDist, pageRequest);
         }

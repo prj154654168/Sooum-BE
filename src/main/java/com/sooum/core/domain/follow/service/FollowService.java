@@ -4,9 +4,12 @@ import com.sooum.core.domain.follow.entity.Follow;
 import com.sooum.core.domain.follow.repository.FollowRepository;
 import com.sooum.core.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,5 +39,33 @@ public class FollowService {
 
     public Long findFollowingCnt(Member profileOwner) {
         return followRepository.findFollowingCnt(profileOwner);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> findFollowerWithoutBlockedMembers(Optional<Long> followerLastId, Long requesterPk, List<Long> blockMembersPk) {
+        PageRequest pageRequest = PageRequest.ofSize(50);
+        if (followerLastId.isEmpty()) {
+            return followRepository.findFollowers(requesterPk, blockMembersPk, pageRequest);
+        }
+        return followRepository.findFollowersByFollowerLastPk(followerLastId.get(), requesterPk, blockMembersPk, pageRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> findFollowingWithoutBlockedMembers(Optional<Long> followingLastId, Long requesterPk, List<Long> blockMembersPk) {
+        PageRequest pageRequest = PageRequest.ofSize(50);
+        if (followingLastId.isEmpty()) {
+            return followRepository.findFollowings(requesterPk, blockMembersPk, pageRequest);
+        }
+        return followRepository.findFollowingsByFollowingLastPk(followingLastId.get(), requesterPk, blockMembersPk, pageRequest);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> findFollowedFollowersPk(Long requesterPk, List<Member> followers) {
+        return followRepository.findFollowedFollowers(requesterPk, followers);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> findFollowedFollowingsPk(Long requesterPk, List<Member> followings) {
+        return followRepository.findFollowedFollowings(requesterPk, followings);
     }
 }
