@@ -74,10 +74,6 @@ public class FeedService {
     }
 
     @Transactional
-    @Retryable(
-            retryFor = {ObjectOptimisticLockingFailureException.class},
-            maxAttempts = 5,
-            backoff = @Backoff(100))
     public void createCommentCard(Long memberPk, Long cardPk, CreateCommentDto cardDto) {
         if (isUserImage(cardDto)) {
             validateUserImage(cardDto);
@@ -112,7 +108,7 @@ public class FeedService {
 
     private List<Tag> processTags(CreateCardDto cardDto){
         List<Tag> tagContents = tagService.findTagList(cardDto.getTags());
-        tagContents.forEach(Tag::plusCount);
+        tagService.incrementTagCount(tagContents);
 
         if(hasTags(cardDto)) {
             List<String> list = tagContents.stream().map(Tag::getContent).toList();

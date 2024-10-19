@@ -35,7 +35,7 @@ public class CreateFeedCardDto extends CreateCardDto {
         return FeedCard.builder()
                 .content(this.getContent())
                 .font(this.getFont())
-                .fontSize(FontSize.MEDIUM)
+                .fontSize(FontSize.NONE)
                 .isStory(this.isStory())
                 .imgType(this.getImgType())
                 .imgName(this.getImgName())

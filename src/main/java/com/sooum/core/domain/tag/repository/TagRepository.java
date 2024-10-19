@@ -3,6 +3,7 @@ package com.sooum.core.domain.tag.repository;
 import com.sooum.core.domain.tag.entity.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -26,4 +27,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     List<Tag> findRecommendTagList(@Param("excludeTags") List<Tag> excludeTags, Pageable pageable);
 
     Optional<Tag> findByContent(String content);
+
+    @Modifying
+    @Query("update Tag t set t.count = t.count + 1 where t in :tags")
+    void incrementTagCount(@Param("tags") List<Tag> tags);
 }

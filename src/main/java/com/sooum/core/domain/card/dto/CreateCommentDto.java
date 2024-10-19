@@ -28,7 +28,7 @@ public class CreateCommentDto extends CreateCardDto{
                 .parentCardPk(parentCardPk)
                 .content(this.getContent())
                 .font(this.getFont())
-                .fontSize(FontSize.MEDIUM)
+                .fontSize(FontSize.NONE)
                 .imgType(this.getImgType())
                 .imgName(this.getImgName())
                 .location(this.isDistanceShared()
