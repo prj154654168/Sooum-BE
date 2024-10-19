@@ -62,7 +62,11 @@ public class ProfileService {
 
     @Transactional
     public void updateProfile(ProfileDto.ProfileUpdate profileUpdate, Long memberPk) {
-        if (!imgService.verifyImgSaved(profileUpdate.getProfileImg())) {
+        if (imgService.isModeratingImg(profileUpdate.getProfileImg())) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
+        }
+
+        if(!imgService.verifyImgSaved(profileUpdate.getProfileImg())) {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
         }
 
