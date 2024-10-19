@@ -95,4 +95,11 @@ public class CommentCardService {
     public void saveComment(CommentCard commentCard) {
         commentCardRepository.save(commentCard);
     }
+
+    public List<CommentCard> findCommentList(Long memberPk, Optional<Long> lastPk) {
+        PageRequest pageRequest = PageRequest.ofSize(30);
+        return lastPk.isEmpty()
+                ? commentCardRepository.findCommentCardsFirstPage(memberPk, pageRequest)
+                : commentCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
+    }
 }
