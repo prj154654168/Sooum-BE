@@ -3,7 +3,6 @@ package com.sooum.core.domain.member.service;
 import com.sooum.core.domain.card.service.FeedCardService;
 import com.sooum.core.domain.follow.service.FollowService;
 import com.sooum.core.domain.img.service.ImgService;
-import com.sooum.core.domain.member.dto.MemberDto;
 import com.sooum.core.domain.member.dto.ProfileDto;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.visitor.service.VisitorService;

@@ -1,9 +1,9 @@
 package com.sooum.core.domain.member.controller;
 
 import com.sooum.core.domain.member.dto.AccountTransferDto;
+import com.sooum.core.domain.member.dto.MemberDto;
 import com.sooum.core.domain.member.dto.ProfileDto;
 import com.sooum.core.domain.member.service.AccountTransferService;
-import com.sooum.core.domain.member.dto.MemberDto;
 import com.sooum.core.domain.member.service.MemberService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseEntityModel;
@@ -12,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

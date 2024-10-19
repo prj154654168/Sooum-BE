@@ -13,8 +13,6 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
 
     List<CommentCard> findAllByMasterCard(Long masterCardPk);
 
-    List<CommentCard> findByMasterCardIn(List<Long> masterCards);
-
     @Query("select cc from CommentCard cc where cc.masterCard in :targetList")
     List<CommentCard> findByTargetList(@Param("targetList") List<Long> targetPkList);
 

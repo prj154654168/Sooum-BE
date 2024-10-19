@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.locationtech.jts.geom.Point;
 
 @Getter
@@ -43,6 +44,7 @@ public abstract class Card extends BaseEntity {
     @Column(name = "IMG_NAME")
     private String imgName;
 
+    @Setter(AccessLevel.PUBLIC)
     @Column(name = "IS_DELETED")
     private boolean isDeleted;
 
