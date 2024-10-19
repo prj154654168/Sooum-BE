@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +23,6 @@ public class FeedLikeService {
     private final MemberService memberService;
     private final FeedCardService feedCardService;
     private final FeedLikeRepository feedLikeRepository;
-    private final CommentLikeService commentLikeService;
 
     public List<FeedLike> findByTargetCards(List<FeedCard> targetCards) {
         return feedLikeRepository.findByTargetList(targetCards);
@@ -32,18 +32,20 @@ public class FeedLikeService {
         feedLikeRepository.deleteAllFeedLikes(feedCardPk);
     }
 
-    public boolean hasLiked(Long feedCardPk, Long memberPk) {
-        return feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(feedCardPk, memberPk);
-    }
-
     public int countLike(Long feedCardPk) {
         return feedLikeRepository.countByTargetCard_Pk(feedCardPk);
     }
 
     @Transactional
     public void createFeedLike(Long targetFeedCardPk, Long requesterPk) {
-        if (feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(targetFeedCardPk, requesterPk)) {
-            throw new EntityExistsException(ExceptionMessage.ALREADY_CARD_LIKED.getMessage());
+        Optional<FeedLike> findFeedLiked = feedLikeRepository.findFeedLiked(targetFeedCardPk, requesterPk);
+        if (findFeedLiked.isPresent()) {
+            if (!findFeedLiked.get().isDeleted()) {
+                throw new EntityExistsException(ExceptionMessage.ALREADY_CARD_LIKED.getMessage());
+            }
+
+            findFeedLiked.get().create();
+            return;
         }
 
         Member likedMember = memberService.findByPk(requesterPk);
@@ -60,33 +62,12 @@ public class FeedLikeService {
     public void deleteFeedLike(Long likedFeedCardPk, Long likedMemberPk) {
         FeedLike feedLiked = feedLikeRepository.findFeedLiked(likedFeedCardPk, likedMemberPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.LIKE_NOT_FOUND.getMessage()));
-        feedLikeRepository.delete(feedLiked);
-    }
 
-    @Transactional
-    public void createCardLike(Long cardPk, Long memberPk) {
-        CardType cardType = findCardType(cardPk);
-
-        switch (cardType) {
-            case FEED_CARD -> createFeedLike(cardPk, memberPk);
-            case COMMENT_CARD -> commentLikeService.createCommentLike(cardPk, memberPk);
-            default -> throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
+        if (feedLiked.isDeleted()) {
+            throw new EntityExistsException(ExceptionMessage.ALREADY_DELETE_CARD_LIKE.getMessage());
         }
-    }
 
-    @Transactional
-    public void deleteCardLike(Long likedCardPk, Long likedMemberPk) {
-        CardType cardType = findCardType(likedCardPk);
-
-        switch (cardType) {
-            case FEED_CARD -> deleteFeedLike(likedCardPk, likedMemberPk);
-            case COMMENT_CARD -> commentLikeService.deleteCommentLike(likedCardPk, likedMemberPk);
-            default -> throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
-        }
-    }
-
-    public CardType findCardType(Long cardPk) {
-        return feedCardService.isExistFeedCard(cardPk) ? CardType.FEED_CARD : CardType.COMMENT_CARD;
+        feedLiked.delete();
     }
 
     public boolean isLiked(Long cardPk, Long memberPk){
