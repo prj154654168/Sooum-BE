@@ -77,4 +77,13 @@ public class Member extends BaseEntity {
         banCount++;
         role = Role.BANNED;
     }
+
+    public void updateProfile(String nickname, String profileImgName) {
+        this.nickname = nickname;
+        this.profileImgName = profileImgName;
+    }
+
+    public void updateDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
 }
