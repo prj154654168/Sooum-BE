@@ -23,23 +23,21 @@ public class AccountTransferService {
 
     @Transactional
     public ProfileDto.AccountTransferCodeResponse findOrSaveAccountTransferId(Long memberPk) {
-        Optional<AccountTransfer> findAccountTransfer = accountTransferRepository.findByMember_Pk(memberPk);
-
-        if (findAccountTransfer.isPresent()) {
-            if (!findAccountTransfer.get().isExpired()) {
-                return ProfileDto.AccountTransferCodeResponse.builder()
-                        .transferCode(findAccountTransfer.get().getTransferId())
-                        .build();
-            }
-
-            if (findAccountTransfer.get().isExpired()){
-                accountTransferRepository.delete(findAccountTransfer.get());
-            }
+        Optional<AccountTransfer> findAccountTransferOpt = accountTransferRepository.findByMember_Pk(memberPk);
+        if (findAccountTransferOpt.isEmpty()) {
+            AccountTransfer saveAccountTransfer = saveAccountTransfer(memberPk);
+            return ProfileDto.AccountTransferCodeResponse.builder()
+                    .transferCode(saveAccountTransfer.getTransferId())
+                    .build();
         }
 
-        AccountTransfer saveAccountTransfer = saveAccountTransfer(memberPk);
+        AccountTransfer findAccountTransfer = findAccountTransferOpt.get();
+        if (findAccountTransfer.isExpired()) {
+            findAccountTransfer.updateTransferId(createTransferId());
+        }
+
         return ProfileDto.AccountTransferCodeResponse.builder()
-                .transferCode(saveAccountTransfer.getTransferId())
+                .transferCode(findAccountTransfer.getTransferId())
                 .build();
     }
 
@@ -53,7 +51,7 @@ public class AccountTransferService {
 
     @Transactional
     public ProfileDto.AccountTransferCodeResponse updateAccountTransfer(Long memberPk) {
-        AccountTransfer findAccountTransfer = findAvailableAccountTransfer(memberPk);
+        AccountTransfer findAccountTransfer = findAccountTransfer(memberPk);
         findAccountTransfer.updateTransferId(createTransferId());
 
         return ProfileDto.AccountTransferCodeResponse.builder()
@@ -61,7 +59,7 @@ public class AccountTransferService {
                 .build();
     }
 
-    private String createTransferId() {
+    protected String createTransferId() {
         boolean isExistTransferId;
         String transferId;
 
@@ -73,7 +71,7 @@ public class AccountTransferService {
         return transferId;
     }
 
-    public AccountTransfer findAvailableAccountTransfer(Long memberPk) {
+    public AccountTransfer findAccountTransfer(Long memberPk) {
         return accountTransferRepository.findByMember_Pk(memberPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.ACCOUNT_TRANSFER_NOT_FOUND.getMessage()));
     }
