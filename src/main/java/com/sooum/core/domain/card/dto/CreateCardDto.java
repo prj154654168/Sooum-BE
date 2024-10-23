@@ -1,14 +1,20 @@
 package com.sooum.core.domain.card.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public abstract class CreateCardDto extends RepresentationModel<CreateCardDto> {
+    @JsonProperty(value = "isDistanceShared")
     private boolean isDistanceShared;
     private double latitude;
     private double longitude;
