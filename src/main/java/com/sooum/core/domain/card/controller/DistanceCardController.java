@@ -29,7 +29,7 @@ public class DistanceCardController {
             @RequestParam(value = "longitude") @NotNull Double longitude,
             @RequestParam(defaultValue = "UNDER_1", value = "distanceFilter") DistanceFilter distanceFilter,
             @CurrentUser Long memberPk) {
-        List<DistanceCardDto> distanceFeeds = distanceFeedService.findDistanceFeeds(last.orElse(0L), memberPk, latitude, longitude, distanceFilter);
+        List<DistanceCardDto> distanceFeeds = distanceFeedService.findDistanceFeeds(last, memberPk, latitude, longitude, distanceFilter);
 
         if (distanceFeeds.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

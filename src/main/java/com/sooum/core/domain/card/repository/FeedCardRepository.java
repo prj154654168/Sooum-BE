@@ -22,26 +22,18 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
             "order by f.pk desc")
     List<FeedCard> findByNextPage(@Param("lastId") Long lastId, @Param("blockMemberPkList") List<Long> blockMemberPkList, Pageable pageable);
 
-    @Query("SELECT f FROM FeedCard f " +
-            "WHERE (St_Distance(f.location, :userLocation) <= :maxDist " +
-                "AND St_Distance(f.location, :userLocation) >= :minDist " +
-                "AND (f.isStory = false or (f.isStory = true AND f.createdAt > (current_timestamp - 1 day)))) " +
-                "AND f.isDeleted = false " +
-                "AND f.isPublic = true " +
-            "ORDER BY f.pk DESC")
-    List<FeedCard> findFirstByDistance (@Param("userLocation") Point userLocation, @Param("minDist") double minDist,
-                                        @Param("maxDist") double maxDist, Pageable pageable);
-
-    @Query("SELECT f FROM FeedCard f " +
-            "WHERE (St_Distance(f.location, :userLocation) <= :maxDist " +
-                "AND St_Distance(f.location, :userLocation) >= :minDist " +
-                "AND (f.isStory = false or (f.isStory = true AND f.createdAt > (current_timestamp - 1 day)))) " +
-                "AND f.isDeleted = false " +
-                "AND f.pk < :lastId " +
-                "AND f.isPublic = true " +
-            "ORDER BY f.pk DESC")
-    List<FeedCard> findNextByDistance(@Param("userLocation") Point userLocation, @Param("lastId") Long lastId,
-                                      @Param("minDist") double minDist, @Param("maxDist") double maxDist, Pageable pageable);
+    @Query("select f from FeedCard f " +
+            "where (:lastPk is null or f.pk < :lastPk) " +
+            "and f.writer.pk not in :blockMemberPks " +
+            "and (St_Distance(f.location, :userLocation) <= :maxDist " +
+                "and St_Distance(f.location, :userLocation) >= :minDist " +
+                "and (f.isStory = false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day)))) " +
+                "and f.isDeleted = false " +
+                "and f.isPublic = true " +
+            "order by f.pk desc")
+    List<FeedCard> findNextByDistance(@Param("lastPk") Long lastPk, @Param("userLocation") Point userLocation,
+                                      @Param("minDist") double minDist, @Param("maxDist") double maxDist,
+                                      @Param("blockMemberPks") List<Long> blockMemberPks, Pageable pageable);
 
     @Modifying
     @Query("delete from FeedCard f where f.pk = :cardPk")
