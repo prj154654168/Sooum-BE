@@ -12,6 +12,7 @@ import com.sooum.core.domain.tag.service.TagService;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import com.sooum.core.global.util.DistanceUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +54,12 @@ public class DetailFeedService {
                     .build();
         }
         if (card instanceof CommentCard commentCard) {
+            Card parentCard = feedService.findParentCard(commentCard);
+
+            String previousCardId = isParentCardValid(parentCard) ? parentCard.getPk().toString() : null;
+            Link previousCardImgLink = isParentCardValid(parentCard) ?
+                    imgService.findImgUrl(parentCard.getImgType(),parentCard.getImgName()) : null;
+
             return CommentDetailCardDto.builder()
                     .id(card.getPk().toString())
                     .backgroundImgUrl(imgService.findImgUrl(card.getImgType(), card.getImgName()))
@@ -64,10 +71,14 @@ public class DetailFeedService {
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
                     .tags(tagService.readTags(card))
-                    .previousCardId(feedService.findParentCard(commentCard).getPk().toString())
-                    .previousCardImgLink(imgService.findImgUrl(feedService.findParentCard(commentCard).getImgType(),feedService.findParentCard(commentCard).getImgName()))
+                    .previousCardId(previousCardId)
+                    .previousCardImgLink(previousCardImgLink)
                     .build();
         }
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
+    }
+
+    private static boolean isParentCardValid(Card parentCard) {
+        return parentCard != null && !parentCard.isDeleted();
     }
 }
