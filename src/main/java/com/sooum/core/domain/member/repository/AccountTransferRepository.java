@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface AccountTransferRepository extends JpaRepository<AccountTransfer, Long> {
     Optional<AccountTransfer> findByMember_Pk(Long memberPk);
-    @Query("select at from AccountTransfer at where at.transferId = :transferId and at.expirationDate > current_timestamp")
+    @Query("select at from AccountTransfer at join fetch at.member where at.transferId = :transferId and at.expirationDate > current_timestamp")
     Optional<AccountTransfer> findAvailableAccountTransfer(@Param("transferId") String transferId);
     boolean existsByTransferId(String transferId);
 }
