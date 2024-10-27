@@ -39,7 +39,7 @@ public class MemberAuthController {
                 .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/login").withRel("login")));
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid Login dto) {
         return ResponseEntity.ok(ResponseEntityModel.<LoginResponse>builder()
                 .status(ResponseStatus.builder()
