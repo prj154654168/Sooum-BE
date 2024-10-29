@@ -16,11 +16,6 @@ public class AuthDTO {
             Token token
     ) {}
 
-    public record SignUp(
-            @Valid MemberInfo member,
-            @Valid Policy policy
-    ) {}
-
     public record SignUpResponse(
             Token token
     ) {}
@@ -28,6 +23,16 @@ public class AuthDTO {
     public record Token(
             String accessToken,
             String refreshToken
+    ) {}
+
+    public record SignUp(
+            @NotEmpty String profileImgName,
+            @NotEmpty String nickname
+    ) {}
+
+    public record AcceptPolicies(
+            @Valid MemberInfo memberInfo,
+            @Valid Policy policy
     ) {}
 
     public record MemberInfo(

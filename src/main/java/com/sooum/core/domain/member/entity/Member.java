@@ -1,6 +1,7 @@
 package com.sooum.core.domain.member.entity;
 
 import com.sooum.core.domain.common.entity.BaseEntity;
+import com.sooum.core.domain.member.dto.AuthDTO;
 import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
@@ -85,5 +86,10 @@ public class Member extends BaseEntity {
 
     public void updateDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public void signUp(AuthDTO.SignUp dto) {
+        this.nickname = dto.nickname();
+        this.profileImgName = dto.profileImgName();
     }
 }

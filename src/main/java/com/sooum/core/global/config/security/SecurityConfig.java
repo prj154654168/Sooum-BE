@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/users/login").permitAll()  // 로그인
 //                .requestMatchers(HttpMethod.POST, "/cards/...").hasRole("USER")   // todo 글쓰기 API 완성 시 on
                 .requestMatchers(HttpMethod.POST, "/users/token").hasRole("USER") // 토큰 재발급
+                .requestMatchers(HttpMethod.POST, "/users/policies").permitAll()
                 .requestMatchers(HttpMethod.GET, "/profiles/nickname/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/settings/transfer").permitAll()
                 // Authenticated
