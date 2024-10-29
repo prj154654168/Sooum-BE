@@ -2,15 +2,8 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.CommentCard;
 import com.sooum.core.domain.card.entity.CommentLike;
-import com.sooum.core.domain.card.entity.FeedCard;
-import com.sooum.core.domain.card.entity.FeedLike;
-import com.sooum.core.domain.card.entity.font.Font;
-import com.sooum.core.domain.card.entity.fontsize.FontSize;
-import com.sooum.core.domain.card.entity.imgtype.ImgType;
-import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.card.repository.CommentLikeRepository;
 import com.sooum.core.domain.member.entity.Member;
-import com.sooum.core.domain.member.entity.devicetype.DeviceType;
 import com.sooum.core.domain.member.service.MemberService;
 import jakarta.persistence.EntityExistsException;
 import org.junit.jupiter.api.Assertions;
