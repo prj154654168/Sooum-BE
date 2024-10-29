@@ -59,8 +59,8 @@ public class MemberAuthController {
     public ResponseEntity<?> acceptPolicies(@RequestBody @Valid AcceptPolicies dto) {
         return ResponseEntity.ok(ResponseEntityModel.<SignUpResponse>builder()
                 .status(ResponseStatus.builder()
-                        .httpStatus(HttpStatus.CREATED)
-                        .httpCode(HttpStatus.CREATED.value())
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
                         .responseMessage("Accept policies successfully")
                         .build()
                 )
