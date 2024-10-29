@@ -1,6 +1,5 @@
 package com.sooum.core.domain.member.controller;
 
-import com.sooum.core.domain.card.controller.LatestFeedController;
 import com.sooum.core.domain.member.dto.AuthDTO;
 import com.sooum.core.domain.member.dto.AuthDTO.*;
 import com.sooum.core.domain.member.service.MemberInfoService;
@@ -57,14 +56,14 @@ public class MemberAuthController {
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUp dto) {
         return ResponseEntity.ok(ResponseEntityModel.<SignUpResponse>builder()
                 .status(ResponseStatus.builder()
-                        .httpStatus(HttpStatus.CREATED)
-                        .httpCode(HttpStatus.CREATED.value())
-                        .responseMessage("Sign up successfully")
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("sign up successfully")
                         .build()
                 )
                 .content(memberInfoService.signUp(dto))
                 .build()
-                .add(WebMvcLinkBuilder.linkTo(methodOn(LatestFeedController.class).getClass()).slash("/latest").withRel("sign-up")));
+                .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/sign-up").withRel("sign-up")));
     }
 
     @PostMapping("/token")
@@ -73,7 +72,7 @@ public class MemberAuthController {
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
                         .httpCode(HttpStatus.OK.value())
-                        .responseMessage("Sign up successfully")
+                        .responseMessage("reissue token successfully")
                         .build()
                 )
                 .content(memberInfoService.reissueAccessToken(request))
