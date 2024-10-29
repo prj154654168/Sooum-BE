@@ -49,7 +49,7 @@ public class MemberAuthController {
                 )
                 .content(memberInfoService.login(dto))
                 .build()
-                .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/policies").withRel("policies")));
+                .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/sign-up").withRel("sign-up")));
     }
 
     @PostMapping("/sign-up")
