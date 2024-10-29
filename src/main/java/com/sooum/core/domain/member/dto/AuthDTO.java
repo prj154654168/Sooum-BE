@@ -26,11 +26,6 @@ public class AuthDTO {
     ) {}
 
     public record SignUp(
-            @NotEmpty String profileImgName,
-            @NotEmpty String nickname
-    ) {}
-
-    public record AcceptPolicies(
             @Valid MemberInfo memberInfo,
             @Valid Policy policy
     ) {}

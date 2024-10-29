@@ -61,7 +61,7 @@ public class MemberInfoService {
     }
 
     @Transactional
-    public SignUpResponse signUp(AcceptPolicies dto) {
+    public SignUpResponse signUp(SignUp dto) {
         if(!dto.policy().checkAllPolicyIsTrue())
             throw new PolicyNotAllowException();
 

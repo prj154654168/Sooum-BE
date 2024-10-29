@@ -53,7 +53,7 @@ public class MemberAuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signUp(@RequestBody @Valid AcceptPolicies dto) {
+    public ResponseEntity<?> signUp(@RequestBody @Valid SignUp dto) {
         return ResponseEntity.ok(ResponseEntityModel.<SignUpResponse>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
