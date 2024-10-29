@@ -42,12 +42,6 @@ public class MemberInfoService {
     }
 
     @Transactional
-    public void signUp(SignUp dto, Long memberPk) {
-        Member member = memberService.findByPk(memberPk);
-        member.signUp(dto);
-    }
-
-    @Transactional
     public ReissuedToken reissueAccessToken(HttpServletRequest request) {
         String accessToken = tokenProvider.getAccessToken(request)
                 .orElseThrow(InvalidTokenException::new);
@@ -67,7 +61,7 @@ public class MemberInfoService {
     }
 
     @Transactional
-    public SignUpResponse acceptPolicies(AcceptPolicies dto) {
+    public SignUpResponse signUp(AcceptPolicies dto) {
         if(!dto.policy().checkAllPolicyIsTrue())
             throw new PolicyNotAllowException();
 
