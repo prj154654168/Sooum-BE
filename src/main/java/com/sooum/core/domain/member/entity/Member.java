@@ -76,6 +76,15 @@ public class Member extends BaseEntity {
     public void ban() {
         banCount++;
         role = Role.BANNED;
+
+        if(banCount == 1)
+            untilBan = LocalDateTime.now().plusDays(1);
+        else if(banCount == 2)
+            untilBan = LocalDateTime.now().plusDays(7);
+        else if(banCount == 3)
+            untilBan = LocalDateTime.now().plusDays(14);
+        else
+            untilBan = LocalDateTime.now().plusDays(30);
     }
 
     public void updateProfile(String nickname, String profileImgName) {
