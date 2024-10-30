@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +24,19 @@ public class CommentLikeService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public void createCommentLike(Long targetCommentCardPk, Long requesterPk) {
-        if (commentLikeRepository.existsByTargetCardPkAndLikedMemberPk(targetCommentCardPk, requesterPk)) {
-            throw new EntityExistsException(ExceptionMessage.ALREADY_CARD_LIKED.getMessage());
+    public void createCommentLike(Long targetFeedCardPk, Long requesterPk) {
+        Optional<CommentLike> findCommentLiked = commentLikeRepository.findCommentLiked(targetFeedCardPk, requesterPk);
+        if (findCommentLiked.isPresent()) {
+            if (!findCommentLiked.get().isDeleted()) {
+                throw new EntityExistsException(ExceptionMessage.ALREADY_CARD_LIKED.getMessage());
+            }
+
+            findCommentLiked.get().create();
+            return;
         }
 
         Member likedMember = memberService.findByPk(requesterPk);
-        CommentCard targetCard = commentCardService.findByPk(targetCommentCardPk);
+        CommentCard targetCard = commentCardService.findByPk(targetFeedCardPk);
         commentLikeRepository.save(
                 CommentLike.builder()
                         .likedMember(likedMember)
@@ -40,9 +47,14 @@ public class CommentLikeService {
 
     @Transactional
     public void deleteCommentLike(Long likedFeedCardPk, Long likedMemberPk) {
-        CommentLike feedLiked = commentLikeRepository.findCommentLiked(likedFeedCardPk, likedMemberPk)
+        CommentLike findCommentLiked = commentLikeRepository.findCommentLiked(likedFeedCardPk, likedMemberPk)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.LIKE_NOT_FOUND.getMessage()));
-        commentLikeRepository.delete(feedLiked);
+
+        if (findCommentLiked.isDeleted()) {
+            throw new EntityExistsException(ExceptionMessage.ALREADY_DELETE_CARD_LIKE.getMessage());
+        }
+
+        findCommentLiked.delete();
     }
 
     public List<CommentLike> findByTargetCards(List<CommentCard> commentCards) {

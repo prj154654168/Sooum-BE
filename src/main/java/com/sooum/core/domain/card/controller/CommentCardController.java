@@ -1,7 +1,6 @@
 package com.sooum.core.domain.card.controller;
 
 import com.sooum.core.domain.card.dto.CommentDto;
-import com.sooum.core.domain.card.dto.MyCommentCardDto;
 import com.sooum.core.domain.card.service.CommentInfoService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
@@ -44,27 +43,6 @@ public class CommentCardController {
                         .content(commentsInfo)
                         .build()
                         .add(commentInfoService.createNextCommentsInfoUrl(commentsInfo, currentCardPk))
-        );
-    }
-
-    @GetMapping("/mine")
-    public ResponseEntity<?> getMyCommentsCards(@CurrentUser Long memberPk,
-                                                @RequestParam(required = false) Optional<Long> lastId) {
-        List<MyCommentCardDto> myCommentCards = commentInfoService.getMyCommentCards(memberPk, lastId);
-
-        if (myCommentCards.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(ResponseCollectionModel.<MyCommentCardDto>builder()
-                .status(ResponseStatus.builder()
-                        .httpCode(HttpStatus.OK.value())
-                        .httpStatus(HttpStatus.OK)
-                        .responseMessage("Successfully retrieved all your comment cards.")
-                        .build()
-                )
-                .content(myCommentCards)
-                .build()
         );
     }
 }

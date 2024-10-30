@@ -31,6 +31,10 @@ public class FeedReportService {
     private final FeedLikeService feedLikeService;
     private final CommentLikeService commentLikeService;
 
+    public void deleteReport(Long feedCardPk) {
+        feedReportRepository.deleteAllByFeedCardPk(feedCardPk);
+    }
+
     public boolean isDuplicateReport(Long cardPk, Long memberPk) {
         return feedReportRepository.existsByReporter_PkAndTargetCard_Pk(memberPk, cardPk);
     }

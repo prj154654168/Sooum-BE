@@ -6,6 +6,9 @@ import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.dto.ProfileDto;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.visitor.service.VisitorService;
+import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import com.sooum.core.global.regex.BadWordFiltering;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ public class ProfileService {
     private final FeedCardService feedCardService;
     private final FollowService followService;
     private final ImgService imgService;
+    private final BadWordFiltering badWordFiltering;
 
     @Transactional
     public ProfileDto.ProfileInfoResponse findProfileInfo(Long profileOwnerPk, Long memberPk) {
@@ -47,5 +51,25 @@ public class ProfileService {
         if (isNewVisitor) {
             memberService.incrementTotalVisitorCnt(profileOwner);
         }
+    }
+
+    public ProfileDto.NicknameAvailable verifyNicknameAvailable(String nickname) {
+        return ProfileDto.NicknameAvailable.builder()
+                .isAvailable(badWordFiltering.checkBadWord(nickname))
+                .build();
+    }
+
+    @Transactional
+    public void updateProfile(ProfileDto.ProfileUpdate profileUpdate, Long memberPk) {
+        if (imgService.isModeratingImg(profileUpdate.getProfileImg())) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
+        }
+
+        if(!imgService.verifyImgSaved(profileUpdate.getProfileImg())) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
+        }
+
+        Member member = memberService.findByPk(memberPk);
+        member.updateProfile(profileUpdate.getNickname(), profileUpdate.getProfileImg());
     }
 }

@@ -11,7 +11,6 @@ import com.sooum.core.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +28,7 @@ public class LatestFeedService {
     private static final int MAX_PAGE_SIZE = 100;
     private static final int DEFAULT_PAGE_SIZE = 50;
 
-    public List<LatestFeedCardDto> createLatestFeedInfo(Long lastCardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+    public List<LatestFeedCardDto> createLatestFeedInfo(Optional<Long> lastCardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
         List<FeedCard> filteredLatestFeed = findFilteredLatestFeed(lastCardPk, memberPk);
 
         List<FeedLike> feedLikeList = feedLikeService.findByTargetCards(filteredLatestFeed);
@@ -54,26 +53,9 @@ public class LatestFeedService {
                 .toList());
     }
 
-
-    private List<FeedCard> findFilteredLatestFeed(Long lastCardId, Long memberId) {
-
-        ArrayList<FeedCard> resultFeedCards = new ArrayList<>();
-
-        while (resultFeedCards.size() < 50) {
-            List<FeedCard> byLastId = feedCardService.findByLastId(lastCardId);
-
-            if (!byLastId.isEmpty()) {
-                lastCardId = byLastId.get(byLastId.size() - 1).getPk();
-            }
-
-            List<FeedCard> filteredFeedCards = blockMemberService.filterBlockedMembers(byLastId, memberId);
-            resultFeedCards.addAll(filteredFeedCards);
-
-            if (isEndOfPage(byLastId)) {
-                break;
-            }
-        }
-        return resultFeedCards.size() > DEFAULT_PAGE_SIZE ? resultFeedCards.subList(0, DEFAULT_PAGE_SIZE) : resultFeedCards;
+    private List<FeedCard> findFilteredLatestFeed(Optional<Long> lastCardId, Long memberId) {
+        List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberId);
+        return feedCardService.findByLastId(lastCardId, allBlockToPk);
     }
 
     private static boolean isEndOfPage(List<FeedCard> byLastId) {

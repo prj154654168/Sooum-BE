@@ -78,6 +78,10 @@ public class TagService {
         return tagRepository.findTagList(tagContents);
     }
 
+    public void incrementTagCount(List<Tag> tags){
+        tagRepository.incrementTagCount(tags);
+    }
+
     @Transactional
     public void saveAll(List<Tag> tags) {
         tagRepository.saveAll(tags);

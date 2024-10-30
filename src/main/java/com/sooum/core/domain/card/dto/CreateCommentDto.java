@@ -7,12 +7,14 @@ import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.member.entity.Member;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class CreateCommentDto extends CreateCardDto{
     private List<String> commentTags;
 
@@ -28,7 +30,7 @@ public class CreateCommentDto extends CreateCardDto{
                 .parentCardPk(parentCardPk)
                 .content(this.getContent())
                 .font(this.getFont())
-                .fontSize(FontSize.MEDIUM)
+                .fontSize(FontSize.NONE)
                 .imgType(this.getImgType())
                 .imgName(this.getImgName())
                 .location(this.isDistanceShared()

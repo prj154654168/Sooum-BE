@@ -6,8 +6,8 @@ import com.sooum.core.domain.card.entity.font.Font;
 import com.sooum.core.domain.card.entity.fontsize.FontSize;
 import com.sooum.core.domain.card.entity.imgtype.ImgType;
 import com.sooum.core.domain.member.entity.Member;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -16,6 +16,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class CreateFeedCardDto extends CreateCardDto {
     @JsonProperty(value = "isPublic")
     private boolean isPublic;
@@ -23,7 +24,6 @@ public class CreateFeedCardDto extends CreateCardDto {
     private boolean isStory;
     private List<String> feedTags;
 
-    @Builder
     public CreateFeedCardDto(String content, boolean isDistanceShared, double latitude, double longitude, Font font, ImgType imgType, String imgName, boolean isPublic, boolean isStory, List<String> feedTags) {
         super(content, isDistanceShared, latitude, longitude, font, imgType, imgName);
         this.isPublic = isPublic;
@@ -35,7 +35,7 @@ public class CreateFeedCardDto extends CreateCardDto {
         return FeedCard.builder()
                 .content(this.getContent())
                 .font(this.getFont())
-                .fontSize(FontSize.MEDIUM)
+                .fontSize(FontSize.NONE)
                 .isStory(this.isStory())
                 .imgType(this.getImgType())
                 .imgName(this.getImgName())

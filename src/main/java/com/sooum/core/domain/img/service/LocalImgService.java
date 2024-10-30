@@ -64,7 +64,16 @@ public class LocalImgService implements ImgService{
     }
 
     @Override
-    public ImgUrlInfo createUserUploadUrl(String extension) {
+    public ImgUrlInfo createCardImgUploadUrl(String extension) {
+        String imgName = createRandomImgName(extension);
+        return ImgUrlInfo.builder()
+                .imgName(imgName)
+                .url(findImgUrl(ImgType.USER, imgName))
+                .build();
+    }
+
+    @Override
+    public ImgUrlInfo createProfileImgUploadUrl(String extension) {
         String imgName = createRandomImgName(extension);
         return ImgUrlInfo.builder()
                 .imgName(imgName)

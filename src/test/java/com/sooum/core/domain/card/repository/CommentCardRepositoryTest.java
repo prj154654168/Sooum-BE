@@ -23,9 +23,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -102,39 +101,94 @@ class CommentCardRepositoryTest {
     @DisplayName("사용자가 작성한 댓글 카드 첫 번째 페이지 조회")
     void findMyComments() throws Exception{
         //given
-        Member member = memberRepository.findAll().get(0);
+        Member member = createMemberForMyComments();
+        FeedCard feedCard = createFeedCardForMyComments(member);
+        List<CommentCard> comments = createCommentCardsForMyComments(feedCard, member);
+        Collections.reverse(comments);
 
         //when
-        List<CommentCard> result = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.ofSize(TEST_PAGE_SIZE));
+        List<CommentCard> result = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.ofSize(30));
 
         //then
-        Assertions.assertThat(result.size()).isEqualTo(TEST_PAGE_SIZE);
-        result.forEach(comment -> {
-            Assertions.assertThat(comment.getWriter().getPk()).isEqualTo(member.getPk());
-        });
+        long count = IntStream.range(0, result.size()).filter(idx -> {
+            Long resultPk = result.get(idx).getPk();
+            Long commentPk = comments.get(idx).getPk();
+            return resultPk.equals(commentPk);
+        }).count();
+        Assertions.assertThat(count).isEqualTo(30);
     }
 
     @Test
-    @DisplayName("사용자가 작성한 댓글 카드 두번째 페이지 조회")
+    @DisplayName("사용자가 작성한 댓글 카드 두번째 페이지 조회 - 25번째 카드 이후 반환")
     void findMyCommentsByLastId() throws Exception{
-
         //given
-        Member member = memberRepository.findAll().get(0);
-        List<CommentCard> allComments = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.of(0, TEST_PAGE_SIZE));
-        long lastPk = allComments.get(allComments.size() - 5).getPk();
+        Member member = createMemberForMyComments();
+        FeedCard feedCard = createFeedCardForMyComments(member);
+        List<CommentCard> comments = createCommentCardsForMyComments(feedCard, member);
+        Collections.reverse(comments);
+
+        List<CommentCard> allComments = commentCardRepository.findCommentCardsFirstPage(member.getPk(), PageRequest.of(0, 30));
+        long lastPk = allComments.get(24).getPk();
 
         //when
-        List<CommentCard> result = commentCardRepository.findCommentCardsNextPage(member.getPk(), lastPk, PageRequest.of(0, TEST_PAGE_SIZE));
+        List<CommentCard> result = commentCardRepository.findCommentCardsNextPage(member.getPk(), lastPk, PageRequest.of(0, 30));
+        List<CommentCard> expectedComments = comments.subList(25, comments.size());
 
         //then
-        Assertions.assertThat(result.size()).isLessThanOrEqualTo(30);
 
-        boolean isAfterLastPk = result.stream().allMatch(comment -> comment.getPk() < lastPk);
-        Assertions.assertThat(isAfterLastPk).isTrue();
+        long count = IntStream.range(0, result.size()).filter(idx -> {
+            Long resultPk = result.get(idx).getPk();
+            Long commentPk = expectedComments.get(idx).getPk();
+            return resultPk.equals(commentPk);
+        }).count();
+        Assertions.assertThat(count).isEqualTo(25);
+    }
 
-        boolean isNotExistedLastPkComment = result.stream().noneMatch(comment -> comment.getPk().equals(lastPk));
-        Assertions.assertThat(isNotExistedLastPkComment).isTrue();
+    private Member createMemberForMyComments() {
+        Member member = Member.builder()
+                .deviceType(DeviceType.ANDROID)
+                .deviceId("firstPageTestMember")
+                .firebaseToken("token")
+                .nickname("nickname")
+                .isAllowNotify(true)
+                .build();
+        return memberRepository.save(member);
+    }
 
+    private FeedCard createFeedCardForMyComments(Member member) {
+        FeedCard feedCard = FeedCard.builder()
+                .content("content")
+                .fontSize(FontSize.BIG)
+                .font(Font.PRETENDARD)
+                .location(null)
+                .imgType(ImgType.DEFAULT)
+                .imgName(1 + ".jpg")
+                .isPublic(true)
+                .isStory(false)
+                .writer(member)
+                .build();
+        return feedCardRepository.save(feedCard);
+    }
+
+
+    private List<CommentCard> createCommentCardsForMyComments(FeedCard feedCard, Member member) {
+        ArrayList<CommentCard> commentCards = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            CommentCard commentCard = CommentCard.builder()
+                    .content("카드 내용 " + i)
+                    .fontSize(FontSize.BIG)
+                    .font(Font.PRETENDARD)
+                    .location(null)
+                    .imgType(ImgType.DEFAULT)
+                    .imgName(i + ".jpg")
+                    .writer(member)
+                    .masterCard(feedCard.getPk())
+                    .parentCardType(i % 2 == 0 ? CardType.FEED_CARD : CardType.COMMENT_CARD)
+                    .parentCardPk(feedCard.getPk())
+                    .build();
+            commentCards.add(commentCard);
+        }
+        return commentCardRepository.saveAll(commentCards);
     }
 
     private void createCommentCards(FeedCard feedCard, Member member) {

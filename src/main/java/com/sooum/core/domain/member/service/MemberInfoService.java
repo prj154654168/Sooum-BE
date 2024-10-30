@@ -1,13 +1,8 @@
 package com.sooum.core.domain.member.service;
 
 import com.sooum.core.domain.img.service.ImgService;
-import com.sooum.core.domain.member.dto.AuthDTO.Login;
-import com.sooum.core.domain.member.dto.AuthDTO.LoginResponse;
-import com.sooum.core.domain.member.dto.AuthDTO.ReissuedToken;
-import com.sooum.core.domain.member.dto.AuthDTO.SignUpResponse;
 import com.sooum.core.domain.member.dto.MemberDto;
 import com.sooum.core.domain.member.entity.Member;
-import com.sooum.core.domain.member.entity.PolicyTerm;
 import com.sooum.core.domain.member.exception.DuplicateSignUpException;
 import com.sooum.core.domain.member.exception.MemberNotFoundException;
 import com.sooum.core.domain.member.exception.PolicyNotAllowException;
@@ -20,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.sooum.core.domain.member.dto.AuthDTO.SignUp;
-import static com.sooum.core.domain.member.dto.AuthDTO.Token;
+import static com.sooum.core.domain.member.dto.AuthDTO.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,23 +42,6 @@ public class MemberInfoService {
     }
 
     @Transactional
-    public SignUpResponse signUp(SignUp dto) {
-        if(!dto.policy().checkAllPolicyIsTrue())
-            throw new PolicyNotAllowException();
-
-        String deviceId = rsaService.decodeDeviceId(dto.member().encryptedDeviceId());
-
-        if(memberService.isAlreadySignUp(deviceId))
-            throw new DuplicateSignUpException();
-
-        Member member = memberService.save(dto.member(), deviceId);
-        PolicyTerm policyTerm = policySaveService.save(dto.policy(), member);
-        Token token = tokenProvider.createToken(policyTerm.getPk());
-        refreshTokenSaveService.save(token.refreshToken(), member);
-        return new SignUpResponse(token);
-    }
-
-    @Transactional
     public ReissuedToken reissueAccessToken(HttpServletRequest request) {
         String accessToken = tokenProvider.getAccessToken(request)
                 .orElseThrow(InvalidTokenException::new);
@@ -81,5 +58,24 @@ public class MemberInfoService {
                 .nickname(member.getNickname())
                 .profileImgUrl(imgService.findProfileImgUrl(member.getProfileImgName()))
                 .build();
+    }
+
+    @Transactional
+    public SignUpResponse signUp(SignUp dto) {
+        if(!dto.policy().checkAllPolicyIsTrue())
+            throw new PolicyNotAllowException();
+
+        String deviceId = rsaService.decodeDeviceId(dto.memberInfo().encryptedDeviceId());
+
+        if(memberService.isAlreadySignUp(deviceId))
+            throw new DuplicateSignUpException();
+
+        Member dummyMember = memberService.save(dto.memberInfo(), deviceId);
+
+        policySaveService.save(dto.policy(), dummyMember);
+
+        Token token = tokenProvider.createToken(dummyMember.getPk());
+        refreshTokenSaveService.save(token.refreshToken(), dummyMember);
+        return new SignUpResponse(token);
     }
 }

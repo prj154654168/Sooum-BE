@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Entity
@@ -20,7 +19,7 @@ public class AccountTransfer extends BaseEntity {
     private Long pk;
 
     @NotNull
-    @Column(name = "TRANSFER_ID")
+    @Column(name = "TRANSFER_ID", unique = true)
     private String transferId;
 
     @NotNull
@@ -33,9 +32,18 @@ public class AccountTransfer extends BaseEntity {
     private Member member;
 
     @Builder
-    public AccountTransfer(Member member) {
-        this.transferId = UUID.randomUUID().toString();
+    public AccountTransfer(Member member, String transferId) {
+        this.transferId = transferId;
         this.expirationDate = LocalDateTime.now().plusDays(1L);
         this.member = member;
+    }
+
+    public void updateTransferId (String transferId) {
+        this.transferId = transferId;
+        this.expirationDate = LocalDateTime.now().plusDays(1L);
+    }
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expirationDate);
     }
 }

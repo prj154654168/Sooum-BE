@@ -3,7 +3,6 @@ package com.sooum.core.domain.card.controller;
 import com.sooum.core.domain.card.dto.CardSummary;
 import com.sooum.core.domain.card.dto.MyFeedCardDto;
 import com.sooum.core.domain.card.service.CardService;
-import com.sooum.core.domain.card.service.FeedLikeService;
 import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
@@ -25,7 +24,6 @@ import java.util.List;
 public class CardController {
     private final CardService cardService;
     private final FeedService feedService;
-    private final FeedLikeService feedLikeService;
 
     @GetMapping("/current/{parentCardPk}/summary")
     public ResponseEntity<ResponseEntityModel<CardSummary>> countCommentsByParentCard(@PathVariable Long parentCardPk,
@@ -51,7 +49,7 @@ public class CardController {
     @PostMapping("/{cardPk}/like")
     public ResponseEntity<ResponseStatus> createFeedLike(@PathVariable(value = "cardPk") @NotNull Long cardPk,
                                                          @CurrentUser Long memberPk) {
-        feedLikeService.createCardLike(cardPk, memberPk);
+        cardService.createCardLike(cardPk, memberPk);
 
         return ResponseEntity.created(URI.create(""))
                 .body(
@@ -66,7 +64,7 @@ public class CardController {
     @DeleteMapping("/{cardPk}/like")
     public ResponseEntity<?> deleteFeedLike(@PathVariable(value = "cardPk") @NotNull Long cardPk,
                                             @CurrentUser Long memberPk) {
-        feedLikeService.deleteCardLike(cardPk, memberPk);
+        cardService.deleteCardLike(cardPk, memberPk);
 
         return ResponseEntity.noContent().build();
     }

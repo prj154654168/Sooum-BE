@@ -10,7 +10,8 @@ public interface ImgService {
     Link findImgUrl(ImgType imgType, String imgName);
     List<ImgUrlInfo> createDefaultImgRetrieveUrls(List<String> previousImgsName);
     String findIssuedDefaultImgsName(List<ImgUrlInfo> imgsUrlInfo);
-    ImgUrlInfo createUserUploadUrl(String extension);
+    ImgUrlInfo createCardImgUploadUrl(String extension);
+    ImgUrlInfo createProfileImgUploadUrl(String extension);
     boolean verifyImgSaved(String imgName);
     default boolean isModeratingImg(String imgName){
         return false;
