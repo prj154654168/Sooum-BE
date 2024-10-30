@@ -1,22 +1,18 @@
 package com.sooum.core.domain.card.controller;
 
 import com.sooum.core.domain.card.dto.CardSummary;
-import com.sooum.core.domain.card.dto.MyFeedCardDto;
 import com.sooum.core.domain.card.service.CardService;
 import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
-import com.sooum.core.global.responseform.ResponseCollectionModel;
 import com.sooum.core.global.responseform.ResponseEntityModel;
 import com.sooum.core.global.responseform.ResponseStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -67,23 +63,5 @@ public class CardController {
         cardService.deleteCardLike(cardPk, memberPk);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<?> findMyCards(@CurrentUser Long memberPk, @RequestParam Integer page, @RequestParam Integer size) {
-        List<MyFeedCardDto> cards = cardService.findMyCards(memberPk, PageRequest.of(page, size));
-
-        if (cards.isEmpty())
-            return ResponseEntity.noContent().build();
-
-        return ResponseEntity.ok(ResponseCollectionModel.<MyFeedCardDto>builder()
-                .status(ResponseStatus.builder()
-                        .httpStatus(HttpStatus.OK)
-                        .httpCode(HttpStatus.OK.value())
-                        .responseMessage("Find related tags successfully")
-                        .build()
-                )
-                .content(cards)
-                .build());
     }
 }

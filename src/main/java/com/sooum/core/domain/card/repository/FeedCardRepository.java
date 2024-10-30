@@ -3,6 +3,7 @@ package com.sooum.core.domain.card.repository;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.member.entity.Member;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -52,4 +53,10 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
 
     @Query("select fc from FeedCard fc where fc.writer.pk = :memberPk")
     List<FeedCard> findByMemberPk(@Param("memberPk") Long memberPk, Pageable pageable);
+
+    @Query("select fc from FeedCard fc where fc.isDeleted = false and fc.writer.pk = :memberPk order by fc.pk desc")
+    List<FeedCard> findCommentCardsFirstPage(@Param("memberPk") Long memberPk, PageRequest pageRequest);
+
+    @Query("select fc from FeedCard fc where fc.isDeleted = false and fc.writer.pk = :memberPk and fc.pk < :lastPk order by fc.pk desc ")
+    List<FeedCard> findCommentCardsNextPage(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, PageRequest pageRequest);
 }

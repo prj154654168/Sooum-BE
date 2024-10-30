@@ -6,6 +6,7 @@ import com.sooum.core.domain.card.repository.FeedCardRepository;
 import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import com.sooum.core.global.util.NextPageLinkGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -65,8 +66,10 @@ public class FeedCardService {
         return feedCardRepository.findFeedCardIdsByWriterIn(memberPks);
     }
 
-    public List<MyFeedCardDto> findByMemberPk(Long memberPk, Pageable pageable) {
-        return feedCardRepository.findByMemberPk(memberPk, pageable).stream()
+    public List<MyFeedCardDto> findByMemberPk(Long memberPk, Optional<Long> lastId) {
+        List<FeedCard> feedList = findFeedList(memberPk, lastId);
+
+        return NextPageLinkGenerator.appendEachMyCardDetailLink(feedList.stream()
                 .map(feed -> MyFeedCardDto.builder()
                         .id(feed.getPk().toString())
                         .content(feed.getContent())
@@ -74,6 +77,13 @@ public class FeedCardService {
                         .font(feed.getFont())
                         .fontSize(feed.getFontSize())
                         .build())
-                .toList();
+                .toList());
+    }
+
+    public List<FeedCard> findFeedList(Long memberPk, Optional<Long> lastPk) {
+        PageRequest pageRequest = PageRequest.ofSize(30);
+        return lastPk.isEmpty()
+                ? feedCardRepository.findCommentCardsFirstPage(memberPk, pageRequest)
+                : feedCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
     }
 }

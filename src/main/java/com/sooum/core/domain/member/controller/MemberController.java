@@ -1,6 +1,8 @@
 package com.sooum.core.domain.member.controller;
 
 import com.sooum.core.domain.card.dto.MyCommentCardDto;
+import com.sooum.core.domain.card.dto.MyFeedCardDto;
+import com.sooum.core.domain.card.service.CardService;
 import com.sooum.core.domain.card.service.CommentInfoService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseCollectionModel;
@@ -22,6 +24,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberController {
     private final CommentInfoService commentInfoService;
+    private final CardService cardService;
+
+    @GetMapping("/feed-cards")
+    public ResponseEntity<?> findMyFeedCards(@CurrentUser Long memberPk, @RequestParam(required = false) Optional<Long> lastId) {
+        List<MyFeedCardDto> cards = cardService.findMyCards(memberPk, lastId);
+
+        if (cards.isEmpty())
+            return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(ResponseCollectionModel.<MyFeedCardDto>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("Find my feed cards successfully")
+                        .build()
+                )
+                .content(cards)
+                .build());
+    }
 
     @GetMapping("/comment-cards")
     public ResponseEntity<?> getMyCommentsCards(@CurrentUser Long memberPk,
