@@ -1,9 +1,12 @@
 package com.sooum.core.domain.card.service;
 
+import com.sooum.core.domain.card.dto.MyFeedCardDto;
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.repository.FeedCardRepository;
+import com.sooum.core.domain.img.service.ImgService;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
+import com.sooum.core.global.util.NextPageLinkGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
@@ -19,6 +22,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FeedCardService {
+    private final ImgService imgService;
     private final FeedCardRepository feedCardRepository;
     private static final int MAX_PAGE_SIZE = 50;
 
@@ -60,5 +64,26 @@ public class FeedCardService {
 
     public List<Long> findFeedCardIdsByMemberPk(List<Long> memberPks) {
         return feedCardRepository.findFeedCardIdsByWriterIn(memberPks);
+    }
+
+    public List<MyFeedCardDto> findByMemberPk(Long memberPk, Optional<Long> lastId) {
+        List<FeedCard> feedList = findFeedList(memberPk, lastId);
+
+        return NextPageLinkGenerator.appendEachMyCardDetailLink(feedList.stream()
+                .map(feed -> MyFeedCardDto.builder()
+                        .id(feed.getPk().toString())
+                        .content(feed.getContent())
+                        .backgroundImgUrl(imgService.findImgUrl(feed.getImgType(), feed.getImgName()))
+                        .font(feed.getFont())
+                        .fontSize(feed.getFontSize())
+                        .build())
+                .toList());
+    }
+
+    public List<FeedCard> findFeedList(Long memberPk, Optional<Long> lastPk) {
+        PageRequest pageRequest = PageRequest.ofSize(30);
+        return lastPk.isEmpty()
+                ? feedCardRepository.findCommentCardsFirstPage(memberPk, pageRequest)
+                : feedCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
     }
 }

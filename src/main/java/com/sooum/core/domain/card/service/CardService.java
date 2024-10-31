@@ -1,12 +1,16 @@
 package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.dto.CardSummary;
+import com.sooum.core.domain.card.dto.MyFeedCardDto;
 import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +41,10 @@ public class CardService {
         return cardType.equals(CardType.FEED_CARD)
                 ? feedLikeService.isLiked(cardPk, memberPk)
                 : commentLikeService.isLiked(cardPk, memberPk);
+    }
+
+    public List<MyFeedCardDto> findMyCards(Long memberPk, Optional<Long> lastId) {
+        return feedCardService.findByMemberPk(memberPk, lastId);
     }
 
     @Transactional

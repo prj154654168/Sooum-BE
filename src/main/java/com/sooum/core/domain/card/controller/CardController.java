@@ -2,7 +2,6 @@ package com.sooum.core.domain.card.controller;
 
 import com.sooum.core.domain.card.dto.CardSummary;
 import com.sooum.core.domain.card.service.CardService;
-import com.sooum.core.domain.card.service.FeedLikeService;
 import com.sooum.core.domain.card.service.FeedService;
 import com.sooum.core.global.auth.annotation.CurrentUser;
 import com.sooum.core.global.responseform.ResponseEntityModel;

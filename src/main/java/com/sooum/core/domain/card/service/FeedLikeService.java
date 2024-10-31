@@ -2,7 +2,6 @@ package com.sooum.core.domain.card.service;
 
 import com.sooum.core.domain.card.entity.FeedCard;
 import com.sooum.core.domain.card.entity.FeedLike;
-import com.sooum.core.domain.card.entity.parenttype.CardType;
 import com.sooum.core.domain.card.repository.FeedLikeRepository;
 import com.sooum.core.domain.member.entity.Member;
 import com.sooum.core.domain.member.service.MemberService;
