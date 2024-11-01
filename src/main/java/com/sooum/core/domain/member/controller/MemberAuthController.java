@@ -63,7 +63,7 @@ public class MemberAuthController {
                 )
                 .content(memberInfoService.signUp(dto))
                 .build()
-                .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/sign-up").withRel("sign-up")));
+                .add(WebMvcLinkBuilder.linkTo(methodOn(ProfileController.class).getClass()).withRel("updateProfile")));
     }
 
     @PostMapping("/token")
