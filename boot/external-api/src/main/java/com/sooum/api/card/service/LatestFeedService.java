@@ -44,7 +44,7 @@ public class LatestFeedService {
                         .content(feedCard.getContent())
                         .isStory(feedCard.isStory())
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
-                        .backgroundImgUrl(imgService.findImgUrl(feedCard.getImgType(),feedCard.getImgName()))
+                        .backgroundImgUrl(imgService.findCardImgUrl(feedCard.getImgType(),feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
                         .isCommentWritten(FeedService.isWrittenCommentCard(commentCardList, memberPk))
                         .isLiked(FeedService.isLiked(feedCard, feedLikeList, memberPk))

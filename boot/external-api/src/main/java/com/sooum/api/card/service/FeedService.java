@@ -4,11 +4,11 @@ import com.sooum.api.card.dto.CreateCardDto;
 import com.sooum.api.card.dto.CreateCommentDto;
 import com.sooum.api.card.dto.CreateFeedCardDto;
 import com.sooum.api.img.service.ImgService;
-import com.sooum.data.img.service.UserImgService;
 import com.sooum.data.card.entity.*;
-import com.sooum.data.card.entity.imgtype.ImgType;
+import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.card.entity.parenttype.CardType;
 import com.sooum.data.card.service.*;
+import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.report.service.CommentReportService;
@@ -40,7 +40,7 @@ public class FeedService {
     private final FeedTagService feedTagService;
     private final ImgService imgService;
     private final CommentTagService commentTagService;
-    private final UserImgService userImgService;
+    private final CardImgService cardImgService;
     private final BadWordFiltering badWordFiltering;
     private final CommentLikeService commentLikeService;
     private final CommentReportService commentReportService;
@@ -62,7 +62,7 @@ public class FeedService {
         feedCardService.saveFeedCard(feedCard);
 
         if (isUserImage(cardDto)){
-            userImgService.saveUserUploadPic(feedCard, cardDto.getImgName());
+            cardImgService.saveCardImg(feedCard, cardDto.getImgName());
         }
 
         List<Tag> tagContents = processTags(cardDto);
@@ -94,7 +94,7 @@ public class FeedService {
         commentCardService.saveComment(commentCard);
 
         if (isUserImage(cardDto)){
-            userImgService.saveUserUploadPic(commentCard, cardDto.getImgName());
+            cardImgService.saveCardImg(commentCard, cardDto.getImgName());
         }
 
         List<Tag> tagContents = processTags(cardDto);
@@ -143,7 +143,7 @@ public class FeedService {
     }
 
     private static boolean isUserImage(CreateCardDto cardDto) {
-        return cardDto.getImgType().equals(ImgType.USER);
+        return cardDto.getImgType().equals(CardImgType.USER);
     }
 
 
@@ -172,7 +172,7 @@ public class FeedService {
         CommentCard commentCard = commentCardService.findCommentCard(commentCardPk);
         commentCard.setDeleted(true);
         commentTagService.deleteByCommentCardPk(commentCardPk);
-        userImgService.deleteUserUploadPic(commentCard.getImgName());
+        cardImgService.deleteUserUploadPic(commentCard.getImgName());
         commentLikeService.deleteAllFeedLikes(commentCardPk);
         commentReportService.deleteReport(commentCard);
         //todo notification delete
@@ -188,7 +188,7 @@ public class FeedService {
         FeedCard feedCard = feedCardService.findFeedCard(feedCardPk);
         feedCard.setDeleted(true);
         feedTagService.deleteByFeedCardPk(feedCardPk);
-        userImgService.deleteUserUploadPic(feedCard.getImgName());
+        cardImgService.deleteUserUploadPic(feedCard.getImgName());
         feedLikeService.deleteAllFeedLikes(feedCardPk);
         feedReportService.deleteReport(feedCardPk);
         //todo notification delete

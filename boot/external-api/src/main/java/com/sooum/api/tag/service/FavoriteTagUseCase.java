@@ -5,7 +5,6 @@ import com.sooum.api.tag.dto.TagDto;
 import com.sooum.data.block.service.BlockMemberService;
 import com.sooum.data.tag.entity.FeedTag;
 import com.sooum.data.tag.entity.Tag;
-import com.sooum.data.tag.repository.FavoriteTagRepository;
 import com.sooum.data.tag.service.TagService;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +61,7 @@ public class FavoriteTagUseCase {
         return TagDto.FavoriteTag.PreviewCard.builder()
                 .id(feedTag.getFeedCard().getPk().toString())
                 .content(feedTag.getFeedCard().getContent())
-                .backgroundImgUrl(imgService.findImgUrl(
+                .backgroundImgUrl(imgService.findCardImgUrl(
                         feedTag.getFeedCard().getImgType(),
                         feedTag.getFeedCard().getImgName()))
                 .build();

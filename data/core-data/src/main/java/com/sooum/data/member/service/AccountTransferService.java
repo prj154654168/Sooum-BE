@@ -2,7 +2,6 @@ package com.sooum.data.member.service;
 
 import com.sooum.data.member.entity.AccountTransfer;
 import com.sooum.data.member.repository.AccountTransferRepository;
-import com.sooum.data.rsa.service.RsaService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -4,14 +4,13 @@ import com.sooum.api.card.dto.CardDto;
 import com.sooum.api.card.dto.CommentDetailCardDto;
 import com.sooum.api.card.dto.FeedDetailCardDto;
 import com.sooum.api.img.service.ImgService;
+import com.sooum.api.member.service.MemberInfoService;
 import com.sooum.api.tag.service.TagUseCase;
 import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.FeedCardService;
-import com.sooum.api.member.service.MemberInfoService;
-import com.sooum.data.tag.service.TagService;
 import com.sooum.global.exceptionmessage.ExceptionMessage;
 import com.sooum.global.util.DistanceUtils;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +43,7 @@ public class DetailFeedService {
         if (card instanceof FeedCard) {
             return FeedDetailCardDto.builder()
                     .id(card.getPk().toString())
-                    .backgroundImgUrl(imgService.findImgUrl(card.getImgType(), card.getImgName()))
+                    .backgroundImgUrl(imgService.findCardImgUrl(card.getImgType(), card.getImgName()))
                     .isStory(((FeedCard) card).isStory())
                     .createdAt(card.getCreatedAt())
                     .content(card.getContent())
@@ -61,11 +60,11 @@ public class DetailFeedService {
 
             String previousCardId = isParentCardValid(parentCard) ? parentCard.getPk().toString() : null;
             Link previousCardImgLink = isParentCardValid(parentCard) ?
-                    imgService.findImgUrl(parentCard.getImgType(),parentCard.getImgName()) : null;
+                    imgService.findCardImgUrl(parentCard.getImgType(),parentCard.getImgName()) : null;
 
             return CommentDetailCardDto.builder()
                     .id(card.getPk().toString())
-                    .backgroundImgUrl(imgService.findImgUrl(card.getImgType(), card.getImgName()))
+                    .backgroundImgUrl(imgService.findCardImgUrl(card.getImgType(), card.getImgName()))
                     .createdAt(card.getCreatedAt())
                     .content(card.getContent())
                     .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))

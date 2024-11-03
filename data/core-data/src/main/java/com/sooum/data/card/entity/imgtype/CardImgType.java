@@ -3,13 +3,13 @@ package com.sooum.data.card.entity.imgtype;
 import lombok.Getter;
 
 @Getter
-public enum ImgType {
+public enum CardImgType {
     DEFAULT("default"),
     USER("user");
 
     private final String imgPath;
 
-    ImgType(String imgPath) {
+    CardImgType(String imgPath) {
         this.imgPath = imgPath;
     }
 }

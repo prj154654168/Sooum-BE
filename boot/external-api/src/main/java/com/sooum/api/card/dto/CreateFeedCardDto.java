@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
-import com.sooum.data.card.entity.imgtype.ImgType;
+import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class CreateFeedCardDto extends CreateCardDto {
     private boolean isStory;
     private List<String> feedTags;
 
-    public CreateFeedCardDto(String content, boolean isDistanceShared, double latitude, double longitude, Font font, ImgType imgType, String imgName, boolean isPublic, boolean isStory, List<String> feedTags) {
+    public CreateFeedCardDto(String content, boolean isDistanceShared, double latitude, double longitude, Font font, CardImgType imgType, String imgName, boolean isPublic, boolean isStory, List<String> feedTags) {
         super(content, isDistanceShared, latitude, longitude, font, imgType, imgName);
         this.isPublic = isPublic;
         this.isStory = isStory;

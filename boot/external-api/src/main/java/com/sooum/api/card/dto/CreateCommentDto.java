@@ -3,7 +3,7 @@ package com.sooum.api.card.dto;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
-import com.sooum.data.card.entity.imgtype.ImgType;
+import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.card.entity.parenttype.CardType;
 import com.sooum.data.member.entity.Member;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.List;
 public class CreateCommentDto extends CreateCardDto{
     private List<String> commentTags;
 
-    public CreateCommentDto(String content, boolean isDistanceShared, double latitude, double longitude, Font font, ImgType imgType, String imgName, List<String> commentTags) {
+    public CreateCommentDto(String content, boolean isDistanceShared, double latitude, double longitude, Font font, CardImgType imgType, String imgName, List<String> commentTags) {
         super(content, isDistanceShared, latitude, longitude, font, imgType, imgName);
         this.commentTags = commentTags;
     }

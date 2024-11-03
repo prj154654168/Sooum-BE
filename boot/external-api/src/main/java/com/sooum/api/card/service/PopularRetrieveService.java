@@ -43,7 +43,7 @@ public class PopularRetrieveService {
                         .id(feed.getPk().toString())
                         .content(feed.getContent())
                         .isStory(feed.isStory())
-                        .backgroundImgUrl(imgService.findImgUrl(feed.getImgType(), feed.getImgName()))
+                        .backgroundImgUrl(imgService.findCardImgUrl(feed.getImgType(), feed.getImgName()))
                         .font(feed.getFont())
                         .fontSize(feed.getFontSize())
                         .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))

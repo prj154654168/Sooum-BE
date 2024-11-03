@@ -1,9 +1,6 @@
 package com.sooum.data.card.service;
 
-import com.sooum.data.block.service.BlockMemberService;
-import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
-import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.repository.PopularFeedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

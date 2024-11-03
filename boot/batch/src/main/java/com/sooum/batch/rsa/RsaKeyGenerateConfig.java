@@ -1,5 +1,6 @@
 package com.sooum.batch.rsa;
 
+import com.sooum.data.rsa.service.RsaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -43,7 +44,7 @@ public class RsaKeyGenerateConfig {
     public Step rsaKeyGenerateStep() {
         return new StepBuilder(STEP_NAME, jobRepository)
                 .tasklet((contribution, chunkContext) -> {
-                    rsaService.save();
+//                    rsaService.save();
                     return RepeatStatus.FINISHED;
                 }, transactionManager)
                 .build();

@@ -4,7 +4,6 @@ import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.data.rsa.entity.Rsa;
 import com.sooum.data.rsa.service.RsaService;
 import com.sooum.global.rsa.RsaProvider;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

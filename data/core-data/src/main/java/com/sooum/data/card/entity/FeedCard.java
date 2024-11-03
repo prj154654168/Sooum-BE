@@ -2,7 +2,7 @@ package com.sooum.data.card.entity;
 
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
-import com.sooum.data.card.entity.imgtype.ImgType;
+import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +24,7 @@ public class FeedCard extends Card {
     private boolean isPublic;
 
     @Builder
-    public FeedCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, Member writer, boolean isStory, boolean isPublic) {
+    public FeedCard(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, boolean isStory, boolean isPublic) {
         super(content, fontSize, font, location, imgType, imgName, writer);
         this.isStory = isStory;
         this.isPublic = isPublic;
