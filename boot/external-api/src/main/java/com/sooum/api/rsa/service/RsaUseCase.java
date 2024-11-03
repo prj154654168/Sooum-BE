@@ -25,6 +25,10 @@ public class RsaUseCase {
 
         try {
             publicKey = redisTemplate.opsForValue().get("public");
+            if (publicKey == null) {
+                Rsa rsa = rsaService.findByExpiredAtIsAfter();
+                publicKey = rsa.getPublicKey();
+            }
         } catch (Exception e) {
             Rsa rsa = rsaService.findByExpiredAtIsAfter();
             publicKey = rsa.getPublicKey();
@@ -40,6 +44,10 @@ public class RsaUseCase {
 
         try {
             privateKey = redisTemplate.opsForValue().get("private");
+            if (privateKey == null) {
+                Rsa rsa = rsaService.findByExpiredAtIsAfter();
+                privateKey = rsa.getPrivateKey();
+            }
         } catch (Exception e) {
             Rsa rsa = rsaService.findByExpiredAtIsAfter();
             privateKey = rsa.getPrivateKey();
