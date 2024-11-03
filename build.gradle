@@ -7,6 +7,9 @@ plugins {
 group = 'com.sooum'
 version = '0.0.1-SNAPSHOT'
 
+bootJar { enabled = false }
+jar { enabled = true }
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
@@ -23,62 +26,23 @@ repositories {
 	mavenCentral()
 }
 
-dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-	implementation 'org.springframework.boot:spring-boot-starter-batch'
+subprojects {
 
-	//S3
-	implementation 'software.amazon.awssdk:s3:2.28.14'
+	apply plugin: 'java'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
 
-	//Rekognition
-	implementation 'software.amazon.awssdk:rekognition:2.28.14'
+	repositories {
+		mavenCentral()
+	}
 
-	// MySQL spatial
-	implementation 'org.hibernate:hibernate-core:6.1.7.Final'
-	implementation 'org.hibernate:hibernate-spatial:6.1.7.Final'
-
-	// TSID
-	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.0'
-	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
-
-	//hateoas
-	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-
-	// JWT
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
-	// mapStruct
-	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
-
-	// Redisearch
-	implementation 'com.redis.om:redis-om-spring:0.9.1'
-	annotationProcessor "com.redis.om:redis-om-spring:0.9.1"
-
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
-
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
-
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.batch:spring-batch-test'
+	dependencies {
+		compileOnly 'org.projectlombok:lombok'
+		annotationProcessor "org.projectlombok:lombok:1.18.26"
+		testCompileOnly 'org.projectlombok:lombok'
+		testAnnotationProcessor "org.projectlombok:lombok:1.18.26"
+		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	}
 }
 
 tasks.named('test') {

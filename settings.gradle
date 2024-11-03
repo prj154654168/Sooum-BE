@@ -1,1 +1,9 @@
 rootProject.name = 'core'
+include 'boot'
+include 'boot:batch'
+findProject(':boot:batch')?.name = 'batch'
+include 'boot:external-api'
+findProject(':boot:external-api')?.name = 'external-api'
+include 'data:core-data'
+findProject(':data:core-data')?.name = 'core-data'
+

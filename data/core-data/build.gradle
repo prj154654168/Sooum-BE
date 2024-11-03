@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.sooum'
+version = '0.0.1-SNAPSHOT'
+
+bootJar { enabled = false }
+jar { enabled = true }
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // TSID
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.0'
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
+    // MySQL spatial
+    implementation 'org.hibernate:hibernate-core:6.1.7.Final'
+    implementation 'org.hibernate:hibernate-spatial:6.1.7.Final'
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
