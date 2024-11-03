@@ -1,7 +1,6 @@
 package com.sooum.global.auth.interceptor;
 
 import com.sooum.api.block.service.BlackListUseCase;
-import com.sooum.data.member.service.BlacklistService;
 import com.sooum.global.auth.interceptor.exception.JwtBlacklistException;
 import com.sooum.global.config.jwt.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;

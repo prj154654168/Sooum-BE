@@ -44,7 +44,7 @@ public class ProfileController {
 
     @GetMapping("/nickname/{nickname}/available")
     public ResponseEntity<ResponseEntityModel<ProfileDto.NicknameAvailable>> verifyNicknameAvailable(@PathVariable("nickname") String nickname) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+        return ResponseEntity.ok(
                 ResponseEntityModel.<ProfileDto.NicknameAvailable>builder()
                         .status(
                                 ResponseStatus.builder()

@@ -1,7 +1,7 @@
 package com.sooum.api.img.service;
 
 import com.sooum.api.img.dto.ImgUrlInfo;
-import com.sooum.data.card.entity.imgtype.ImgType;
+import com.sooum.data.card.entity.imgtype.CardImgType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.hateoas.Link;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
-public class LocalImgService implements ImgService{
+public class LocalImgService implements ImgService {
     @Value("${sooum.server.ip}")
     private String serverIp;
     @Value("${sooum.server.img.path}")
@@ -34,7 +34,7 @@ public class LocalImgService implements ImgService{
     private static final String DEFAULT_IMG_EXTENSION = "png";
 
     @Override
-    public Link findImgUrl(ImgType imgType, String imgName) {
+    public Link findCardImgUrl(CardImgType imgType, String imgName) {
         return Link.of(serverIp + IMG_URL_PREFIX + "/" + imgName + "/" + imgType.getImgPath());
     }
 
@@ -53,7 +53,7 @@ public class LocalImgService implements ImgService{
         return allDefaultImgsName.subList(0, DEFAULT_IMG_CNT).stream()
                 .map(imgName -> ImgUrlInfo.builder()
                         .imgName(imgName)
-                        .url(findImgUrl(ImgType.DEFAULT, imgName))
+                        .url(findCardImgUrl(CardImgType.DEFAULT, imgName))
                         .build())
                 .toList();
     }
@@ -68,7 +68,7 @@ public class LocalImgService implements ImgService{
         String imgName = createRandomImgName(extension);
         return ImgUrlInfo.builder()
                 .imgName(imgName)
-                .url(findImgUrl(ImgType.USER, imgName))
+                .url(findCardImgUrl(CardImgType.USER, imgName))
                 .build();
     }
 
@@ -77,7 +77,7 @@ public class LocalImgService implements ImgService{
         String imgName = createRandomImgName(extension);
         return ImgUrlInfo.builder()
                 .imgName(imgName)
-                .url(findImgUrl(ImgType.USER, imgName))
+                .url(findCardImgUrl(CardImgType.USER, imgName))
                 .build();
     }
 
@@ -91,8 +91,8 @@ public class LocalImgService implements ImgService{
         return Files.exists(filePath);
     }
 
-    public UrlResource findImg(ImgType imgType, String imgName) throws MalformedURLException {
-        String imgPath = imgType.equals(ImgType.DEFAULT) ? DEFAULT_IMG_PATH : USER_IMG_PATH;
+    public UrlResource findImg(CardImgType imgType, String imgName) throws MalformedURLException {
+        String imgPath = imgType.equals(CardImgType.DEFAULT) ? DEFAULT_IMG_PATH : USER_IMG_PATH;
         return new UrlResource("file:" + serverImgPath + imgPath + "/" + imgName);
     }
 

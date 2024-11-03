@@ -2,7 +2,7 @@ package com.sooum.data.card.entity;
 
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
-import com.sooum.data.card.entity.imgtype.ImgType;
+import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.card.entity.parenttype.CardType;
 import com.sooum.data.member.entity.Member;
 import jakarta.persistence.Column;
@@ -33,7 +33,7 @@ public class CommentCard extends Card {
     private Long masterCard;
 
     @Builder
-    public CommentCard(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, Member writer, CardType parentCardType, Long parentCardPk, Long masterCard) {
+    public CommentCard(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, CardType parentCardType, Long parentCardPk, Long masterCard) {
         super(content, fontSize, font, location, imgType, imgName, writer);
         this.parentCardType = parentCardType;
         this.parentCardPk = parentCardPk;

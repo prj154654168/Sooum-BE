@@ -14,7 +14,8 @@ repositories {
 
 dependencies {
     implementation project(':data:core-data')
-
+    implementation project(':cloud')
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -22,12 +23,6 @@ dependencies {
     // MySQL spatial
 //    implementation 'org.hibernate:hibernate-core:6.1.7.Final'
     implementation 'org.hibernate:hibernate-spatial:6.1.7.Final'
-
-    //S3
-    implementation 'software.amazon.awssdk:s3:2.28.14'
-
-    //Rekognition
-    implementation 'software.amazon.awssdk:rekognition:2.28.14'
 
     //hateoas
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'

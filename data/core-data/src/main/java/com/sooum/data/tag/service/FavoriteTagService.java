@@ -1,6 +1,5 @@
 package com.sooum.data.tag.service;
 
-import com.sooum.data.block.service.BlockMemberService;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.tag.entity.FavoriteTag;
 import com.sooum.data.tag.entity.Tag;
@@ -10,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor

@@ -25,7 +25,7 @@ public class FeedCardUseCase {
                 .map(feed -> MyFeedCardDto.builder()
                         .id(feed.getPk().toString())
                         .content(feed.getContent())
-                        .backgroundImgUrl(imgService.findImgUrl(feed.getImgType(), feed.getImgName()))
+                        .backgroundImgUrl(imgService.findCardImgUrl(feed.getImgType(), feed.getImgName()))
                         .font(feed.getFont())
                         .fontSize(feed.getFontSize())
                         .build())

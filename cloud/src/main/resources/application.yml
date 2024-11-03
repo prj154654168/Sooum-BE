@@ -1,0 +1,14 @@
+spring:
+  cloud:
+    aws:
+      region: ap-northeast-2
+      stack.auto: false
+      rekognition:
+        credentials:
+          accessKey: ${accessKey}
+          secretKey: ${secretKey}
+      s3:
+        bucket: sooum-img
+        credentials:
+          accessKey: ${accessKey}
+          secretKey: ${secretKey}

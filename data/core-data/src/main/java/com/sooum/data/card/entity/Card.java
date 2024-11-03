@@ -2,7 +2,7 @@ package com.sooum.data.card.entity;
 
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
-import com.sooum.data.card.entity.imgtype.ImgType;
+import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.common.entity.BaseEntity;
 import com.sooum.data.member.entity.Member;
 import io.hypersistence.utils.hibernate.id.Tsid;
@@ -38,7 +38,7 @@ public abstract class Card extends BaseEntity {
 
     @NotNull
     @Enumerated(value = EnumType.STRING)
-    private ImgType imgType;
+    private CardImgType imgType;
 
     @NotNull
     @Column(name = "IMG_NAME")
@@ -57,7 +57,7 @@ public abstract class Card extends BaseEntity {
         this.isDeleted = true;
     }
 
-    public Card(String content, FontSize fontSize, Font font, Point location, ImgType imgType, String imgName, Member writer) {
+    public Card(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer) {
         this.content = content;
         this.fontSize = fontSize;
         this.font = font;

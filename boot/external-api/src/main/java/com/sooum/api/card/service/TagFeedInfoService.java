@@ -7,7 +7,6 @@ import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.service.CommentCardService;
-import com.sooum.data.card.service.FeedCardService;
 import com.sooum.data.card.service.FeedLikeService;
 import com.sooum.data.card.service.TagFeedService;
 import com.sooum.global.util.DistanceUtils;
@@ -47,7 +46,7 @@ public class TagFeedInfoService {
                         .fontSize(feedCard.getFontSize())
                         .content(feedCard.getContent())
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
-                        .backgroundImgUrl(imgService.findImgUrl(feedCard.getImgType(), feedCard.getImgName()))
+                        .backgroundImgUrl(imgService.findCardImgUrl(feedCard.getImgType(), feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
                         .isCommentWritten(FeedService.isWrittenCommentCard(commentCards, memberPk))
                         .isLiked(FeedService.isLiked(feedCard, feedLikes, memberPk))

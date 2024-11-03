@@ -6,4 +6,6 @@ include 'boot:external-api'
 findProject(':boot:external-api')?.name = 'external-api'
 include 'data:core-data'
 findProject(':data:core-data')?.name = 'core-data'
+include 'cloud'
+include 'cloud'
 
