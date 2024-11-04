@@ -1,7 +1,7 @@
 package com.sooum.api.img.service;
 
 import com.sooum.api.img.dto.ImgUrlInfo;
-import com.sooum.client.aws.s3.RekognitionService;
+import com.sooum.client.aws.rekognition.RekognitionService;
 import com.sooum.client.aws.s3.S3Service;
 import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.img.service.CardImgService;
@@ -26,9 +26,6 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor
 public class AWSImgService implements ImgService{
-    @Value("${spring.cloud.aws.s3.bucket}")
-    private String bucket;
-
     @Value("${sooum.server.img.default-size}")
     private int defaultImgSize;
 
@@ -121,8 +118,13 @@ public class AWSImgService implements ImgService{
     }
 
     @Override
-    public boolean verifyImgSaved(String imgName) {
-        return s3Service.verifyImgSaved(USER_CARD_IMG, imgName);
+    public boolean isCardImgSaved(String imgName) {
+        return s3Service.isImgSaved(USER_CARD_IMG, imgName);
+    }
+
+    @Override
+    public boolean isProfileImgSaved(String profileImgName) {
+        return s3Service.isImgSaved(PROFILE_IMG, profileImgName);
     }
 
     @Override

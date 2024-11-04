@@ -129,7 +129,7 @@ public class FeedService {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
         }
 
-        if(!imgService.verifyImgSaved(cardDto.getImgName())) {
+        if(!imgService.isCardImgSaved(cardDto.getImgName())) {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
         }
     }
