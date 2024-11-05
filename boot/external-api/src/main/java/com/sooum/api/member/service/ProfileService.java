@@ -66,7 +66,7 @@ public class ProfileService {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
         }
 
-        if(!imgService.verifyImgSaved(profileUpdate.getProfileImg())) {
+        if(!imgService.isProfileImgSaved(profileUpdate.getProfileImg())) {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
         }
 

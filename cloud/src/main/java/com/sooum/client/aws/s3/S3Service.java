@@ -47,7 +47,13 @@ public class S3Service {
                 .url().toString();
     }
 
-    public boolean verifyImgSaved(String filePath, String imgName) {
+    /**
+     * s3에 사진이 존재하면 true, 아니면 false
+     * @param filePath
+     * @param imgName
+     * @return
+     */
+    public boolean isImgSaved(String filePath, String imgName) {
         try {
             s3Client.headObject(HeadObjectRequest.builder()
                     .bucket(bucket)
