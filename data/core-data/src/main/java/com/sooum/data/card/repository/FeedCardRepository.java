@@ -59,4 +59,7 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
 
     @Query("select fc from FeedCard fc where fc.isDeleted = false and fc.writer.pk = :memberPk and fc.pk < :lastPk order by fc.pk desc ")
     List<FeedCard> findCommentCardsNextPage(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, PageRequest pageRequest);
+
+    @Query("select fc from FeedCard fc where fc.writer = :memberPk")
+    List<FeedCard> findFeedCardByWriter(@Param("memberPk") Long memberPK);
 }

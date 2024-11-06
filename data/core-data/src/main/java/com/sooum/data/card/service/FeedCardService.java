@@ -67,4 +67,8 @@ public class FeedCardService {
                 ? feedCardRepository.findCommentCardsFirstPage(memberPk, pageRequest)
                 : feedCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
     }
+
+    public List<FeedCard> findAllFeedList(Long cardOwnerMemberPk) {
+        return feedCardRepository.findFeedCardByWriter(cardOwnerMemberPk);
+    }
 }
