@@ -1,4 +1,4 @@
-package com.sooum.client.aws.rekognition;
+package com.sooum.config.aws.rekognition;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -86,7 +86,7 @@ public class LocalImgService implements ImgService {
     }
 
     @Override
-    public boolean verifyImgSaved(String imgName) {
+    public boolean isCardImgSaved(String imgName) {
         Path filePath = Paths.get(serverImgPath + USER_IMG_PATH, imgName);
         return Files.exists(filePath);
     }

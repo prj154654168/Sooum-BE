@@ -1,4 +1,4 @@
-package com.sooum.client.aws.s3;
+package com.sooum.client.aws.rekognition;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
