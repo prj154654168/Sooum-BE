@@ -54,9 +54,7 @@ public class SecurityConfig {
 
         // Token Exception Handling
         http.exceptionHandling(except -> except
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendError(response.getStatus(), "토큰 오류");
-                })
+                .authenticationEntryPoint((request, response, authException) -> response.sendError(response.getStatus(), "토큰 오류"))
         );
 
         return http.build();
