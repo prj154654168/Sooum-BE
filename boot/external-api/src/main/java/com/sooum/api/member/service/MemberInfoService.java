@@ -51,11 +51,14 @@ public class MemberInfoService {
 
     @Transactional
     public AuthDTO.ReissuedToken reissueAccessToken(HttpServletRequest request) {
-        String accessToken = tokenProvider.getToken(request)
+        String refreshToken = tokenProvider.getToken(request)
                 .orElseThrow(InvalidTokenException::new);
 
-        Member member = memberService.findByPk(tokenProvider.getId(accessToken).orElseThrow(NoSuchElementException::new));
-        blackListUseCase.save(accessToken, tokenProvider.getExpiration(accessToken));
+        if (tokenProvider.isAccessToken(refreshToken))    // 재발급은 리프래쉬로만 발급 가능
+            throw new InvalidTokenException();
+
+        Member member = memberService.findByPk(tokenProvider.getId(refreshToken).orElseThrow(NoSuchElementException::new));
+        blackListUseCase.save(refreshToken, tokenProvider.getExpiration(refreshToken));
 
         return new AuthDTO.ReissuedToken(tokenProvider.createAccessToken(member.getPk(), member.getRole()));
     }
