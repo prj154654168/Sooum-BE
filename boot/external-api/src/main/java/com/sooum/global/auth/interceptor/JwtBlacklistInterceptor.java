@@ -20,7 +20,7 @@ public class JwtBlacklistInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String accessToken = tokenProvider.getAccessToken(request)
+        String accessToken = tokenProvider.getToken(request)
                 .orElse(null);
 
         if(accessToken == null)

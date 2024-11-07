@@ -51,7 +51,7 @@ public class MemberInfoService {
 
     @Transactional
     public AuthDTO.ReissuedToken reissueAccessToken(HttpServletRequest request) {
-        String accessToken = tokenProvider.getAccessToken(request)
+        String accessToken = tokenProvider.getToken(request)
                 .orElseThrow(InvalidTokenException::new);
 
         Member member = memberService.findByPk(tokenProvider.getId(accessToken).orElseThrow(NoSuchElementException::new));
