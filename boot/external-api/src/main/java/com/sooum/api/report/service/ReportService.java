@@ -1,5 +1,6 @@
 package com.sooum.api.report.service;
 
+import com.sooum.api.block.service.BlackListUseCase;
 import com.sooum.api.report.exception.DuplicateReportException;
 import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.CommentCard;
@@ -11,7 +12,10 @@ import com.sooum.data.member.service.MemberService;
 import com.sooum.data.report.entity.reporttype.ReportType;
 import com.sooum.data.report.service.CommentReportService;
 import com.sooum.data.report.service.FeedReportService;
+import com.sooum.global.config.jwt.InvalidTokenException;
+import com.sooum.global.config.jwt.TokenProvider;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,33 +29,41 @@ public class ReportService {
     private final CommentCardService commentCardService;
     private final FeedReportService feedReportService;
     private final CommentReportService commentReportService;
+    private final TokenProvider tokenProvider;
+    private final BlackListUseCase blackListUseCase;
 
     @Transactional
-    public void report(Long cardPk, ReportType reportType, Long memberPk) {
+    public void report(Long cardPk, ReportType reportType, Long memberPk, HttpServletRequest request) {
         validateDuplicateReport(cardPk, memberPk);
 
         Member member = memberService.findByPk(memberPk);
+        String token = tokenProvider.getToken(request)
+                .filter(refreshToken -> !tokenProvider.isAccessToken(refreshToken))
+                .orElseThrow(InvalidTokenException::new);
+
         if(feedCardService.isExistFeedCard(cardPk)) {
             FeedCard feedCard = feedCardService.findByPk(cardPk);
-            reportFeed(feedCard, member, reportType);
+            reportFeed(feedCard, member, reportType, token);
         } else {
             CommentCard commentCard = commentCardService.findByPk(cardPk);
-            reportComment(commentCard, member, reportType);
+            reportComment(commentCard, member, reportType, token);
         }
     }
 
-    private void reportFeed(FeedCard card, Member member, ReportType reportType) {
+    private void reportFeed(FeedCard card, Member member, ReportType reportType, String token) {
         feedReportService.save(member, card, reportType);
 
-        if (isReportedOverLimit(card))
-            card.getWriter().ban();
+        if (isReportedOverLimit(card)) {
+            blackListUseCase.save(token, card.getWriter().ban());
+        }
     }
 
-    private void reportComment(CommentCard card, Member member, ReportType reportType) {
+    private void reportComment(CommentCard card, Member member, ReportType reportType, String token) {
         commentReportService.save(member, card, reportType);
 
-        if(isReportedOverLimit(card))
-            card.getWriter().ban();
+        if(isReportedOverLimit(card)) {
+            blackListUseCase.save(token, card.getWriter().ban());
+        }
     }
 
     private boolean isReportedOverLimit(Card card) {
