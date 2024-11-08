@@ -1,8 +1,8 @@
 package com.sooum.api.member.service;
 
-import com.sooum.api.block.service.BlackListUseCase;
 import com.sooum.api.img.service.ImgService;
 import com.sooum.api.member.dto.AuthDTO;
+import com.sooum.api.member.dto.AuthDTO.Token;
 import com.sooum.api.member.dto.MemberDto;
 import com.sooum.api.member.exception.DuplicateSignUpException;
 import com.sooum.api.member.exception.PolicyNotAllowException;
@@ -10,6 +10,7 @@ import com.sooum.api.member.mapper.MemberMapper;
 import com.sooum.api.member.mapper.PolicyMapper;
 import com.sooum.api.rsa.service.RsaUseCase;
 import com.sooum.data.member.entity.Member;
+import com.sooum.data.member.entity.RefreshToken;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.member.service.PolicyService;
 import com.sooum.data.member.service.RefreshTokenService;
@@ -29,21 +30,25 @@ import java.util.NoSuchElementException;
 public class MemberInfoService {
 
     private final PolicyService policyService;
-    private final RefreshTokenService refreshTokenSaveService;
+    private final RefreshTokenService refreshTokenService;
     private final TokenProvider tokenProvider;
     private final MemberService memberService;
-    private final BlackListUseCase blackListUseCase;
     private final RsaUseCase rsaUseCase;
     private final ImgService imgService;
     private final MemberMapper memberMapper;
     private final PolicyMapper policyMapper;
 
+    @Transactional
     public AuthDTO.LoginResponse login(AuthDTO.Login dto) {
         String deviceId = rsaUseCase.decodeDeviceId(dto.encryptedDeviceId());
 
         try {
             Member member = memberService.findByDeviceId(deviceId);
-            return new AuthDTO.LoginResponse(true, tokenProvider.createToken(member.getPk()));
+            Token token = tokenProvider.createToken(member.getPk());
+            RefreshToken refreshToken = refreshTokenService.findByPk(member.getPk());
+            refreshToken.update(refreshToken.getRefreshToken());
+
+            return new AuthDTO.LoginResponse(true, token);
         } catch (EntityNotFoundException e) {
             return new AuthDTO.LoginResponse(false, null);
         }
@@ -58,8 +63,6 @@ public class MemberInfoService {
             throw new InvalidTokenException();
 
         Member member = memberService.findByPk(tokenProvider.getId(refreshToken).orElseThrow(NoSuchElementException::new));
-        blackListUseCase.save(refreshToken, tokenProvider.getExpiration(refreshToken));
-
         return new AuthDTO.ReissuedToken(tokenProvider.createAccessToken(member.getPk(), member.getRole()));
     }
 
@@ -85,8 +88,8 @@ public class MemberInfoService {
 
         policyService.save(policyMapper.from(dto.policy(), dummyMember));
 
-        AuthDTO.Token token = tokenProvider.createToken(dummyMember.getPk());
-        refreshTokenSaveService.save(token.refreshToken(), dummyMember);
+        Token token = tokenProvider.createToken(dummyMember.getPk());
+        refreshTokenService.save(token.refreshToken(), dummyMember);
         return new AuthDTO.SignUpResponse(token);
     }
 }
