@@ -1,5 +1,6 @@
 package com.sooum.global.config.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,10 +21,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        tokenProvider.getRefreshToken(request).ifPresentOrElse(this::setAuthentication,
-                () -> tokenProvider.getAccessToken(request).ifPresent(this::setAuthentication));
+        try {
+            tokenProvider.getToken(request).ifPresent(token -> {
+                if (tokenProvider.validateToken(token))
+                    setAuthentication(token);
+            });
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            if(e.getClaims().getSubject().equals("AccessToken"))
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "엑세스 토큰 만료");
+            else
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "리프래쉬 토큰 만료");
+        }
     }
 
     private void setAuthentication(String token) {

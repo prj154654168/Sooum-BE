@@ -20,13 +20,14 @@ public class JwtBlacklistInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String accessToken = tokenProvider.getAccessToken(request)
+        String token = tokenProvider.getToken(request)
                 .orElse(null);
 
-        if(accessToken == null)
+        if(token == null)
             return true;
 
-        if (blackListUseCase.isExist(accessToken)) {
+        if ((tokenProvider.isAccessToken(token) && blackListUseCase.isAccessTokenExist(token))
+                || (!tokenProvider.isAccessToken(token) && blackListUseCase.isRefreshTokenExist(token))) {
             response.setStatus(SC_UNAUTHORIZED);
             throw new JwtBlacklistException();
         }
