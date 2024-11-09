@@ -2,10 +2,7 @@ package com.sooum.global.config.jwt;
 
 import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.data.member.entity.Role;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -33,9 +30,8 @@ public class TokenProvider {
     private final JwtProperties jwtProperties;
 
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
-    private static final String ACCESS_TOKEN_HEADER = "Authorization";
+    private static final String TOKEN_HEADER = "Authorization";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String REFRESH_TOKEN_HEADER = "Authorization-refresh";
     private static final String BEARER = "Bearer ";
     private static final String ID_CLAIM = "id";
     private static final String ROLE_CLAIM = "role";
@@ -43,7 +39,7 @@ public class TokenProvider {
     public AuthDTO.Token createToken(Long id) {
         return new AuthDTO.Token(
                 createAccessToken(id, USER),
-                createRefreshToken(id)
+                createRefreshToken(id, USER)
         );
     }
 
@@ -60,7 +56,7 @@ public class TokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(Long id) {
+    public String createRefreshToken(Long id, Role role) {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -68,6 +64,7 @@ public class TokenProvider {
                 .setExpiration(new Date(now.getTime() + jwtProperties.getAccessTokenExpirationPeriod()))
                 .setSubject(REFRESH_TOKEN_SUBJECT)
                 .claim(ID_CLAIM, id)
+                .claim(ROLE_CLAIM, role)
                 .signWith(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -78,19 +75,10 @@ public class TokenProvider {
                     .build()
                     .parseClaimsJws(jwtToken);  // Decode
             return true;
+        } catch (ExpiredJwtException e) {
+            throw e;
         } catch (Exception e) {
             return false;
-        }
-    }
-
-    private Object detailedValidateToken(String jwtToken) {
-        try {
-            Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)))
-                    .build()
-                    .parseClaimsJws(jwtToken);
-            return true;
-        } catch (Exception e) {
-            return e;
         }
     }
 
@@ -109,14 +97,12 @@ public class TokenProvider {
         }
     }
 
-    public Optional<String> getAccessToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(ACCESS_TOKEN_HEADER))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+    public boolean isAccessToken(String token) {
+        return getClaims(token).getSubject().equals(ACCESS_TOKEN_SUBJECT);
     }
 
-    public Optional<String> getRefreshToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(REFRESH_TOKEN_HEADER))
+    public Optional<String> getToken(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(TOKEN_HEADER))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
