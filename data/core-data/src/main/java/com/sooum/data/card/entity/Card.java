@@ -48,8 +48,7 @@ public abstract class Card extends BaseEntity {
     @Column(name = "IS_DELETED")
     private boolean isDeleted;
 
-    @NotNull
-    @JoinColumn(name = "WRITER")
+    @JoinColumn(name = "WRITER", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne(fetch = FetchType.LAZY)
     private Member writer;
 
