@@ -1,0 +1,17 @@
+spring:
+  batch:
+    job:
+#      enabled: false
+      name: commentCardReaderJob
+  config:
+    import:
+      - classpath:/application-core-data.yml
+      - classpath:/application-cloud.yml
+
+  jackson:
+    time-zone: Asia/Seoul
+
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
