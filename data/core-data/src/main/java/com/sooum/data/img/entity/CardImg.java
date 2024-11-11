@@ -39,4 +39,12 @@ public class CardImg extends Img {
     public CardImg(String imgName) {
         super(imgName);
     }
+
+    public void updateFeedCard(FeedCard feedCard) {
+        this.feedCard = feedCard;
+    }
+
+    public void updateCommentCard(CommentCard commentCard) {
+        this.commentCard = commentCard;
+    }
 }

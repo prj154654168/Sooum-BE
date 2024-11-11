@@ -34,7 +34,6 @@ public class FeedService {
     private final MemberService memberService;
     private final CommentCardService commentCardService;
     private final FeedCardService feedCardService;
-    private final PopularFeedService popularFeedService;
     private final FeedLikeService feedLikeService;
     private final TagService tagService;
     private final FeedTagService feedTagService;
@@ -62,7 +61,7 @@ public class FeedService {
         feedCardService.saveFeedCard(feedCard);
 
         if (isUserImage(cardDto)){
-            cardImgService.saveCardImg(feedCard, cardDto.getImgName());
+            cardImgService.updateCardImg(feedCard, cardDto.getImgName());
         }
 
         List<Tag> tagContents = processTags(cardDto);
@@ -94,7 +93,7 @@ public class FeedService {
         commentCardService.saveComment(commentCard);
 
         if (isUserImage(cardDto)){
-            cardImgService.saveCardImg(commentCard, cardDto.getImgName());
+            cardImgService.updateCardImg(commentCard, cardDto.getImgName());
         }
 
         List<Tag> tagContents = processTags(cardDto);
