@@ -1,23 +1,33 @@
 package com.sooum.data.img.service;
 
 import com.sooum.data.card.entity.Card;
+import com.sooum.data.card.entity.CommentCard;
+import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.img.entity.CardImg;
 import com.sooum.data.img.repository.CardImgRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CardImgService {
     private final CardImgRepository cardImgRepository;
 
-    public void saveCardImg(Card card, String imgName) {
-        CardImg cardImg = CardImg.builder()
-                .imgName(imgName)
-                .card(card).build();
-        cardImgRepository.save(cardImg);
+    public void updateCardImg(Card card, String imgName) {
+        Optional<CardImg> optionalCardImg = cardImgRepository.findByImgName(imgName);
+
+        if(optionalCardImg.isPresent()) {
+            CardImg cardImg = optionalCardImg.get();
+            if (card instanceof FeedCard feedCard) {
+                cardImg.updateFeedCard(feedCard);
+            } else if (card instanceof CommentCard commentCard) {
+                cardImg.updateCommentCard(commentCard);
+            }
+        }else throw new EntityNotFoundException();
     }
 
     public void saveDefaultCardImg(String imgName) {
