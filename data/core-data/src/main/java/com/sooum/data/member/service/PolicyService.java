@@ -13,4 +13,8 @@ public class PolicyService {
     public PolicyTerm save(PolicyTerm policyTerm) {
         return policyRepository.save(policyTerm);
     }
+
+    public void deletePolicyTerm(Long memberPk) {
+        policyRepository.deletePolicyTerm(memberPk);
+    }
 }
