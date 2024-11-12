@@ -18,4 +18,8 @@ public interface FeedReportRepository extends JpaRepository<FeedReport, Long> {
     @Modifying
     @Query("delete from FeedReport f where f.targetCard.pk = :feedCardPk")
     void deleteAllByFeedCardPk(@Param("feedCardPk") Long feedCardPk);
+
+    @Modifying
+    @Query("delete from FeedReport f where f.reporter.pk = :memberPk")
+    void deleteAllFeedReports(@Param("memberPk") Long memberPk);
 }

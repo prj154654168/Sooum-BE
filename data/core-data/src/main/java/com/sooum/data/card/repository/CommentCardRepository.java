@@ -3,6 +3,7 @@ package com.sooum.data.card.repository;
 import com.sooum.data.card.entity.CommentCard;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -45,4 +46,8 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
 
     @Query("select cc from CommentCard cc where cc.isDeleted = false and cc.writer.pk = :memberPk and cc.pk < :lastPk order by cc.pk desc ")
     List<CommentCard> findCommentCardsNextPage(@Param("memberPk") Long memberPK, @Param("lastPk") Long lastPk, Pageable pageable);
+
+    @Modifying
+    @Query("update CommentCard cc set cc.writer = null, cc.isDeleted = true WHERE cc.writer.pk = :memberPk")
+    void clearWriterByMemberPk(@Param("memberPk") Long memberPk);
 }

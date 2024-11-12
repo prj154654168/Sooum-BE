@@ -19,4 +19,8 @@ public interface CommentReportRepository extends JpaRepository<CommentReport, Lo
     @Modifying
     @Query("delete from CommentReport c where c.targetCard.pk = :cardPk")
     void deleteAllByCommentCardPk(@Param("cardPk") CommentCard cardPk);
+
+    @Modifying
+    @Query("delete from CommentReport c where c.reporter.pk = :memberPk")
+    void deleteAllCommentReports(@Param("memberPk") Long memberPk);
 }

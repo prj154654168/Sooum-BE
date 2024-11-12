@@ -14,4 +14,12 @@ public interface CardImgRepository extends JpaRepository<CardImg, Long> {
     void deleteByImgName(@Param("imgName") String imgName);
 
     Optional<CardImg> findByImgName(String imgName);
+
+    @Modifying
+    @Query("update CardImg ci set ci.feedCard = null where ci.feedCard.writer.pk = :memberPk")
+    void updateFeedCardImgNull(@Param("memberPk") Long memberPk);
+
+    @Modifying
+    @Query("update CardImg ci set ci.commentCard = null where ci.commentCard.writer.pk = :memberPk")
+    void updateCommentCardImgNull(@Param("memberPk") Long memberPk);
 }

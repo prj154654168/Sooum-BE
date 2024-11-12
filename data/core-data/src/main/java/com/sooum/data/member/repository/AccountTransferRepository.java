@@ -2,6 +2,7 @@ package com.sooum.data.member.repository;
 
 import com.sooum.data.member.entity.AccountTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -12,4 +13,8 @@ public interface AccountTransferRepository extends JpaRepository<AccountTransfer
     @Query("select at from AccountTransfer at join fetch at.member where at.transferId = :transferId and at.expirationDate > current_timestamp")
     Optional<AccountTransfer> findAvailableAccountTransfer(@Param("transferId") String transferId);
     boolean existsByTransferId(String transferId);
+
+    @Modifying
+    @Query("delete from AccountTransfer at where at.member.pk = :memberPk")
+    void deleteAccountTransfer(@Param("memberPk") Long memberPk);
 }

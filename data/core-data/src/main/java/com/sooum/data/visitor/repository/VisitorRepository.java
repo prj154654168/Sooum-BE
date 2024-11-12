@@ -3,6 +3,7 @@ package com.sooum.data.visitor.repository;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.visitor.entity.Visitor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,4 +20,12 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
             "from Visitor v " +
             "where v.profileOwner = :profileOwnerMember and v.visitDate = current_date ")
     Long findCurrentDateVisitorCnt(@Param("profileOwnerMember") Member profileOwnerMember);
+
+    @Modifying
+    @Query("delete from Visitor v where v.profileOwner.pk = :memberPk")
+    void deleteByProfileOwner(@Param("memberPk") Long memberPk);
+
+    @Modifying
+    @Query("update Visitor v set v.visitor = null where v.visitor.pk = :memberPk")
+    void updateVisitorToNull(@Param("memberPk") Long memberPk);
 }

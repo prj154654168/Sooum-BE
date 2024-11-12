@@ -19,4 +19,8 @@ public interface PopularFeedRepository extends JpaRepository<PopularFeed, Long> 
     @Modifying
     @Query("delete from PopularFeed pf where pf.popularCard.pk = :popularCardPk")
     void deletePopularCard(@Param("popularCardPk") Long popularCardPk);
+
+    @Modifying
+    @Query("delete from PopularFeed pf where pf.popularCard.writer.pk = :memberPk")
+    void deletePopularCardByMemberPk(@Param("memberPk") Long memberPk);
 }
