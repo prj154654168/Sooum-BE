@@ -21,4 +21,8 @@ public class RefreshTokenService {
         return refreshTokenRepository.findById(memberPk)
                 .orElseThrow(EntityNotFoundException::new);
     }
+
+    public void deleteRefreshToken(Long memberPk) {
+        refreshTokenRepository.deleteRefreshToken(memberPk);
+    }
 }

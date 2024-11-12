@@ -54,4 +54,8 @@ public class AccountTransferService {
 
         return transferId;
     }
+
+    public void deleteAccountTransfer(Long memberPk) {
+        accountTransferRepository.deleteAccountTransfer(memberPk);
+    }
 }

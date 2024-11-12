@@ -45,4 +45,8 @@ public class FavoriteTagService {
         FavoriteTag findFavoriteTag = tagService.findFavoriteTag(tagPk, memberPk);
         tagService.deleteFavoriteTag(findFavoriteTag);
     }
+
+    public void deleteAllFavoriteTag(Long memberPk) {
+        favoriteTagRepository.deleteAllFavoriteTag(memberPk);
+    }
 }

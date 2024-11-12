@@ -71,4 +71,8 @@ public class FeedLikeService {
     public boolean isLiked(Long cardPk, Long memberPk){
             return feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(cardPk, memberPk);
     }
+
+    public void deleteAllMemberLikes(Long memberPk){
+        feedLikeRepository.deleteAllMemberLikes(memberPk);
+    }
 }

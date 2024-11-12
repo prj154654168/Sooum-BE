@@ -41,4 +41,9 @@ public class CardImgService {
     public void deleteCardImgs(List<CardImg> imgsName) {
         cardImgRepository.deleteAllInBatch(imgsName);
     }
+
+    public void updateCardImgNull(Long memberPk){
+        cardImgRepository.updateFeedCardImgNull(memberPk);
+        cardImgRepository.updateCommentCardImgNull(memberPk);
+    }
 }

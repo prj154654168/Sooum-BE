@@ -75,4 +75,8 @@ public class CommentLikeService {
     public boolean isLiked(Long cardPk, Long memberPk) {
         return commentLikeRepository.existsByTargetCardPkAndLikedMemberPk(cardPk, memberPk);
     }
+
+    public void deleteAllMemberLikes(Long memberPk){
+        commentLikeRepository.deleteAllMemberLikes(memberPk);
+    }
 }

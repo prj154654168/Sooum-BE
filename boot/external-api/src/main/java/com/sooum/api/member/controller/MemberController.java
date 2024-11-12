@@ -4,13 +4,12 @@ import com.sooum.api.card.dto.MyCommentCardDto;
 import com.sooum.api.card.dto.MyFeedCardDto;
 import com.sooum.api.card.service.CardService;
 import com.sooum.api.card.service.CommentInfoService;
+import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.api.member.service.MemberWithdrawalService;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
 import com.sooum.global.responseform.ResponseStatus;
 import com.sooum.global.util.NextPageLinkGenerator;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,9 +66,9 @@ public class MemberController {
         );
     }
 
-    @DeleteMapping("/withdraw")
-    public ResponseEntity<?> withdrawMember(@CurrentUser Long memberPk, HttpServletRequest request) {
-        memberWithdrawalService.withdrawMember(memberPk, request);
+    @DeleteMapping
+    public ResponseEntity<?> withdrawMember(@CurrentUser Long memberPk, @RequestBody AuthDTO.Token token) {
+        memberWithdrawalService.withdrawMember(memberPk, token);
         return ResponseEntity.noContent().build();
     }
 }

@@ -5,6 +5,8 @@ import com.sooum.data.member.repository.BlacklistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BlacklistService {
@@ -12,5 +14,8 @@ public class BlacklistService {
 
     public void save(Blacklist blacklist) {
         blacklistRepository.save(blacklist);
+    }
+    public void saveAll (List<Blacklist> blacklists) {
+        blacklistRepository.saveAll(blacklists);
     }
 }

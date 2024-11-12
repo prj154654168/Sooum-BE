@@ -46,4 +46,8 @@ public class BlockMemberService {
     public List<Long> findAllBlockToPk(Long memberPk) {
         return blockRepository.findAllBlockToPk(memberPk);
     }
+
+    public void deleteAllBlockMember(Long memberPK) {
+        blockRepository.deleteAllBlockMember(memberPK);
+    }
 }

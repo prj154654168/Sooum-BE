@@ -66,4 +66,8 @@ public class FeedReportService {
         }
         return false;
     }
+
+    public void deleteAllFeedReports(Long memberPk) {
+        feedReportRepository.deleteAllFeedReports(memberPk);
+    }
 }
