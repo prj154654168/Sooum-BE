@@ -4,7 +4,6 @@ import com.sooum.api.report.service.ReportService;
 import com.sooum.data.report.entity.reporttype.ReportType;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseStatus;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +21,8 @@ public class ReportController {
     @PostMapping("/cards/{cardPk}")
     public ResponseEntity<?> reportFeedCard(@PathVariable("cardPk") Long cardPk,
                                             @RequestParam("reportType") ReportType reportType,
-                                            @CurrentUser Long memberPk,
-                                            HttpServletRequest request) {
-        reportService.report(cardPk, reportType, memberPk, request);
+                                            @CurrentUser Long memberPk) {
+        reportService.report(cardPk, reportType, memberPk);
         return ResponseEntity.created(URI.create(""))
                 .body(
                         ResponseStatus.builder()
