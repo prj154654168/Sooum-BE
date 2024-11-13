@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
-    @Query("select fl from FeedLike fl where fl.targetCard in :targetList")
+    @Query("select fl from FeedLike fl where fl.targetCard in :targetList and fl.isDeleted = false")
     List<FeedLike> findByTargetList(@Param("targetList") List<FeedCard> targetList);
 
     @Modifying
@@ -21,11 +21,15 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     @Query("select fl from FeedLike fl where fl.targetCard.pk = :likedCardPk and fl.likedMember.pk = :likedMemberPk")
     Optional<FeedLike> findFeedLiked(@Param("likedCardPk") Long likedCardPk, @Param("likedMemberPk") Long likedMemberPk);
 
-    boolean existsByTargetCardPkAndLikedMemberPk(Long targetCardPk, Long likedMemberPk);
-
-    int countByTargetCard_Pk(Long feedCardPk);
+    @Query("select count(fl) from FeedLike fl where fl.targetCard.pk = :targetCardPk and fl.isDeleted = false")
+    Integer countByTargetCard_Pk(@Param("targetCardPk") Long targetCardPk);
 
     @Modifying
     @Query("delete from FeedLike fl where fl.likedMember.pk = :memberPk")
     void deleteAllMemberLikes(@Param("memberPk") Long memberPk);
+
+    @Query("select fl from FeedLike fl " +
+            "where fl.targetCard.pk = :targetCardPk and fl.likedMember.pk = :likedMemberPk and fl.isDeleted = false")
+    Optional<FeedLike> findExistFeedLike(@Param("targetCardPk") Long targetCardPk,
+                                         @Param("likedMemberPk") Long likedMemberPk);
 }

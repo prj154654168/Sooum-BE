@@ -59,7 +59,7 @@ public class FeedLikeService {
     @Transactional
     public void deleteFeedLike(Long likedFeedCardPk, Long likedMemberPk) {
         FeedLike feedLiked = feedLikeRepository.findFeedLiked(likedFeedCardPk, likedMemberPk)
-                .orElseThrow(() -> new EntityNotFoundException());
+                .orElseThrow(EntityNotFoundException::new);
 
         if (feedLiked.isDeleted()) {
             throw new EntityExistsException();
@@ -69,7 +69,7 @@ public class FeedLikeService {
     }
 
     public boolean isLiked(Long cardPk, Long memberPk){
-            return feedLikeRepository.existsByTargetCardPkAndLikedMemberPk(cardPk, memberPk);
+        return feedLikeRepository.findExistFeedLike(cardPk, memberPk).isPresent();
     }
 
     public void deleteAllMemberLikes(Long memberPk){
