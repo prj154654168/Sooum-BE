@@ -89,8 +89,11 @@ public class Member extends BaseEntity {
         return untilBan;
     }
 
-    public void updateProfile(String nickname, String profileImgName) {
+    public void updateNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void updateProfileImgName(String profileImgName) {
         this.profileImgName = profileImgName;
     }
 

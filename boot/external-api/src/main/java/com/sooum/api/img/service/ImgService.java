@@ -16,7 +16,10 @@ public interface ImgService {
     default boolean isProfileImgSaved(String profileImgName) {
         return false;
     }
-    default boolean isModeratingImg(String imgName){
+    default boolean isModeratingCardImg(String imgName){
+        return false;
+    }
+    default boolean isModeratingProfileImg(String imgName){
         return false;
     }
     default Link findProfileImgUrl(String imgName){return null;}

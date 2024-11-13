@@ -152,7 +152,7 @@ public class FeedService {
     }
 
     private void validateUserImage(CreateCardDto cardDto) {
-        if (imgService.isModeratingImg(cardDto.getImgName())) {
+        if (imgService.isModeratingCardImg(cardDto.getImgName())) {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
         }
 
