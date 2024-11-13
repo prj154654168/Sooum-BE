@@ -11,6 +11,7 @@ import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
 import com.sooum.global.responseform.ResponseEntityModel;
 import com.sooum.global.responseform.ResponseStatus;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.filter.RequestContextFilter;
 
 import java.net.URI;
 import java.util.List;
@@ -31,6 +33,7 @@ public class FeedCardController {
     private final FeedService feedService;
     private final DetailFeedService detailFeedService;
     private final TagFeedInfoService tagFeedInfoService;
+    private final RequestContextFilter requestContextFilter;
 
     @GetMapping("/{cardId}/detail")
     public ResponseEntity<?> findFeedCardInfo(
@@ -51,8 +54,9 @@ public class FeedCardController {
 
     @PostMapping
     public ResponseEntity<ResponseStatus> createFeedCard(@RequestBody @Valid CreateFeedCardDto cardDto,
-                                                         @CurrentUser Long memberPk) {
-        feedService.createFeedCard(memberPk, cardDto);
+                                                         @CurrentUser Long memberPk,
+                                                         HttpServletRequest request) {
+        feedService.createFeedCard(memberPk, cardDto, request);
         return ResponseEntity.created(URI.create(""))
                 .body(ResponseStatus.builder()
                         .httpCode(HttpStatus.CREATED.value())
@@ -64,8 +68,9 @@ public class FeedCardController {
     @PostMapping("/{cardPk}")
     public ResponseEntity<ResponseStatus> createCommentCard(@PathVariable(value = "cardPk") @NotNull Long cardPk,
                                                             @CurrentUser Long memberPk,
-                                                            @RequestBody @Valid CreateCommentDto cardDto) {
-        feedService.createCommentCard(memberPk, cardPk, cardDto);
+                                                            @RequestBody @Valid CreateCommentDto cardDto,
+                                                            HttpServletRequest request) {
+        feedService.createCommentCard(memberPk, cardPk, cardDto, request);
         return ResponseEntity.created(URI.create(""))
                 .body(ResponseStatus.builder()
                         .httpCode(HttpStatus.CREATED.value())
