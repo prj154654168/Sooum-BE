@@ -73,7 +73,7 @@ public class CommentLikeService {
     }
 
     public boolean isLiked(Long cardPk, Long memberPk) {
-        return commentLikeRepository.existsByTargetCardPkAndLikedMemberPk(cardPk, memberPk);
+        return commentLikeRepository.findExistCommentLike(cardPk, memberPk).isPresent();
     }
 
     public void deleteAllMemberLikes(Long memberPk){
