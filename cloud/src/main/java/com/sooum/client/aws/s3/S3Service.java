@@ -61,8 +61,6 @@ public class S3Service {
                     .build());
         } catch (Exception e) {
             return false;
-        } finally {
-            s3Client.close();
         }
         return true;
     }

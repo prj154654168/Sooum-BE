@@ -46,8 +46,13 @@ public class AWSImgService implements ImgService{
      * @return true인 경우 사용 불가능한 사진입니다.
      */
     @Override
-    public boolean isModeratingImg(String imgName) {
+    public boolean isModeratingCardImg(String imgName) {
         return rekognitionService.isModeratingImg(USER_CARD_IMG, imgName);
+    }
+
+    @Override
+    public boolean isModeratingProfileImg(String imgName) {
+        return rekognitionService.isModeratingImg(PROFILE_IMG, imgName);
     }
 
     @Override

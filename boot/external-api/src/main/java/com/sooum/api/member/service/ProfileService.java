@@ -62,15 +62,23 @@ public class ProfileService {
 
     @Transactional
     public void updateProfile(ProfileDto.ProfileUpdate profileUpdate, Long memberPk) {
-        if (imgService.isModeratingImg(profileUpdate.getProfileImg())) {
-            throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
+        Member member = memberService.findByPk(memberPk);
+
+        updateProfileImg(profileUpdate.getProfileImg(), member);
+        member.updateNickname(profileUpdate.getNickname());
+    }
+
+    private void updateProfileImg(String profileImgName, Member member) {
+        if (profileImgName == null) {
+            return;
         }
 
-        if(!imgService.isProfileImgSaved(profileUpdate.getProfileImg())) {
+        if(!imgService.isProfileImgSaved(profileImgName)) {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
         }
-
-        Member member = memberService.findByPk(memberPk);
-        member.updateProfile(profileUpdate.getNickname(), profileUpdate.getProfileImg());
+        if (imgService.isModeratingProfileImg(profileImgName)) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
+        }
+        member.updateProfileImgName(profileImgName);
     }
 }
