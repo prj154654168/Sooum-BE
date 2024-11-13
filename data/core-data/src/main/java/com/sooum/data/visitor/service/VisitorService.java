@@ -31,4 +31,9 @@ public class VisitorService {
     public Long findCurrentDateVisitorCnt(Member profileOwnerMember){
         return visitorRepository.findCurrentDateVisitorCnt(profileOwnerMember);
     }
+
+    public void handleVisitorOnMemberWithdraw(Long memberPk) {
+        visitorRepository.deleteByProfileOwner(memberPk);
+        visitorRepository.updateVisitorToNull(memberPk);
+    }
 }

@@ -22,4 +22,8 @@ public class PopularFeedService {
     public List<FeedCard> getPopularFeeds(PageRequest pageRequest) {
         return popularFeedRepository.findPopularFeeds(pageRequest);
     }
+
+    public void deletePopularCardByMemberPk(Long memberPk) {
+        popularFeedRepository.deletePopularCardByMemberPk(memberPk);
+    }
 }

@@ -19,4 +19,8 @@ public class ProfileImgService {
     public void deleteProfileImgs(List<ProfileImg> profileImgs) {
         profileImgRepository.deleteAllInBatch(profileImgs);
     }
+
+    public void updateProfileImgNull(Long memberPk) {
+        profileImgRepository.updateCardImgNull(memberPk);
+    }
 }

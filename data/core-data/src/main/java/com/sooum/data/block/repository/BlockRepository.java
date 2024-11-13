@@ -17,4 +17,8 @@ public interface BlockRepository extends JpaRepository<Block, Long> {
     @Modifying
     @Query("delete from Block b where b.fromMember = :fromMember and b.toMember = :toMember")
     void deleteBlockMember(@Param("fromMember") Member fromMember, @Param("toMember") Member toMember);
+
+    @Modifying
+    @Query("delete from Block b where b.fromMember.pk = :memberPk or b.toMember.pk = :memberPk")
+    void deleteAllBlockMember(@Param("memberPk") Long memberPk);
 }

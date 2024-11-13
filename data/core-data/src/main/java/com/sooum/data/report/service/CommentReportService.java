@@ -49,4 +49,8 @@ public class CommentReportService {
     public void deleteReport(CommentCard cardPk) {
         commentReportRepository.deleteAllByCommentCardPk(cardPk);
     }
+
+    public void deleteAllCommentReports(Long memberPk) {
+        commentReportRepository.deleteAllCommentReports(memberPk);
+    }
 }

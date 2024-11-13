@@ -4,6 +4,8 @@ import com.sooum.api.card.dto.MyCommentCardDto;
 import com.sooum.api.card.dto.MyFeedCardDto;
 import com.sooum.api.card.service.CardService;
 import com.sooum.api.card.service.CommentInfoService;
+import com.sooum.api.member.dto.AuthDTO;
+import com.sooum.api.member.service.MemberWithdrawalService;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
 import com.sooum.global.responseform.ResponseStatus;
@@ -11,10 +13,7 @@ import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +24,7 @@ import java.util.Optional;
 public class MemberController {
     private final CommentInfoService commentInfoService;
     private final CardService cardService;
+    private final MemberWithdrawalService memberWithdrawalService;
 
     @GetMapping("/feed-cards")
     public ResponseEntity<?> findMyFeedCards(@CurrentUser Long memberPk, @RequestParam(required = false) Optional<Long> lastId) {
@@ -64,5 +64,11 @@ public class MemberController {
                 .build()
                 .add(NextPageLinkGenerator.generateMyCardNextPageLink(myCommentCards))
         );
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> withdrawMember(@CurrentUser Long memberPk, @RequestBody AuthDTO.Token token) {
+        memberWithdrawalService.withdrawMember(memberPk, token);
+        return ResponseEntity.noContent().build();
     }
 }

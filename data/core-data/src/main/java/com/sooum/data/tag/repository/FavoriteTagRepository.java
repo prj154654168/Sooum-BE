@@ -4,6 +4,7 @@ import com.sooum.data.tag.entity.FavoriteTag;
 import com.sooum.data.tag.entity.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -24,4 +25,8 @@ public interface FavoriteTagRepository extends JpaRepository<FavoriteTag, Long> 
             "where ft.member.pk = :memberPk and ft.pk < (select ft2.pk from FavoriteTag ft2 where ft2.tag.pk = :lastTagPk) " +
             "order by ft.pk desc")
     List<Long> findNextPageTagPks(@Param("memberPk") Long memberPk, @Param("lastTagPk") Long lastTagPk, Pageable pageable);
+
+    @Modifying
+    @Query("delete from FavoriteTag ft where ft.member.pk = :memberPk")
+    void deleteAllFavoriteTag(@Param("memberPk") Long memberPk);
 }

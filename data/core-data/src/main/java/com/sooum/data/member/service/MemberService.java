@@ -39,4 +39,8 @@ public class MemberService {
     public Long findTotalVisitorCnt(Member profileOwnerMember) {
         return memberRepository.findTotalVisitorCnt(profileOwnerMember);
     }
+
+    public void deleteMember(Long memberPk) {
+        memberRepository.deleteById(memberPk);
+    }
 }

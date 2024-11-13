@@ -68,4 +68,8 @@ public class FollowService {
     public List<Long> findFollowedFollowingsPk(Long requesterPk, List<Member> followings) {
         return followRepository.findFollowedFollowings(requesterPk, followings);
     }
+
+    public void deleteAllFollow(Long memberPk) {
+        followRepository.deleteAllFollow(memberPk);
+    }
 }

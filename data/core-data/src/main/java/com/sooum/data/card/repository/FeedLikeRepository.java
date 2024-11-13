@@ -24,4 +24,8 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     boolean existsByTargetCardPkAndLikedMemberPk(Long targetCardPk, Long likedMemberPk);
 
     int countByTargetCard_Pk(Long feedCardPk);
+
+    @Modifying
+    @Query("delete from FeedLike fl where fl.likedMember.pk = :memberPk")
+    void deleteAllMemberLikes(@Param("memberPk") Long memberPk);
 }

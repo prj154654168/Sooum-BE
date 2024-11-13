@@ -3,6 +3,7 @@ package com.sooum.data.card.repository;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.CommentLike;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,4 +22,7 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
 
     Integer countByTargetCard_Pk(Long cardPk);
 
+    @Modifying
+    @Query("delete from CommentLike cl where cl.likedMember.pk = :memberPk")
+    void deleteAllMemberLikes(@Param("memberPk") Long memberPk);
 }

@@ -85,4 +85,8 @@ public class CommentCardService {
                 ? commentCardRepository.findCommentCardsFirstPage(memberPk, pageRequest)
                 : commentCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
     }
+
+    public void clearWriterByMemberPk(Long memberPk) {
+        commentCardRepository.clearWriterByMemberPk(memberPk);
+    }
 }
