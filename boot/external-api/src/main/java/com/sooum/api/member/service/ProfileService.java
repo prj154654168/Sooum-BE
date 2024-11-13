@@ -73,13 +73,12 @@ public class ProfileService {
             return;
         }
 
-        if (imgService.isModeratingProfileImg(profileImgName)) {
-            throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
-        }
         if(!imgService.isProfileImgSaved(profileImgName)) {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_NOT_FOUND.getMessage());
         }
-
+        if (imgService.isModeratingProfileImg(profileImgName)) {
+            throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
+        }
         member.updateProfileImgName(profileImgName);
     }
 }
