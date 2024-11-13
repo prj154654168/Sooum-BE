@@ -1,5 +1,6 @@
 package com.sooum.api.card.service;
 
+import com.sooum.api.block.service.BlackListUseCase;
 import com.sooum.api.card.dto.CreateCardDto;
 import com.sooum.api.card.dto.CreateCommentDto;
 import com.sooum.api.card.dto.CreateFeedCardDto;
@@ -7,9 +8,13 @@ import com.sooum.api.img.service.ImgService;
 import com.sooum.data.card.entity.*;
 import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.card.entity.parenttype.CardType;
-import com.sooum.data.card.service.*;
+import com.sooum.data.card.service.CommentCardService;
+import com.sooum.data.card.service.CommentLikeService;
+import com.sooum.data.card.service.FeedCardService;
+import com.sooum.data.card.service.FeedLikeService;
 import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.member.entity.Member;
+import com.sooum.data.member.entity.Role;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.report.service.CommentReportService;
 import com.sooum.data.report.service.FeedReportService;
@@ -19,9 +24,12 @@ import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.service.CommentTagService;
 import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.data.tag.service.TagService;
+import com.sooum.global.config.jwt.InvalidTokenException;
+import com.sooum.global.config.jwt.TokenProvider;
 import com.sooum.global.exceptionmessage.ExceptionMessage;
 import com.sooum.global.regex.BadWordFiltering;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,18 +52,29 @@ public class FeedService {
     private final CommentLikeService commentLikeService;
     private final CommentReportService commentReportService;
     private final FeedReportService feedReportService;
+    private final TokenProvider tokenProvider;
+    private final BlackListUseCase blackListUseCase;
 
     @Transactional
-    public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto) {
+    public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto, HttpServletRequest request) {
         if (checkForTagsInStory(cardDto)) {
             throw new RuntimeException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
+        }
+
+        Member member = memberService.findByPk(memberPk);
+
+        if(member.getRole() == Role.BANNED) {
+            String token = tokenProvider.getToken(request)
+                    .filter(tokenProvider::isAccessToken)
+                    .orElseThrow(InvalidTokenException::new);
+            blackListUseCase.save(token, member.getUntilBan());
+
+            throw new InvalidTokenException();
         }
 
         if (isUserImage(cardDto)) {
             validateUserImage(cardDto);
         }
-
-        Member member = memberService.findByPk(memberPk);
 
         FeedCard feedCard = cardDto.of(member);
         feedCardService.saveFeedCard(feedCard);
@@ -72,12 +91,21 @@ public class FeedService {
     }
 
     @Transactional
-    public void createCommentCard(Long memberPk, Long cardPk, CreateCommentDto cardDto) {
+    public void createCommentCard(Long memberPk, Long cardPk, CreateCommentDto cardDto, HttpServletRequest request) {
         if (isUserImage(cardDto)) {
             validateUserImage(cardDto);
         }
 
         Member member = memberService.findByPk(memberPk);
+
+        if(member.getRole() == Role.BANNED) {
+            String token = tokenProvider.getToken(request)
+                    .filter(tokenProvider::isAccessToken)
+                    .orElseThrow(InvalidTokenException::new);
+            blackListUseCase.save(token, member.getUntilBan());
+
+            throw new InvalidTokenException();
+        }
 
         Card card = feedCardService.isExistFeedCard(cardPk)
                 ? feedCardService.findFeedCard(cardPk)
