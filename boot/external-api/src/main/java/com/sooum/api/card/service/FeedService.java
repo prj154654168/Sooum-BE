@@ -196,11 +196,11 @@ public class FeedService {
     private void deleteCommentCard(Long commentCardPk, Long writerPk) {
         if (isNotCommentCardOwner(commentCardPk, writerPk)) return;
         CommentCard commentCard = commentCardService.findCommentCard(commentCardPk);
-        commentCard.setDeleted(true);
         commentTagService.deleteByCommentCardPk(commentCardPk);
         cardImgService.deleteUserUploadPic(commentCard.getImgName());
         commentLikeService.deleteAllFeedLikes(commentCardPk);
         commentReportService.deleteReport(commentCard);
+        commentCardService.deleteCommentCard(commentCardPk);
         //todo notification delete
     }
 
@@ -212,11 +212,12 @@ public class FeedService {
     void deleteFeedCard(Long feedCardPk, Long writerPk) {
         if (isNotFeedCardOwner(feedCardPk, writerPk)) return;
         FeedCard feedCard = feedCardService.findFeedCard(feedCardPk);
-        feedCard.setDeleted(true);
+
         feedTagService.deleteByFeedCardPk(feedCardPk);
         cardImgService.deleteUserUploadPic(feedCard.getImgName());
         feedLikeService.deleteAllFeedLikes(feedCardPk);
         feedReportService.deleteReport(feedCardPk);
+        feedCardService.deleteFeedCard(feedCardPk);
         //todo notification delete
     }
 
