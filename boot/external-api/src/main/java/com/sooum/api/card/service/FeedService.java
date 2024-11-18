@@ -1,6 +1,6 @@
 package com.sooum.api.card.service;
 
-import com.sooum.api.block.service.BlackListUseCase;
+import com.sooum.api.member.service.BlackListUseCase;
 import com.sooum.api.card.dto.CreateCardDto;
 import com.sooum.api.card.dto.CreateCommentDto;
 import com.sooum.api.card.dto.CreateFeedCardDto;
