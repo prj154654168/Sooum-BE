@@ -175,10 +175,12 @@ public class FeedService {
 
     public Card findParentCard(CommentCard commentCard) {
         if(commentCard.getParentCardType().equals(CardType.COMMENT_CARD)){
-            return commentCardService.findByPk(commentCard.getParentCardPk());
+            return commentCardService.findOptCommentCard(commentCard.getParentCardPk())
+                    .orElse(null);
         }
         if (commentCard.getParentCardType().equals(CardType.FEED_CARD)){
-            return feedCardService.findByPk(commentCard.getParentCardPk());
+            return feedCardService.findOptFeedCard(commentCard.getParentCardPk())
+                    .orElse(null);
         }
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_TYPE.getMessage());
     }

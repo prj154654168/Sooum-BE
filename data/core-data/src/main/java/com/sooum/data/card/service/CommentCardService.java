@@ -51,6 +51,10 @@ public class CommentCardService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+    public Optional<CommentCard> findOptCommentCard(Long commentCardPk) {
+        return commentCardRepository.findById(commentCardPk);
+    }
+
     public boolean isExistCommentCard(Long commentCardPk) {
         return commentCardRepository.existsById(commentCardPk);
     }
