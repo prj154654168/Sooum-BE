@@ -1,4 +1,4 @@
-package com.sooum.api.block.service;
+package com.sooum.api.member.service;
 
 import com.sooum.data.member.entity.Blacklist;
 import com.sooum.data.member.service.BlacklistService;
@@ -51,5 +51,4 @@ public class BlackListUseCase {
     public Boolean isRefreshTokenExist(String token) {
         return redisTemplate.hasKey(REFRESH_PREFIX + token);
     }
-
 }
