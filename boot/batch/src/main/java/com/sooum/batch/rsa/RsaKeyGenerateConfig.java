@@ -42,7 +42,6 @@ public class RsaKeyGenerateConfig {
     @Bean
     @JobScope
     public Step rsaKeyGenerateStep() {
-        log.info("rsaKeyGenerateStep");
         return new StepBuilder(STEP_NAME, jobRepository)
                 .tasklet((contribution, chunkContext) -> {
                     rsaService.save();
