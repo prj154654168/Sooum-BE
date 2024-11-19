@@ -1,6 +1,6 @@
 package com.sooum.batch.rsa;
 
-import com.sooum.data.rsa.service.RsaService;
+import com.sooum.batch.rsa.service.RsaBatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -26,7 +26,7 @@ public class RsaKeyGenerateConfig {
     private final String JOB_NAME = "rsaKeyGenerateJob";
     private final String STEP_NAME = "rsaKeyGenerateStep";
 
-    private final RsaService rsaService;
+    private final RsaBatchService rsaService;
     private final JobLauncher jobLauncher;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
@@ -42,9 +42,10 @@ public class RsaKeyGenerateConfig {
     @Bean
     @JobScope
     public Step rsaKeyGenerateStep() {
+        log.info("rsaKeyGenerateStep");
         return new StepBuilder(STEP_NAME, jobRepository)
                 .tasklet((contribution, chunkContext) -> {
-//                    rsaService.save();
+                    rsaService.save();
                     return RepeatStatus.FINISHED;
                 }, transactionManager)
                 .build();
