@@ -59,6 +59,6 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
     List<FeedCard> findCommentCardsNextPage(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, PageRequest pageRequest);
 
     @Modifying
-    @Query("update FeedCard fc set fc.writer = null, fc.isDeleted = true WHERE fc.writer.pk = :memberPk")
-    void clearWriterByMemberPk(@Param("memberPk") Long memberPk);
+    @Query("delete from FeedCard fc WHERE fc.writer.pk = :memberPk")
+    void deleteFeedCardByMemberPk(@Param("memberPk") Long memberPk);
 }

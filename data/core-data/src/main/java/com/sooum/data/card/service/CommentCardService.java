@@ -90,7 +90,7 @@ public class CommentCardService {
                 : commentCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
     }
 
-    public void clearWriterByMemberPk(Long memberPk) {
-        commentCardRepository.clearWriterByMemberPk(memberPk);
+    public void deleteCommentCardByMemberPk(Long memberPk) {
+        commentCardRepository.deleteCommentCardByMemberPk(memberPk);
     }
 }

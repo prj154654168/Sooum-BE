@@ -4,6 +4,7 @@ import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.tag.entity.CommentTag;
 import com.sooum.data.tag.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,4 +20,8 @@ public interface CommentTagRepository extends JpaRepository<CommentTag, Long> {
 
     @Query("SELECT ct.tag FROM CommentTag ct WHERE ct.commentCard = :commentCard")
     List<Tag> findTagsByCommentCard(@Param("commentCard") CommentCard commentCard);
+
+    @Modifying
+    @Query("delete from CommentTag ct where ct.commentCard.writer.pk = :memberPk")
+    void deleteCommentTag(@Param("memberPk") Long memberPk);
 }

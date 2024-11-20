@@ -35,4 +35,8 @@ public class FeedTagService {
     public void saveAll(List<FeedTag> feedTagList) {
         feedTagRepository.saveAll(feedTagList);
     }
+
+    public void deleteFeedTag(Long memberPk) {
+        feedTagRepository.deleteFeedTag(memberPk);
+    }
 }
