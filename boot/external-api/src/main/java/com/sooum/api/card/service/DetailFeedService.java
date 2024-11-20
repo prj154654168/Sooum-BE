@@ -58,8 +58,8 @@ public class DetailFeedService {
         if (card instanceof CommentCard commentCard) {
             Card parentCard = feedService.findParentCard(commentCard);
 
-            String previousCardId = isParentCardValid(parentCard) ? parentCard.getPk().toString() : null;
-            Link previousCardImgLink = isParentCardValid(parentCard) ?
+            String previousCardId = resolvePreviousCardPk(parentCard, commentCard.getParentCardPk());
+            Link previousCardImgLink = parentCard != null ?
                     imgService.findCardImgUrl(parentCard.getImgType(),parentCard.getImgName()) : null;
 
             return CommentDetailCardDto.builder()
@@ -80,7 +80,13 @@ public class DetailFeedService {
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
     }
 
-    private static boolean isParentCardValid(Card parentCard) {
-        return parentCard != null && !parentCard.isDeleted();
+    private String resolvePreviousCardPk(Card parentCard, Long parentPk) {
+        if (parentCard == null && parentPk != null) {
+            return "-1";
+        }
+        if (parentCard != null) {
+            return parentCard.getPk().toString();
+        }
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.sooum.data.card.service;
 
+import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.repository.FeedCardRepository;
 import com.sooum.data.member.entity.Member;
@@ -38,6 +39,10 @@ public class FeedCardService {
     public FeedCard findFeedCard(Long feedCardPk) {
         return feedCardRepository.findById(feedCardPk)
                 .orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Optional<FeedCard> findOptFeedCard(Long commentCardPk) {
+        return feedCardRepository.findById(commentCardPk);
     }
 
     public boolean isExistFeedCard(Long feedCardPk) {
