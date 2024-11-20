@@ -14,7 +14,9 @@ import com.sooum.data.report.service.CommentReportService;
 import com.sooum.data.report.service.FeedReportService;
 import com.sooum.data.suspended.entity.Suspended;
 import com.sooum.data.suspended.service.SuspendedService;
+import com.sooum.data.tag.service.CommentTagService;
 import com.sooum.data.tag.service.FavoriteTagService;
+import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.data.visitor.service.VisitorService;
 import com.sooum.global.config.jwt.InvalidTokenException;
 import com.sooum.global.config.jwt.TokenProvider;
@@ -47,6 +49,8 @@ public class MemberWithdrawalService {
     private final RefreshTokenService refreshTokenService;
     private final ProfileImgService profileImgService;
     private final AccountTransferService accountTransferService;
+    private final FeedTagService feedTagService;
+    private final CommentTagService commentTagService;
 
     @Transactional
     public void withdrawMember(Long memberPk, AuthDTO.Token token) throws InvalidTokenException {
@@ -59,9 +63,6 @@ public class MemberWithdrawalService {
 
         cardImgService.updateCardImgNull(memberPk);
 
-        feedCardService.clearWriterByMemberPk(memberPk);
-        commentCardService.clearWriterByMemberPk(memberPk);
-
         feedLikeService.deleteAllMemberLikes(memberPk);
         commentLikeService.deleteAllMemberLikes(memberPk);
 
@@ -69,6 +70,12 @@ public class MemberWithdrawalService {
 
         feedReportService.deleteAllFeedReports(memberPk);
         commentReportService.deleteAllCommentReports(memberPk);
+
+        feedTagService.deleteFeedTag(memberPk);
+        commentTagService.deleteCommentTag(memberPk);
+
+        commentCardService.deleteCommentCardByMemberPk(memberPk);
+        feedCardService.deleteFeedCardByMemberPk(memberPk);
 
         followService.deleteAllFollow(memberPk);
         visitorService.handleVisitorOnMemberWithdraw(memberPk);

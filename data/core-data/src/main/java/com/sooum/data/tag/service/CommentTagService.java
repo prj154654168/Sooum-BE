@@ -42,4 +42,8 @@ public class CommentTagService {
     public void saveAll(List<CommentTag> commentTagList) {
         commentTagRepository.saveAll(commentTagList);
     }
+
+    public void deleteCommentTag(Long memberPk) {
+        commentTagRepository.deleteCommentTag(memberPk);
+    }
 }

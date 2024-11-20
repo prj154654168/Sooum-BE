@@ -48,6 +48,6 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
     List<CommentCard> findCommentCardsNextPage(@Param("memberPk") Long memberPK, @Param("lastPk") Long lastPk, Pageable pageable);
 
     @Modifying
-    @Query("update CommentCard cc set cc.writer = null, cc.isDeleted = true WHERE cc.writer.pk = :memberPk")
-    void clearWriterByMemberPk(@Param("memberPk") Long memberPk);
+    @Query("delete from CommentCard cc WHERE cc.writer.pk = :memberPk")
+    void deleteCommentCardByMemberPk(@Param("memberPk") Long memberPk);
 }

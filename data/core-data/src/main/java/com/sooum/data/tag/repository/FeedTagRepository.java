@@ -5,6 +5,7 @@ import com.sooum.data.tag.entity.FeedTag;
 import com.sooum.data.tag.entity.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -39,4 +40,7 @@ public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
     List<FeedTag> findTop5FeedCardsByMemberPk(@Param("favoriteTagList") List<Long> favoriteTagList,
                                               @Param("blockedMemberPks") List<Long> blockedMemberPks);
 
+    @Modifying
+    @Query("delete from FeedTag ft where ft.feedCard.writer.pk = :memberPk")
+   void deleteFeedTag(@Param("memberPk") Long memberPk);
 }

@@ -73,7 +73,7 @@ public class FeedCardService {
                 : feedCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
     }
 
-    public void clearWriterByMemberPk(Long memberPk) {
-        feedCardRepository.clearWriterByMemberPk(memberPk);
+    public void deleteFeedCardByMemberPk(Long memberPk) {
+        feedCardRepository.deleteFeedCardByMemberPk(memberPk);
     }
 }
