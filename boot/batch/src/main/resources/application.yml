@@ -2,7 +2,7 @@ spring:
   batch:
     job:
 #      enabled: false
-      name: rsaKeyGenerateJob
+
   config:
     import:
       - classpath:/application-core-data.yml
