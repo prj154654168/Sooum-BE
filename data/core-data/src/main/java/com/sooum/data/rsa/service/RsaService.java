@@ -30,7 +30,7 @@ public class RsaService {
 
     public Rsa findByExpiredAtIsAfter() {
         return rsaRepository.findByExpiredAtIsAfter(LocalDateTime.now())
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("rsa 키를 찾을 수 없습니다."));
     }
 
 

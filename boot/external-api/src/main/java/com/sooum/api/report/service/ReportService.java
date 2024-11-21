@@ -11,6 +11,7 @@ import com.sooum.data.member.service.MemberService;
 import com.sooum.data.report.entity.reporttype.ReportType;
 import com.sooum.data.report.service.CommentReportService;
 import com.sooum.data.report.service.FeedReportService;
+import com.sooum.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class ReportService {
         if(card instanceof CommentCard)
             return commentReportService.isCardReportedOverLimit(card.getPk());
 
-        throw new EntityNotFoundException();
+        throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
     }
 
     private void validateDuplicateReport(Long cardPk, Long memberPk) {

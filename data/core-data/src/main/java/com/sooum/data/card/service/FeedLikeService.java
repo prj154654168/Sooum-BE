@@ -59,7 +59,7 @@ public class FeedLikeService {
     @Transactional
     public void deleteFeedLike(Long likedFeedCardPk, Long likedMemberPk) {
         FeedLike feedLiked = feedLikeRepository.findFeedLiked(likedFeedCardPk, likedMemberPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("좋아요 이력을 찾을 수 않습니다."));
 
         if (feedLiked.isDeleted()) {
             throw new EntityExistsException();

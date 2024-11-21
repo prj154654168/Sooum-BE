@@ -43,12 +43,12 @@ public class CommentCardService {
 
     public CommentCard findCommentCard(Long commentCardPk) {
         return commentCardRepository.findCommentCard(commentCardPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("댓글 카드를 찾을 수 없습니다."));
     }
 
     public CommentCard findByPk(Long commentCardPk) {
         return commentCardRepository.findById(commentCardPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("댓글 카드를 찾을 수 없습니다."));
     }
 
     public Optional<CommentCard> findOptCommentCard(Long commentCardPk) {

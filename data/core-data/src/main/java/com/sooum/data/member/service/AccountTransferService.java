@@ -35,12 +35,12 @@ public class AccountTransferService {
 
     public AccountTransfer findAccountTransfer(Long memberPk) {
         return accountTransferRepository.findByMember_Pk(memberPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("계정 이관 코드를 찾을 수 없습니다."));
     }
 
     public AccountTransfer findAvailableAccountTransfer(String transferId) {
         return accountTransferRepository.findAvailableAccountTransfer(transferId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("사용 가능한 계정 이관 코드를 찾을 수 없습니다."));
     }
 
     public String createTransferId() {

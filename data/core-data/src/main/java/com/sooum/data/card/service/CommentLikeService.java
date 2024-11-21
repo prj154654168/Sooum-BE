@@ -47,7 +47,7 @@ public class CommentLikeService {
     @Transactional
     public void deleteCommentLike(Long likedFeedCardPk, Long likedMemberPk) {
         CommentLike findCommentLiked = commentLikeRepository.findCommentLiked(likedFeedCardPk, likedMemberPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("좋아요 이력을 찾을 수 않습니다."));
 
         if (findCommentLiked.isDeleted()) {
             throw new EntityExistsException();

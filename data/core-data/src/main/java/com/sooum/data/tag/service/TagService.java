@@ -87,12 +87,12 @@ public class TagService {
 
     public Tag findTag(Long tagPk) {
         return tagRepository.findById(tagPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("태그를 찾을 수 없습니다."));
     }
 
     public FavoriteTag findFavoriteTag(Long tagPk, Long memberPk) {
         return favoriteTagRepository.findByTag_PkAndMember_Pk(tagPk, memberPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("태그를 찾을 수 없습니다."));
     }
 
     @Transactional
