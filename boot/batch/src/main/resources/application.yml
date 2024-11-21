@@ -2,7 +2,7 @@ spring:
   batch:
     job:
 #      enabled: false
-      name: commentCardReaderJob
+      name: rsaKeyGenerateJob
   config:
     import:
       - classpath:/application-core-data.yml
@@ -15,3 +15,7 @@ spring:
     redis:
       port: ${REDIS_PORT}
       host: ${REDIS_HOST}
+
+slack:
+  webhook:
+    url: ${URL}

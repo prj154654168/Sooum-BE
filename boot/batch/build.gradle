@@ -19,6 +19,8 @@ dependencies {
     implementation 'redis.clients:jedis:4.4.3'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.springframework.batch:spring-batch-test'
