@@ -21,7 +21,7 @@ public class S3Service {
     private final S3Presigner s3Presigner;
     private final S3Client s3Client;
 
-    private static final Duration EXPIRY_TIME = Duration.ofMinutes(1L);
+    private static final Duration EXPIRY_TIME = Duration.ofHours(24);
 
     public String generateGetPresignedUrl(String imgPathPrefix, String imgName) {
         return s3Presigner.presignGetObject(
