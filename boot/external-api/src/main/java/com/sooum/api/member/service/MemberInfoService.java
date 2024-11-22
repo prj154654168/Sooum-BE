@@ -1,10 +1,8 @@
 package com.sooum.api.member.service;
 
 import com.sooum.api.img.service.ImgService;
-import com.sooum.api.member.dto.AuthDTO;
-import com.sooum.api.member.dto.AuthDTO.Token;
-import com.sooum.api.member.dto.MemberDto;
-import com.sooum.api.member.exception.DuplicateSignUpException;
+import com.sooum.api.member.dto.AuthDTO.*;
+import com.sooum.api.member.dto.MemberDto.DefaultMemberResponse;
 import com.sooum.api.member.exception.PolicyNotAllowException;
 import com.sooum.api.member.mapper.MemberMapper;
 import com.sooum.api.member.mapper.PolicyMapper;
@@ -39,7 +37,7 @@ public class MemberInfoService {
     private final PolicyMapper policyMapper;
 
     @Transactional
-    public AuthDTO.LoginResponse login(AuthDTO.Login dto) {
+    public LoginResponse login(Login dto) {
         String deviceId = rsaUseCase.decodeDeviceId(dto.encryptedDeviceId());
 
         try {
@@ -48,14 +46,14 @@ public class MemberInfoService {
             RefreshToken refreshToken = refreshTokenService.findByPk(member.getPk());
             refreshToken.update(refreshToken.getRefreshToken());
 
-            return new AuthDTO.LoginResponse(true, token);
+            return new LoginResponse(true, token);
         } catch (EntityNotFoundException e) {
-            return new AuthDTO.LoginResponse(false, null);
+            return new LoginResponse(false, null);
         }
     }
 
     @Transactional
-    public AuthDTO.ReissuedToken reissueAccessToken(HttpServletRequest request) {
+    public ReissuedToken reissueAccessToken(HttpServletRequest request) {
         String refreshToken = tokenProvider.getToken(request)
                 .orElseThrow(InvalidTokenException::new);
 
@@ -63,11 +61,11 @@ public class MemberInfoService {
             throw new InvalidTokenException();
 
         Member member = memberService.findByPk(tokenProvider.getId(refreshToken).orElseThrow(NoSuchElementException::new));
-        return new AuthDTO.ReissuedToken(tokenProvider.createAccessToken(member.getPk(), member.getRole()));
+        return new ReissuedToken(tokenProvider.createAccessToken(member.getPk(), member.getRole()));
     }
 
-    public MemberDto.DefaultMemberResponse getDefaultMember(Member member) {
-        return MemberDto.DefaultMemberResponse.builder()
+    public DefaultMemberResponse getDefaultMember(Member member) {
+        return DefaultMemberResponse.builder()
                 .id(member.getPk().toString())
                 .nickname(member.getNickname())
                 .profileImgUrl(imgService.findProfileImgUrl(member.getProfileImgName()))
@@ -75,21 +73,20 @@ public class MemberInfoService {
     }
 
     @Transactional
-    public AuthDTO.SignUpResponse signUp(AuthDTO.SignUp dto) {
+    public SignUpResponse signUp(SignUp dto) {
         if(!dto.policy().checkAllPolicyIsTrue())
             throw new PolicyNotAllowException();
 
         String deviceId = rsaUseCase.decodeDeviceId(dto.memberInfo().encryptedDeviceId());
 
-        if(memberService.isAlreadySignUp(deviceId))
-            throw new DuplicateSignUpException();
+        Member member = memberService.findMember(deviceId);
+        if(member == null) {    // if new user's sign up request
+            member = memberService.save(memberMapper.from(dto.memberInfo(), deviceId));
+            policyService.save(policyMapper.from(dto.policy(), member));
+        }
 
-        Member dummyMember = memberService.save(memberMapper.from(dto.memberInfo(), deviceId));
-
-        policyService.save(policyMapper.from(dto.policy(), dummyMember));
-
-        Token token = tokenProvider.createToken(dummyMember.getPk());
-        refreshTokenService.save(token.refreshToken(), dummyMember);
-        return new AuthDTO.SignUpResponse(token);
+        Token token = tokenProvider.createToken(member.getPk());
+        refreshTokenService.save(token.refreshToken(), member);
+        return new SignUpResponse(token);
     }
 }

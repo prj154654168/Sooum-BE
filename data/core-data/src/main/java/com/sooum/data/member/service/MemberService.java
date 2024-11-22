@@ -23,8 +23,9 @@ public class MemberService {
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
-    public boolean isAlreadySignUp(String deviceId) {
-        return memberRepository.existsByDeviceId(deviceId);
+    public Member findMember(String deviceId) {
+        return memberRepository.findByDeviceId(deviceId)
+                .orElse(null);
     }
 
     public Member findByPk(final Long memberPk) {
