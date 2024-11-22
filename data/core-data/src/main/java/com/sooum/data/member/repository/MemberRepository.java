@@ -12,8 +12,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByDeviceId(String deviceId);
 
-    Boolean existsByDeviceId(String deviceId);
-
     @Modifying
     @Query("update Member m set m.totalVisitorCnt = m.totalVisitorCnt + 1 where m = :profileOwnerMember")
     void incrementTotalVisitorCnt(@Param("profileOwnerMember") Member profileOwnerMember);

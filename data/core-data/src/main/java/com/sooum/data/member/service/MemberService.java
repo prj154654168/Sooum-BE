@@ -20,6 +20,11 @@ public class MemberService {
 
     public Member findByDeviceId(String deviceId) {
         return memberRepository.findByDeviceId(deviceId)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Member isAlreadySignUp(String deviceId) {
+        return memberRepository.findByDeviceId(deviceId)
                 .orElse(null);
     }
 

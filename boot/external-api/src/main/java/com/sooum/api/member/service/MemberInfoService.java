@@ -79,8 +79,8 @@ public class MemberInfoService {
 
         String deviceId = rsaUseCase.decodeDeviceId(dto.memberInfo().encryptedDeviceId());
 
-        Member member = memberService.findByDeviceId(deviceId);
-        if(member == null) {
+        Member member = memberService.isAlreadySignUp(deviceId);
+        if(member == null) {    // if new user's sign up request
             member = memberService.save(memberMapper.from(dto.memberInfo(), deviceId));
             policyService.save(policyMapper.from(dto.policy(), member));
         }
