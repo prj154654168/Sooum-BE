@@ -19,7 +19,7 @@ public class RefreshTokenService {
 
     public RefreshToken findByPk(Long memberPk) {
         return refreshTokenRepository.findById(memberPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("refreshToken을 찾을 수 없습니다."));
     }
 
     public void deleteRefreshToken(Long memberPk) {

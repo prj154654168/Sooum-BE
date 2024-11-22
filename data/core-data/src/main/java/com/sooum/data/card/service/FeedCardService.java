@@ -38,7 +38,7 @@ public class FeedCardService {
 
     public FeedCard findFeedCard(Long feedCardPk) {
         return feedCardRepository.findById(feedCardPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("카드를 찾을 수 없습니다."));
     }
 
     public Optional<FeedCard> findOptFeedCard(Long commentCardPk) {
@@ -51,7 +51,7 @@ public class FeedCardService {
 
     public FeedCard findByPk(Long feedCardPk) {
         return feedCardRepository.findById(feedCardPk)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("카드를 찾을 수 없습니다."));
     }
 
     public void saveFeedCard(FeedCard feedCard) {

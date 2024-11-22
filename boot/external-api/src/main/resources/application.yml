@@ -25,3 +25,7 @@ jwt:
     expiration: ${ACCESS_EXP}
   refresh:
     expiration: ${REFRESH_EXP}
+
+slack:
+  webhook:
+    url: ${URL}

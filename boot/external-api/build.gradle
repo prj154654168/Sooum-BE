@@ -19,6 +19,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    implementation 'com.slack.api:slack-api-client:1.44.1'
 
     // MySQL spatial
 //    implementation 'org.hibernate:hibernate-core:6.1.7.Final'
