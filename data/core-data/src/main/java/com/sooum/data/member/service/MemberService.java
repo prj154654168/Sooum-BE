@@ -20,11 +20,7 @@ public class MemberService {
 
     public Member findByDeviceId(String deviceId) {
         return memberRepository.findByDeviceId(deviceId)
-                .orElseThrow(EntityNotFoundException::new);
-    }
-
-    public boolean isAlreadySignUp(String deviceId) {
-        return memberRepository.existsByDeviceId(deviceId);
+                .orElse(null);
     }
 
     public Member findByPk(final Long memberPk) {
