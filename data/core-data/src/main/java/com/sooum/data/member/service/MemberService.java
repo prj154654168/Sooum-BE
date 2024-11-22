@@ -23,7 +23,7 @@ public class MemberService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    public Member isAlreadySignUp(String deviceId) {
+    public Member findMember(String deviceId) {
         return memberRepository.findByDeviceId(deviceId)
                 .orElse(null);
     }
