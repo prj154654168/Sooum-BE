@@ -5,6 +5,9 @@ import com.sooum.data.suspended.repository.SuspendedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class SuspendedService {
@@ -12,5 +15,10 @@ public class SuspendedService {
 
     public void save(Suspended suspended) {
         suspendedRepository.save(suspended);
+    }
+
+    public Optional<LocalDateTime> checkMemberSuspension(String deviceId) {
+        return suspendedRepository.findByDeviceIdAndUntilBanAfter(deviceId, LocalDateTime.now())
+                .map(Suspended::getUntilBan);
     }
 }
