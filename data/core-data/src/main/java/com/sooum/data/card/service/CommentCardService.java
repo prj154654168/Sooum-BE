@@ -18,7 +18,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class CommentCardService {
     private final CommentCardRepository commentCardRepository;
-    private final static int MAX_PAGE_SIZE = 100;
+    private final static int MAX_PAGE_SIZE = 50;
 
     public boolean hasChildCard(Long parentCardPk) {
         return !findChildCommentCardList(parentCardPk).isEmpty();
@@ -63,11 +63,9 @@ public class CommentCardService {
         return isExistCommentCard(cardPk) ? CardType.COMMENT_CARD : CardType.FEED_CARD;
     }
 
-    public List<CommentCard> findCommentsByLastPk(Long currentCardPk, Optional<Long> lastPk) {
-        PageRequest pageRequest = PageRequest.of(0, MAX_PAGE_SIZE);
-        return lastPk.isEmpty()
-                ? commentCardRepository.findCommentsInfo(currentCardPk, pageRequest)
-                : commentCardRepository.findCommentsInfoByLastPk(currentCardPk, lastPk.get(), pageRequest);
+    public List<CommentCard> findCommentsByLastPk(Long currentCardPk, Optional<Long> lastPk, List<Long> blockMemberPks) {
+        PageRequest pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
+        return commentCardRepository.findCommentsInfo(currentCardPk, lastPk.orElse(null), blockMemberPks, pageRequest);
     }
 
     public List<CommentCard> findChildCommentsByParents(List<CommentCard> commentCards) {
