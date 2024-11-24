@@ -6,6 +6,7 @@ import com.sooum.api.card.service.CardService;
 import com.sooum.api.card.service.CommentInfoService;
 import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.api.member.service.MemberWithdrawalService;
+import com.sooum.data.suspended.service.SuspendedService;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
 import com.sooum.global.responseform.ResponseStatus;
@@ -15,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequestMapping("/members")
@@ -25,6 +28,7 @@ public class MemberController {
     private final CommentInfoService commentInfoService;
     private final CardService cardService;
     private final MemberWithdrawalService memberWithdrawalService;
+    private final SuspendedService suspendedService;
 
     @GetMapping("/feed-cards")
     public ResponseEntity<?> findMyFeedCards(@CurrentUser Long memberPk, @RequestParam(required = false) Optional<Long> lastId) {
@@ -70,5 +74,16 @@ public class MemberController {
     public ResponseEntity<?> withdrawMember(@CurrentUser Long memberPk, @RequestBody AuthDTO.Token token) {
         memberWithdrawalService.withdrawMember(memberPk, token);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<?> checkSuspendedMember(@RequestParam(value = "deviceId") String deviceId) {
+        Optional<LocalDateTime> suspensionUntil = suspendedService.checkMemberSuspension(deviceId);
+
+        if (suspensionUntil.isEmpty()) {
+            return ResponseEntity.ok("No suspension found.");
+        }
+
+        return ResponseEntity.ok(Map.of("untilBan", suspensionUntil.get()));
     }
 }

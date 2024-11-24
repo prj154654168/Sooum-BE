@@ -2,6 +2,7 @@ package com.sooum.global.config.security;
 
 import com.sooum.global.config.jwt.JwtAuthenticationFilter;
 import com.sooum.global.config.jwt.TokenProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +39,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/users/key").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/sign-up").permitAll()  // 회원가입
                 .requestMatchers(HttpMethod.POST, "/users/login").permitAll()  // 로그인
-//                .requestMatchers(HttpMethod.POST, "/cards/...").hasRole("USER")   // todo 글쓰기 API 완성 시 on
+                .requestMatchers(HttpMethod.GET, "/members").permitAll()
+                .requestMatchers(HttpMethod.POST, "/cards").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/cards/{cardPk}").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/users/token").hasRole("USER") // 토큰 재발급
                 .requestMatchers(HttpMethod.GET, "/profiles/nickname/{nickname}/available").permitAll()
                 .requestMatchers(HttpMethod.POST, "/settings/transfer").permitAll()
@@ -54,7 +57,7 @@ public class SecurityConfig {
 
         // Token Exception Handling
         http.exceptionHandling(except -> except
-                .authenticationEntryPoint((request, response, authException) -> response.sendError(response.getStatus(), "토큰 오류"))
+                .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "토큰 오류"))
         );
 
         return http.build();
