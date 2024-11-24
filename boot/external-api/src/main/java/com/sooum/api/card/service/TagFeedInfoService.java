@@ -3,6 +3,7 @@ package com.sooum.api.card.service;
 import com.sooum.api.card.controller.FeedCardController;
 import com.sooum.api.card.dto.TagFeedCardDto;
 import com.sooum.api.img.service.ImgService;
+import com.sooum.data.block.service.BlockMemberService;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.FeedLike;
@@ -27,6 +28,7 @@ public class TagFeedInfoService {
     private final TagFeedService tagFeedService;
     private final FeedLikeService feedLikeService;
     private final CommentCardService commentCardService;
+    private final BlockMemberService blockMemberService;
     private final ImgService imgService;
 
     public List<TagFeedCardDto> createTagFeedsInfo(Long tagPk,
@@ -34,7 +36,8 @@ public class TagFeedInfoService {
                                                    Optional<Double> latitude,
                                                    Optional<Double> longitude,
                                                    Long memberPk) {
-        List<FeedCard> filteredTagFeeds = tagFeedService.findFilteredTagFeeds(tagPk, lastPk, memberPk);
+        List<Long> blockMemberPks = blockMemberService.findAllBlockToPk(memberPk);
+        List<FeedCard> filteredTagFeeds = tagFeedService.findTagFeeds(tagPk, lastPk, blockMemberPks);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredTagFeeds);
         List<CommentCard> commentCards = commentCardService.findByTargetList(filteredTagFeeds);

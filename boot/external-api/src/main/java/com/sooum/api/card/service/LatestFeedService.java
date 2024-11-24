@@ -27,9 +27,6 @@ public class LatestFeedService {
     private final ImgService imgService;
     private final BlockMemberService blockMemberService;
 
-    private static final int MAX_PAGE_SIZE = 100;
-    private static final int DEFAULT_PAGE_SIZE = 50;
-
     public List<LatestFeedCardDto> createLatestFeedInfo(Optional<Long> lastCardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
         List<FeedCard> filteredLatestFeed = findFilteredLatestFeed(lastCardPk, memberPk);
 
@@ -58,9 +55,5 @@ public class LatestFeedService {
     private List<FeedCard> findFilteredLatestFeed(Optional<Long> lastCardId, Long memberId) {
         List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberId);
         return feedCardService.findByLastId(lastCardId, allBlockToPk);
-    }
-
-    private static boolean isEndOfPage(List<FeedCard> byLastId) {
-        return byLastId.size() < MAX_PAGE_SIZE;
     }
 }
