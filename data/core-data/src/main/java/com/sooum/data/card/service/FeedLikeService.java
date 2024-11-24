@@ -39,7 +39,7 @@ public class FeedLikeService {
         Optional<FeedLike> findFeedLiked = feedLikeRepository.findFeedLiked(targetFeedCardPk, requesterPk);
         if (findFeedLiked.isPresent()) {
             if (!findFeedLiked.get().isDeleted()) {
-                throw new EntityExistsException();
+                throw new EntityExistsException("이미 좋아요 이력이 존재합니다.");
             }
 
             findFeedLiked.get().create();
@@ -62,7 +62,7 @@ public class FeedLikeService {
                 .orElseThrow(() -> new EntityNotFoundException("좋아요 이력을 찾을 수 않습니다."));
 
         if (feedLiked.isDeleted()) {
-            throw new EntityExistsException();
+            throw new EntityExistsException("이미 삭제된 좋아요입니다.");
         }
 
         feedLiked.delete();
