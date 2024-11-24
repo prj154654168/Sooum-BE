@@ -27,12 +27,21 @@ public class CardService {
     private final FeedCardUseCase feedCardUseCase;
 
     public CardSummary findCardSummary(Long parentCardPk, Long memberPk) {
-        CardType parentCardType = commentCardService.findCardType(parentCardPk);
+        int commentCnt = commentCardService.countComment(parentCardPk);
 
+        if (isNotExistCard(parentCardPk)) {
+            return CardSummary.builder()
+                    .cardLikeCnt(null)
+                    .isLiked(null)
+                    .commentCnt(commentCnt)
+                    .build();
+        }
+
+        CardType parentCardType = commentCardService.findCardType(parentCardPk);
         return CardSummary.builder()
                 .cardLikeCnt(findLikeCnt(parentCardPk, parentCardType))
                 .isLiked(isLiked(parentCardPk, parentCardType, memberPk))
-                .commentCnt(commentCardService.countComment(parentCardPk))
+                .commentCnt(commentCnt)
                 .build();
     }
 
@@ -76,5 +85,9 @@ public class CardService {
 
     public CardType findCardType(Long cardPk) {
         return feedCardService.isExistFeedCard(cardPk) ? CardType.FEED_CARD : CardType.COMMENT_CARD;
+    }
+
+    public boolean isNotExistCard(Long cardPk) {
+        return !feedCardService.isExistFeedCard(cardPk) && !commentCardService.isExistCommentCard(cardPk);
     }
 }

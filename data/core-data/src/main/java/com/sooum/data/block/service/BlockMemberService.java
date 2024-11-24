@@ -19,7 +19,7 @@ public class BlockMemberService {
 
     public void saveBlockMember(Long fromMemberPk, Long toMemberPk) {
         if (blockRepository.existsByFromMemberPkAndToMemberPk(fromMemberPk, toMemberPk)) {
-            throw new EntityExistsException();
+            throw new EntityExistsException("이미 차단한 사용자입니다.");
         }
 
         Member fromMember = memberService.findByPk(fromMemberPk);

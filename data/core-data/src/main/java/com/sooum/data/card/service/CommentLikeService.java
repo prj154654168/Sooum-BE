@@ -27,7 +27,7 @@ public class CommentLikeService {
         Optional<CommentLike> findCommentLiked = commentLikeRepository.findCommentLiked(targetFeedCardPk, requesterPk);
         if (findCommentLiked.isPresent()) {
             if (!findCommentLiked.get().isDeleted()) {
-                throw new EntityExistsException();
+                throw new EntityExistsException("이미 좋아요 이력이 존재합니다.");
             }
 
             findCommentLiked.get().create();
@@ -50,7 +50,7 @@ public class CommentLikeService {
                 .orElseThrow(() -> new EntityNotFoundException("좋아요 이력을 찾을 수 않습니다."));
 
         if (findCommentLiked.isDeleted()) {
-            throw new EntityExistsException();
+            throw new EntityExistsException("이미 삭제된 좋아요입니다.");
         }
 
         findCommentLiked.delete();

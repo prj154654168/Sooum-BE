@@ -11,12 +11,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CardSummary {
     private int commentCnt;
-    private int cardLikeCnt;
+    private Integer cardLikeCnt;
     @JsonProperty(value = "isLiked")
-    private boolean isLiked;
+    private Boolean isLiked;
 
     @Builder
-    public CardSummary(int commentCnt, int cardLikeCnt, boolean isLiked) {
+    public CardSummary(int commentCnt, Integer cardLikeCnt, Boolean isLiked) {
         this.commentCnt = commentCnt;
         this.cardLikeCnt = cardLikeCnt;
         this.isLiked = isLiked;

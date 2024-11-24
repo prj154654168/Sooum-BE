@@ -26,7 +26,7 @@ public class FavoriteTagService {
     @Transactional
     public void saveFavoriteTag(Long tagPk, Long memberPk) {
         if (tagService.isExistFavoriteTag(tagPk, memberPk)) {
-            throw new EntityExistsException();
+            throw new EntityExistsException("이미 즐겨찾기한 태그입니다.");
         }
 
         FavoriteTag favoriteTag = FavoriteTag.builder()
