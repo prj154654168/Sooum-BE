@@ -18,6 +18,10 @@ public class BlockMemberService {
     private final MemberService memberService;
 
     public void saveBlockMember(Long fromMemberPk, Long toMemberPk) {
+        if (fromMemberPk.equals(toMemberPk)) {
+            throw new IllegalArgumentException("자기 자신을 차단할 수 없습니다.");
+        }
+
         if (blockRepository.existsByFromMemberPkAndToMemberPk(fromMemberPk, toMemberPk)) {
             throw new EntityExistsException("이미 차단한 사용자입니다.");
         }
