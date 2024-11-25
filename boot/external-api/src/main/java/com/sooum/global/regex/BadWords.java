@@ -625,6 +625,7 @@ public interface BadWords {
 
     };
     String[] delimiters = {
+            "",
             " ",
             "~",
             "!",
