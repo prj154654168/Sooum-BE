@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,14 +26,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             tokenProvider.getToken(request).ifPresent(token -> {
                 if (tokenProvider.validateToken(token))
                     setAuthentication(token);
+                else throw new InvalidTokenException();
             });
 
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
-            if(e.getClaims().getSubject().equals("AccessToken"))
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "엑세스 토큰 만료");
-            else
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "리프래쉬 토큰 만료");
+            if(e.getClaims().getSubject().equals("AccessToken")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                PrintWriter writer = response.getWriter();
+                writer.flush();
+                writer.close();
+            }
+            else {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                PrintWriter writer = response.getWriter();
+                writer.flush();
+                writer.close();
+            }
+        }catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            PrintWriter writer = response.getWriter();
+            writer.flush();
+            writer.close();
         }
     }
 
