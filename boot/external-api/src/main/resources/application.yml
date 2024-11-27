@@ -29,3 +29,8 @@ jwt:
 slack:
   webhook:
     url: ${URL}
+
+server:
+  tomcat:
+    relaxed-path-chars: <,>,[,\,],^,`,{,|,}
+    relaxed-query-chars: <,>,[,\,],^,`,{,|,}
