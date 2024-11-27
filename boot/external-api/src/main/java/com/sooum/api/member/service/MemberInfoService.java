@@ -83,8 +83,9 @@ public class MemberInfoService {
         if(member == null) {    // if new user's sign up request
             member = memberService.save(memberMapper.from(dto.memberInfo(), deviceId));
             policyService.save(policyMapper.from(dto.policy(), member));
+        }else {
+            refreshTokenService.deleteRefreshToken(member.getPk());
         }
-
         Token token = tokenProvider.createToken(member.getPk());
         refreshTokenService.save(token.refreshToken(), member);
         return new SignUpResponse(token);
