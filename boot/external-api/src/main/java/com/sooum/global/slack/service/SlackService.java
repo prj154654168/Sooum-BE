@@ -32,9 +32,8 @@ public class SlackService {
     private final Slack slack = Slack.getInstance();
 
     @Async
-    public void sendSlackMsg(Exception e, ContentCachingRequestWrapper request) {
+    public void sendSlackMsg(Exception e, RequestDto requestDto) {
         try {
-            RequestDto requestDto = new RequestDto(request);
             slack.send(url, payload(p -> p.attachments(List.of(createSlackMsg(e, requestDto)))));
         } catch (IOException ignored) {
         }

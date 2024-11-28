@@ -1,5 +1,6 @@
 package com.sooum.global.aop;
 
+import com.sooum.global.slack.dto.RequestDto;
 import com.sooum.global.slack.service.SlackService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,8 @@ public class SlackAspect {
 
         if (request instanceof ContentCachingRequestWrapper requestWrapper) {
             Exception e = getException(args);
-            slackService.sendSlackMsg(e, requestWrapper);
+            RequestDto requestDto = new RequestDto(requestWrapper);
+            slackService.sendSlackMsg(e, requestDto);
         }
     }
 
