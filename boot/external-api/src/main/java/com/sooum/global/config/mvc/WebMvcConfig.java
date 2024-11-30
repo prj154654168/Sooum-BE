@@ -26,6 +26,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtBlacklistInterceptor);
+        registry.addInterceptor(jwtBlacklistInterceptor)
+                .excludePathPatterns(
+                        "/users/key",
+                        "/users/sign-up",
+                        "/users/login",
+                        "/members" ,
+                        "/profiles/nickname/**/available"
+                );
     }
 }
