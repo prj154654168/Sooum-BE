@@ -21,9 +21,9 @@ BlockController {
 
     @PostMapping
     ResponseEntity<ResponseStatus> blockMember(@RequestBody @Valid BlockDto blockDto, @CurrentUser Long fromMemberPk) {
-        blockMemberService.saveBlockMember(fromMemberPk, blockDto.toMemberPk());
+        blockMemberService.saveBlockMember(fromMemberPk, blockDto.toMemberId());
 
-        return ResponseEntity.created(URI.create("/block/" + blockDto.toMemberPk()))
+        return ResponseEntity.created(URI.create("/block/" + blockDto.toMemberId()))
                 .body(ResponseStatus.builder()
                         .httpCode(HttpStatus.CREATED.value())
                         .httpStatus(HttpStatus.CREATED)
