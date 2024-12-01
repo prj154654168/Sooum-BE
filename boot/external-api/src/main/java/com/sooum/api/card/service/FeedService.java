@@ -8,10 +8,7 @@ import com.sooum.api.member.service.BlackListUseCase;
 import com.sooum.data.card.entity.*;
 import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.card.entity.parenttype.CardType;
-import com.sooum.data.card.service.CommentCardService;
-import com.sooum.data.card.service.CommentLikeService;
-import com.sooum.data.card.service.FeedCardService;
-import com.sooum.data.card.service.FeedLikeService;
+import com.sooum.data.card.service.*;
 import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.entity.Role;
@@ -54,6 +51,7 @@ public class FeedService {
     private final FeedReportService feedReportService;
     private final TokenProvider tokenProvider;
     private final BlackListUseCase blackListUseCase;
+    private final PopularFeedService popularFeedService;
 
     @Transactional
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto, HttpServletRequest request) {
@@ -219,6 +217,7 @@ public class FeedService {
         cardImgService.deleteUserUploadPic(feedCard.getImgName());
         feedLikeService.deleteAllFeedLikes(feedCardPk);
         feedReportService.deleteReport(feedCardPk);
+        popularFeedService.deletePopularCard(feedCardPk);
         feedCardService.deleteFeedCard(feedCardPk);
         //todo notification delete
     }
