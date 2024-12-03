@@ -18,6 +18,8 @@ public class ProfileDto {
         private String cardCnt;
         private String followingCnt;
         private String followerCnt;
+        @JsonProperty(value = "isFollowing")
+        private boolean isFollowing;
     }
 
     @Getter
