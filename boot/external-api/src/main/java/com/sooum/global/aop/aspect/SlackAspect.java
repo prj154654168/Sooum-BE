@@ -1,4 +1,4 @@
-package com.sooum.global.aop;
+package com.sooum.global.aop.aspect;
 
 import com.sooum.global.slack.dto.RequestDto;
 import com.sooum.global.slack.service.SlackService;
@@ -9,7 +9,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -27,10 +26,7 @@ import java.util.Objects;
 public class SlackAspect {
     private final SlackService slackService;
 
-    @Pointcut("@annotation(org.springframework.web.bind.annotation.ExceptionHandler)")
-    public void slackPointcut() {}
-
-    @Before("slackPointcut()")
+    @Before("com.sooum.global.aop.pointcut.Pointcuts.slackPointcut()")
     public void before(JoinPoint joinPoint) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         Object[] args = joinPoint.getArgs();
