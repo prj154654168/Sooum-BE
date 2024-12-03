@@ -35,6 +35,7 @@ public class ProfileService {
         Long feedCardCnt = feedCardService.findFeedCardCnt(profileOwner);
         Long followerCnt = followService.findFollowerCnt(profileOwner);
         Long followingCnt = followService.findFollowingCnt(profileOwner);
+        boolean alreadyFollowing = followService.isAlreadyFollowing(visitor, profileOwner);
 
         return ProfileDto.ProfileInfoResponse.builder()
                 .nickname(profileOwner.getNickname())
@@ -44,6 +45,7 @@ public class ProfileService {
                 .cardCnt(String.valueOf(feedCardCnt))
                 .followerCnt(String.valueOf(followerCnt))
                 .followingCnt(String.valueOf(followingCnt))
+                .isFollowing(alreadyFollowing)
                 .build();
     }
 
