@@ -1,21 +1,23 @@
-package com.sooum.global.aop;
+package com.sooum.global.aop.aspect;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Slf4j
+@Profile("prod")
 @Aspect
 @Component
 @RequiredArgsConstructor
 public class RequesterInfoAspect {
 
-    @Before("@within(org.springframework.web.bind.annotation.RestController)")
+    @Before("com.sooum.global.aop.pointcut.Pointcuts.requesterPointcut() || com.sooum.global.aop.pointcut.Pointcuts.slackPointcut()")
     public void before() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
