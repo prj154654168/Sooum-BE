@@ -39,6 +39,7 @@ public class TagDto{
     }
 
     public record RelatedTag(
+            String tagId,
             Integer count,
             String content
     ) {}
