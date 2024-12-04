@@ -25,6 +25,27 @@ public class ProfileService {
     private final BadWordFiltering badWordFiltering;
 
     @Transactional
+    public ProfileDto.MyProfileInfoResponse findMyProfileInfo(Long memberPk) {
+        Member profileOwner = memberService.findByPk(memberPk);
+
+        Long totalVisitorCnt = memberService.findTotalVisitorCnt(profileOwner);
+        Long currentDateVisitorCnt = visitorService.findCurrentDateVisitorCnt(profileOwner);
+        Long feedCardCnt = feedCardService.findFeedCardCnt(profileOwner);
+        Long followerCnt = followService.findFollowerCnt(profileOwner);
+        Long followingCnt = followService.findFollowingCnt(profileOwner);
+
+        return ProfileDto.MyProfileInfoResponse.builder()
+                .nickname(profileOwner.getNickname())
+                .currentDayVisitors(String.valueOf(currentDateVisitorCnt))
+                .totalVisitorCnt(String.valueOf(totalVisitorCnt))
+                .profileImg(imgService.findProfileImgUrl(profileOwner.getProfileImgName()))
+                .cardCnt(String.valueOf(feedCardCnt))
+                .followerCnt(String.valueOf(followerCnt))
+                .followingCnt(String.valueOf(followingCnt))
+                .build();
+    }
+
+    @Transactional
     public ProfileDto.ProfileInfoResponse findProfileInfo(Long profileOwnerPk, Long memberPk) {
         Member profileOwner = memberService.findByPk(profileOwnerPk);
         Member visitor = memberService.findByPk(memberPk);

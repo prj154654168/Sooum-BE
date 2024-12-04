@@ -8,6 +8,19 @@ import lombok.Setter;
 import org.springframework.hateoas.Link;
 
 public class ProfileDto {
+
+    @Getter
+    @Builder
+    public static class MyProfileInfoResponse {
+        private String nickname;
+        private String currentDayVisitors;
+        private String totalVisitorCnt;
+        private Link profileImg;
+        private String cardCnt;
+        private String followingCnt;
+        private String followerCnt;
+    }
+
     @Getter
     @Builder
     public static class ProfileInfoResponse{

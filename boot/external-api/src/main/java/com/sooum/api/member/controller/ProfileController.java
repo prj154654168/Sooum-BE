@@ -27,6 +27,20 @@ public class ProfileController {
     private final ProfileService profileService;
     private final FollowInfoService followInfoService;
 
+    @GetMapping("/my")
+    ResponseEntity<ResponseEntityModel<ProfileDto.MyProfileInfoResponse>>
+    findMyProfileInfo(@CurrentUser Long memberPk) {
+
+        return ResponseEntity.ok(ResponseEntityModel.<ProfileDto.MyProfileInfoResponse>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("retrieve success")
+                        .build())
+                .content(profileService.findMyProfileInfo(memberPk))
+                .build());
+    }
+
     @GetMapping("/{memberPk}")
     ResponseEntity<ResponseEntityModel<ProfileDto.ProfileInfoResponse>>
     findProfileInfo(@PathVariable("memberPk") Long profileOwnerPk,

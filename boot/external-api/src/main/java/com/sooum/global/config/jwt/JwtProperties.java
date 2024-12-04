@@ -13,8 +13,8 @@ public class JwtProperties {
     private String key;
 
     @Value("${jwt.access.expiration}")
-    private Long accessTokenExpirationPeriod;
+    private Long accessTokenExpirationPeriodDay;
 
     @Value("${jwt.refresh.expiration}")
-    private Long refreshTokenExpirationPeriod;
+    private Long refreshTokenExpirationPeriodMonth;
 }
