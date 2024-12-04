@@ -22,9 +22,10 @@ public class TagUseCase {
     public List<TagDto.RelatedTag> findRelatedTags(String keyword, Integer size) {
         return tagService.findRelatedTags(keyword, size)
                 .stream()
-                .map(tag -> new TagDto.RelatedTag(tag.getCount(), tag.getContent()))
+                .map(tag -> new TagDto.RelatedTag(tag.getPk().toString(), tag.getCount(), tag.getContent()))
                 .toList();
     }
+
     public TagDto.TagSummary createTagSummary(Long tagPk, Long memberPk) {
         return TagDto.TagSummary.builder()
                 .content(tagService.findTag(tagPk).getContent())
