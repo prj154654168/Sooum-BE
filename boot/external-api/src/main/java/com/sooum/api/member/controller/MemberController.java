@@ -30,9 +30,13 @@ public class MemberController {
     private final MemberWithdrawalService memberWithdrawalService;
     private final SuspendedService suspendedService;
 
-    @GetMapping("/feed-cards")
-    public ResponseEntity<?> findMyFeedCards(@CurrentUser Long memberPk, @RequestParam(required = false) Optional<Long> lastId) {
-        List<MyFeedCardDto> cards = cardService.findMyCards(memberPk, lastId);
+    @GetMapping(value = {"/feed-cards", "/{targetMemberId}/feed-cards"})
+    public ResponseEntity<?> findMyFeedCards(@RequestParam(required = false) Optional<Long> lastId,
+                                             @PathVariable(required = false) Optional<Long> targetMemberId,
+                                             @CurrentUser Long memberPk) {
+        List<MyFeedCardDto> cards = targetMemberId.isEmpty()
+                ? cardService.findMyCards(memberPk, lastId)
+                : cardService.findMyCards(targetMemberId.get(), lastId);
 
         if (cards.isEmpty())
             return ResponseEntity.noContent().build();
