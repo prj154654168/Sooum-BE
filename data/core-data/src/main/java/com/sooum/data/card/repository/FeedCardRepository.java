@@ -36,27 +36,28 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
                                       @Param("minDist") double minDist, @Param("maxDist") double maxDist,
                                       @Param("blockMemberPks") List<Long> blockMemberPks, Pageable pageable);
 
-    @Modifying
-    @Query("delete from FeedCard f where f.pk = :cardPk")
-    void deleteFeedCard(@Param("cardPk") Long cardPk);
-
-    @Query("select f from FeedCard f where f.pk = :feedCardPk")
-    FeedCard findFeedCard(@Param("feedCardPk") Long feedCardPk);
-
     @Query("select count(f) from FeedCard f where f.writer = :cardOwnerMember")
     Long findFeedCardCnt(@Param("cardOwnerMember") Member cardOwnerMember);
 
-    @Query("select fc.pk from FeedCard fc where fc.writer.pk in :memberPks")
-    List<Long> findFeedCardIdsByWriterIn(@Param("memberPks") List<Long> memberPks);
 
-    @Query("select fc from FeedCard fc where fc.writer.pk = :memberPk")
-    List<FeedCard> findByMemberPk(@Param("memberPk") Long memberPk, Pageable pageable);
+    @Query("select fc from FeedCard fc " +
+            "where (fc.isStory=false or (fc.isStory = true and fc.createdAt > (current_timestamp - 1 day))) " +
+                "and fc.writer.pk = :memberPk " +
+                "and (:lastPk is null or fc.pk < :lastPk) " +
+            "order by fc.pk desc ")
+    List<FeedCard> findMyFeedCards(@Param("memberPk") Long memberPk,
+                                   @Param("lastPk") Long lastPk,
+                                   PageRequest pageRequest);
 
-    @Query("select fc from FeedCard fc where fc.isDeleted = false and fc.writer.pk = :memberPk order by fc.pk desc")
-    List<FeedCard> findCommentCardsFirstPage(@Param("memberPk") Long memberPk, PageRequest pageRequest);
-
-    @Query("select fc from FeedCard fc where fc.isDeleted = false and fc.writer.pk = :memberPk and fc.pk < :lastPk order by fc.pk desc ")
-    List<FeedCard> findCommentCardsNextPage(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, PageRequest pageRequest);
+    @Query("select fc from FeedCard fc " +
+            "where fc.isPublic = true " +
+                "and (fc.isStory=false or (fc.isStory = true and fc.createdAt > (current_timestamp - 1 day))) " +
+                "and fc.writer.pk = :memberPk " +
+                "and (:lastPk is null or fc.pk < :lastPk) " +
+            "order by fc.pk desc ")
+    List<FeedCard> findMemberFeedCards(@Param("memberPk") Long memberPk,
+                                       @Param("lastPk") Long lastPk,
+                                       PageRequest pageRequest);
 
     @Modifying
     @Query("delete from FeedCard fc WHERE fc.writer.pk = :memberPk")

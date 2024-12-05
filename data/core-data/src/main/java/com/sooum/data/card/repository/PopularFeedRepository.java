@@ -1,6 +1,5 @@
 package com.sooum.data.card.repository;
 
-import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.PopularFeed;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

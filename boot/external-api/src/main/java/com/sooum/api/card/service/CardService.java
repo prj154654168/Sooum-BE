@@ -1,7 +1,6 @@
 package com.sooum.api.card.service;
 
 import com.sooum.api.card.dto.CardSummary;
-import com.sooum.api.card.dto.MyFeedCardDto;
 import com.sooum.data.card.entity.parenttype.CardType;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.CommentLikeService;
@@ -13,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,7 +20,6 @@ public class CardService {
     private final CommentLikeService commentLikeService;
     private final CommentCardService commentCardService;
     private final FeedCardService feedCardService;
-    private final FeedCardUseCase feedCardUseCase;
 
     public CardSummary findCardSummary(Long parentCardPk, Long memberPk) {
         int commentCnt = commentCardService.countComment(parentCardPk);
@@ -55,10 +50,6 @@ public class CardService {
         return cardType.equals(CardType.FEED_CARD)
                 ? feedLikeService.isLiked(cardPk, memberPk)
                 : commentLikeService.isLiked(cardPk, memberPk);
-    }
-
-    public List<MyFeedCardDto> findMyCards(Long memberPk, Optional<Long> lastId) {
-        return feedCardUseCase.findByMemberPk(memberPk, lastId);
     }
 
     @Transactional

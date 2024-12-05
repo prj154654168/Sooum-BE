@@ -2,8 +2,8 @@ package com.sooum.api.member.controller;
 
 import com.sooum.api.card.dto.MyCommentCardDto;
 import com.sooum.api.card.dto.MyFeedCardDto;
-import com.sooum.api.card.service.CardService;
 import com.sooum.api.card.service.CommentInfoService;
+import com.sooum.api.card.service.FeedCardUseCase;
 import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.api.member.service.MemberWithdrawalService;
 import com.sooum.data.suspended.service.SuspendedService;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberController {
     private final CommentInfoService commentInfoService;
-    private final CardService cardService;
+    private final FeedCardUseCase feedCardUseCase;
     private final MemberWithdrawalService memberWithdrawalService;
     private final SuspendedService suspendedService;
 
@@ -35,8 +35,8 @@ public class MemberController {
                                              @PathVariable(required = false) Optional<Long> targetMemberId,
                                              @CurrentUser Long memberPk) {
         List<MyFeedCardDto> cards = targetMemberId.isEmpty()
-                ? cardService.findMyCards(memberPk, lastId)
-                : cardService.findMyCards(targetMemberId.get(), lastId);
+                ? feedCardUseCase.findMyFeedCards(memberPk, lastId)
+                : feedCardUseCase.findMemberFeedCards(targetMemberId.get(), lastId);
 
         if (cards.isEmpty())
             return ResponseEntity.noContent().build();

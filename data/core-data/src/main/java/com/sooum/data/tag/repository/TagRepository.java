@@ -18,15 +18,11 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "ORDER BY t.count DESC")
     List<Tag> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
-    List<Tag> findAllByIsActiveIsTrue();
-
     @Query("select t from Tag t where t.content in :tagContents")
     List<Tag> findTagList(@Param("tagContents") List<String> tagContents);
 
     @Query("select t from Tag t where t not in :excludeTags and (t.count > 0) order by t.count desc")
     List<Tag> findRecommendTagList(@Param("excludeTags") List<Tag> excludeTags, Pageable pageable);
-
-    Optional<Tag> findByContent(String content);
 
     @Modifying
     @Query("update Tag t set t.count = t.count + 1 where t in :tags")
