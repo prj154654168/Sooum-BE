@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
 
-
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -38,11 +37,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            tokenProvider.getToken(request).ifPresent(token -> {
+            tokenProvider.getToken(request).ifPresentOrElse(token -> {
                 if (tokenProvider.validateToken(token))
                     setAuthentication(token);
                 else throw new InvalidTokenException();
-            });
+            },()-> {throw new InvalidTokenException();});
 
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
