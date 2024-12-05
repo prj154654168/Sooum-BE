@@ -21,10 +21,4 @@ public interface PopularCardBatchRepository extends PopularFeedRepository {
                 "and pf.createdAt < (current_timestamp - 5 minute) " +
                 "and pf.version = :version")
     void deletePreviousPopularFeedsByComment(@Param("version") int version);
-
-    @Query("select max(pf.version) from PopularFeed pf where pf.popularityType = 'LIKE'")
-    Optional<Integer> findLatestVersionByLike();
-
-    @Query("select max(pf.version) from PopularFeed pf where pf.popularityType = 'COMMENT'")
-    Optional<Integer> findLatestVersionByComment();
 }

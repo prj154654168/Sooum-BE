@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
+import java.util.Objects;
+
 
 @Getter
 @Entity
@@ -28,5 +30,18 @@ public class FeedCard extends Card {
         super(content, fontSize, font, location, imgType, imgName, writer);
         this.isStory = isStory;
         this.isPublic = isPublic;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FeedCard feedCard = (FeedCard) o;
+        return getPk().equals(feedCard.getPk());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPk());
     }
 }

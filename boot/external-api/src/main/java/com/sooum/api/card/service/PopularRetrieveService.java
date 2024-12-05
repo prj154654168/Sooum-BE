@@ -12,7 +12,6 @@ import com.sooum.data.card.service.PopularFeedService;
 import com.sooum.global.util.DistanceUtils;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,19 +25,17 @@ public class PopularRetrieveService {
     private final PopularFeedService popularFeedService;
     private final CommentCardService commentCardService;
     private final BlockMemberService blockMemberService;
-    private static final int MAX_SIZE = 200;
 
     public List<PopularCardRetrieve> findHomePopularFeeds(final Optional<Double> latitude,
                                                           final Optional<Double> longitude,
                                                           final Long memberPk) {
-        PageRequest pageRequest = PageRequest.of(0, MAX_SIZE);
-        List<FeedCard> popularFeeds = popularFeedService.getPopularFeeds(pageRequest);
-        List<FeedCard> filteredFeeds = blockMemberService.filterBlockedMembers(popularFeeds, memberPk);
+        List<Long> blockedMembers = blockMemberService.findAllBlockToPk(memberPk);
+        List<FeedCard> popularFeeds = popularFeedService.getPopularFeeds(blockedMembers);
 
-        List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredFeeds);
-        List<CommentCard> comments = commentCardService.findByTargetList(filteredFeeds);
+        List<FeedLike> feedLikes = feedLikeService.findByTargetCards(popularFeeds);
+        List<CommentCard> comments = commentCardService.findByTargetList(popularFeeds);
 
-        return NextPageLinkGenerator.appendEachCardDetailLink(filteredFeeds.stream()
+        return NextPageLinkGenerator.appendEachCardDetailLink(popularFeeds.stream()
                 .map(feed -> PopularCardRetrieve.builder()
                         .id(feed.getPk().toString())
                         .content(feed.getContent())
