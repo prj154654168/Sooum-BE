@@ -80,11 +80,13 @@ public class ProfileController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping( "/{profileOwnerPk}/follower")
+    @GetMapping( value = {"/follower", "/{profileOwnerPk}/follower"})
     public ResponseEntity<?> findFollowersInfo(@RequestParam(required = false) Optional<Long> followerLastId,
-                                               @PathVariable Long profileOwnerPk,
+                                               @PathVariable Optional<Long> profileOwnerPk,
                                                @CurrentUser Long requesterPk) {
-        List<FollowDto.FollowerInfo> followersInfo = followInfoService.findFollowersInfo(profileOwnerPk, followerLastId, requesterPk);
+        List<FollowDto.FollowerInfo> followersInfo = profileOwnerPk.isEmpty()
+                ? followInfoService.findFollowersInfo(requesterPk, followerLastId, requesterPk)
+                : followInfoService.findFollowersInfo(profileOwnerPk.get(), followerLastId, requesterPk);
 
         if (followersInfo.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -101,15 +103,19 @@ public class ProfileController {
                         )
                         .content(followersInfo)
                         .build()
-                        .add(NextPageLinkGenerator.generateFollowInfoNextPageLink(followersInfo, profileOwnerPk))
+                        .add(profileOwnerPk.isEmpty()
+                                ? NextPageLinkGenerator.generateFollowInfoNextPageLink(followersInfo, requesterPk)
+                                : NextPageLinkGenerator.generateFollowInfoNextPageLink(followersInfo, profileOwnerPk.get()))
         );
     }
 
-    @GetMapping("/{profileOwnerPk}/following")
+    @GetMapping(value = {"/following", "/{profileOwnerPk}/following"})
     public ResponseEntity<?> findFollowingsInfo(@RequestParam(required = false) Optional<Long> followingLastId,
-                                                @PathVariable Long profileOwnerPk,
-                                                @CurrentUser Long memberPk) {
-        List<FollowDto.FollowingInfo> followingsInfo = followInfoService.findFollowingsInfo(profileOwnerPk, followingLastId, memberPk);
+                                                @PathVariable Optional<Long> profileOwnerPk,
+                                                @CurrentUser Long requesterPk) {
+        List<FollowDto.FollowingInfo> followingsInfo = profileOwnerPk.isEmpty()
+                ? followInfoService.findFollowingsInfo(requesterPk, followingLastId, requesterPk)
+                : followInfoService.findFollowingsInfo(profileOwnerPk.get(), followingLastId, requesterPk);
 
         if (followingsInfo.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -126,7 +132,9 @@ public class ProfileController {
                         )
                         .content(followingsInfo)
                         .build()
-                        .add(NextPageLinkGenerator.generateFollowInfoNextPageLink(followingsInfo, profileOwnerPk))
+                        .add(profileOwnerPk.isEmpty()
+                                ? NextPageLinkGenerator.generateFollowInfoNextPageLink(followingsInfo, requesterPk)
+                                : NextPageLinkGenerator.generateFollowInfoNextPageLink(followingsInfo, profileOwnerPk.get()))
         );
     }
 }
