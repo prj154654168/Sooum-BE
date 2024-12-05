@@ -28,7 +28,7 @@ public class NoticeController {
     public ResponseEntity<CollectionModel<NoticeDto>> findNoticesList(
             @PathVariable(required = false, value = "lastPk") Optional<Long> lastPk
     ) {
-        List<NoticeDto> notices = noticeUseCase.findNotices(lastPk.orElse(0L));
+        List<NoticeDto> notices = noticeUseCase.findNotices(lastPk.orElse(Long.MAX_VALUE));
         if (notices.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
