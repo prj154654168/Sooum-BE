@@ -1,6 +1,5 @@
 package com.sooum.data.card.service;
 
-import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.repository.FeedCardRepository;
 import com.sooum.data.member.entity.Member;
@@ -62,15 +61,14 @@ public class FeedCardService {
         return feedCardRepository.findFeedCardCnt(cardOwnerMember);
     }
 
-    public List<Long> findFeedCardIdsByMemberPk(List<Long> memberPks) {
-        return feedCardRepository.findFeedCardIdsByWriterIn(memberPks);
+    public List<FeedCard> findMemberFeedCards(Long memberPk, Long lastPk) {
+        PageRequest pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
+        return feedCardRepository.findMemberFeedCards(memberPk, lastPk, pageRequest);
     }
 
-    public List<FeedCard> findFeedList(Long memberPk, Optional<Long> lastPk) {
-        PageRequest pageRequest = PageRequest.ofSize(30);
-        return lastPk.isEmpty()
-                ? feedCardRepository.findCommentCardsFirstPage(memberPk, pageRequest)
-                : feedCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
+    public List<FeedCard> findMyFeedCards(Long memberPk, Long lastPk) {
+        PageRequest pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
+        return feedCardRepository.findMyFeedCards(memberPk, lastPk, pageRequest);
     }
 
     public void deleteFeedCardByMemberPk(Long memberPk) {

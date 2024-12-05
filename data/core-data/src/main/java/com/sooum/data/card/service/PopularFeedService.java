@@ -3,15 +3,12 @@ package com.sooum.data.card.service;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.PopularFeed;
 import com.sooum.data.card.repository.PopularFeedRepository;
-import com.sooum.data.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)

@@ -18,9 +18,19 @@ public class FeedCardUseCase {
     private final ImgService imgService;
     private final FeedCardService feedCardService;
 
-    public List<MyFeedCardDto> findByMemberPk(Long memberPk, Optional<Long> lastId) {
-        List<FeedCard> feedList = feedCardService.findFeedList(memberPk, lastId);
+    public List<MyFeedCardDto> findMyFeedCards(Long memberPk, Optional<Long> lastId) {
+        List<FeedCard> feedList = feedCardService.findMyFeedCards(memberPk, lastId.orElse(null));
 
+        return getMemberFeedCardDtos(feedList);
+    }
+
+    public List<MyFeedCardDto> findMemberFeedCards(Long memberPk, Optional<Long> lastId) {
+        List<FeedCard> feedList = feedCardService.findMemberFeedCards(memberPk, lastId.orElse(null));
+
+        return getMemberFeedCardDtos(feedList);
+    }
+
+    private List<MyFeedCardDto> getMemberFeedCardDtos(List<FeedCard> feedList) {
         return NextPageLinkGenerator.appendEachMyCardDetailLink(feedList.stream()
                 .map(feed -> MyFeedCardDto.builder()
                         .id(feed.getPk().toString())

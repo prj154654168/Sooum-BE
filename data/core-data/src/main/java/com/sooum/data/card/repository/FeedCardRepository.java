@@ -52,11 +52,24 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
     @Query("select fc from FeedCard fc where fc.writer.pk = :memberPk")
     List<FeedCard> findByMemberPk(@Param("memberPk") Long memberPk, Pageable pageable);
 
-    @Query("select fc from FeedCard fc where fc.isDeleted = false and fc.writer.pk = :memberPk order by fc.pk desc")
-    List<FeedCard> findCommentCardsFirstPage(@Param("memberPk") Long memberPk, PageRequest pageRequest);
+    @Query("select fc from FeedCard fc " +
+            "where (fc.isStory=false or (fc.isStory = true and fc.createdAt > (current_timestamp - 1 day))) " +
+                "and fc.writer.pk = :memberPk " +
+                "and (:lastPk is null or fc.pk < :lastPk) " +
+            "order by fc.pk desc ")
+    List<FeedCard> findMyFeedCards(@Param("memberPk") Long memberPk,
+                                   @Param("lastPk") Long lastPk,
+                                   PageRequest pageRequest);
 
-    @Query("select fc from FeedCard fc where fc.isDeleted = false and fc.writer.pk = :memberPk and fc.pk < :lastPk order by fc.pk desc ")
-    List<FeedCard> findCommentCardsNextPage(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, PageRequest pageRequest);
+    @Query("select fc from FeedCard fc " +
+            "where fc.isPublic = true " +
+                "and (fc.isStory=false or (fc.isStory = true and fc.createdAt > (current_timestamp - 1 day))) " +
+                "and fc.writer.pk = :memberPk " +
+                "and (:lastPk is null or fc.pk < :lastPk) " +
+            "order by fc.pk desc ")
+    List<FeedCard> findMemberFeedCards(@Param("memberPk") Long memberPk,
+                                       @Param("lastPk") Long lastPk,
+                                       PageRequest pageRequest);
 
     @Modifying
     @Query("delete from FeedCard fc WHERE fc.writer.pk = :memberPk")
