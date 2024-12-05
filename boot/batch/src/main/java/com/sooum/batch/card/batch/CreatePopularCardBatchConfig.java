@@ -4,6 +4,7 @@ import com.sooum.batch.card.batch.service.DeletePreviousPopularCard;
 import com.sooum.batch.card.batch.service.SavePopularCardService;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -20,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class CreatePopularCardBatchConfig {
@@ -43,10 +45,10 @@ public class CreatePopularCardBatchConfig {
     public Job createPopularCardJob() {
         return new JobBuilder("createPopularCardJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(savePopularCardByLikeTasklet())
-                .next(deletePopularCardByLikeTasklet())
-                .next(savePopularCardByCommentTasklet())
+                .start(deletePopularCardByLikeTasklet())
+                .next(savePopularCardByLikeTasklet())
                 .next(deletePopularCardByCommentTasklet())
+                .next(savePopularCardByCommentTasklet())
                 .build();
     }
 
@@ -54,6 +56,7 @@ public class CreatePopularCardBatchConfig {
     public Step savePopularCardByLikeTasklet() {
         return new StepBuilder("savePopularCardByLikeTasklet", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
+                    log.info("savePopularCardByLikeTasklet");
                     savePopularCardService.savePopularCardByLike();
 
                     return RepeatStatus.FINISHED;
@@ -65,6 +68,7 @@ public class CreatePopularCardBatchConfig {
     public Step deletePopularCardByLikeTasklet() {
         return new StepBuilder("savePopularCardByLikeTasklet", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
+                    log.info("deletePopularCardByLikeTasklet");
                     deletePreviousPopularCard.deletePreviousPopularFeedsByLike();
 
                     return RepeatStatus.FINISHED;
@@ -76,6 +80,7 @@ public class CreatePopularCardBatchConfig {
     public Step savePopularCardByCommentTasklet() {
         return new StepBuilder("savePopularCardByCommentTasklet", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
+                    log.info("savePopularCardByCommentTasklet");
                     savePopularCardService.savePopularCardByComment();
 
                     return RepeatStatus.FINISHED;
@@ -87,6 +92,7 @@ public class CreatePopularCardBatchConfig {
     public TaskletStep deletePopularCardByCommentTasklet() {
         return new StepBuilder("savePopularCardByCommentTasklet", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
+                    log.info("deletePopularCardByCommentTasklet");
                     deletePreviousPopularCard.deletePreviousPopularFeedsByComment();
 
                     return RepeatStatus.FINISHED;

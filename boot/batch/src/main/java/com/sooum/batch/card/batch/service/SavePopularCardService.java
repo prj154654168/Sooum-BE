@@ -7,12 +7,16 @@ import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.PopularFeed;
 import com.sooum.data.card.entity.popularitytype.PopularityType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SavePopularCardService {
@@ -34,7 +38,7 @@ public class SavePopularCardService {
         savePopularCard(popularCondFeedCards, PopularityType.COMMENT);
     }
 
-    private void savePopularCard(List<FeedCard> popularCondFeedCards, PopularityType popularityType) {
+    public void savePopularCard(List<FeedCard> popularCondFeedCards, PopularityType popularityType) {
         List<PopularFeed> popularFeeds = popularCondFeedCards.stream()
                 .map(feedCard -> PopularFeed.builder()
                         .popularCard(feedCard)
@@ -42,12 +46,12 @@ public class SavePopularCardService {
                         .build())
                 .toList();
 
-        popularCardBatchRepository.saveAll(popularFeeds);
-        //        for (PopularFeed popularFeed : popularFeeds) {
-//            try {
-//                popularCardBatchRepository.save(popularFeed);
-//            } catch (Exception ignored) {
-//            }
-//        }
+//        popularCardBatchRepository.saveAll(popularFeeds);
+        for (PopularFeed popularFeed : popularFeeds) {
+            try {
+                popularCardBatchRepository.saveAndFlush(popularFeed);
+            } catch (Exception e) {
+            }
+        }
     }
 }

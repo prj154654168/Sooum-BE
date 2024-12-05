@@ -1,7 +1,8 @@
 spring:
   batch:
     job:
-#      enabled: false
+      name: "createPopularCardJob"
+  #      enabled: false
 
   config:
     import:
