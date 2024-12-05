@@ -7,51 +7,42 @@ import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.PopularFeed;
 import com.sooum.data.card.entity.popularitytype.PopularityType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SavePopularCardService {
     private final CommentCardBatchRepository commentCardBatchRepository;
     private final FeedLikeBatchRepository feedLikeBatchRepository;
     private final PopularCardBatchRepository popularCardBatchRepository;
-
-    private final static int PAGE_SIZE = 100;
+    private static final int PAGE_SIZE = 100;
 
     public void savePopularCardByLike() {
         List<FeedCard> popularCondFeedCards = feedLikeBatchRepository.findPopularCondFeedCards(PageRequest.ofSize(PAGE_SIZE));
+        int newVersion = popularCardBatchRepository.findLatestVersionByLike().orElse(0) + 1;
 
-        savePopularCard(popularCondFeedCards, PopularityType.LIKE);
+        savePopularCard(popularCondFeedCards, PopularityType.LIKE, newVersion);
     }
 
     public void savePopularCardByComment() {
         List<FeedCard> popularCondFeedCards = commentCardBatchRepository.findPopularCondFeedCards(PageRequest.ofSize(PAGE_SIZE));
+        int newVersion = popularCardBatchRepository.findLatestVersionByComment().orElse(0) + 1;
 
-        savePopularCard(popularCondFeedCards, PopularityType.COMMENT);
+        savePopularCard(popularCondFeedCards, PopularityType.COMMENT, newVersion);
     }
 
-    public void savePopularCard(List<FeedCard> popularCondFeedCards, PopularityType popularityType) {
+    public void savePopularCard(List<FeedCard> popularCondFeedCards, PopularityType popularityType, int version) {
         List<PopularFeed> popularFeeds = popularCondFeedCards.stream()
                 .map(feedCard -> PopularFeed.builder()
                         .popularCard(feedCard)
                         .popularityType(popularityType)
+                        .version(version)
                         .build())
                 .toList();
 
-//        popularCardBatchRepository.saveAll(popularFeeds);
-        for (PopularFeed popularFeed : popularFeeds) {
-            try {
-                popularCardBatchRepository.saveAndFlush(popularFeed);
-            } catch (Exception e) {
-            }
-        }
+        popularCardBatchRepository.saveAll(popularFeeds);
     }
 }

@@ -19,16 +19,20 @@ public class PopularFeed extends BaseEntity {
 
     @NotNull
     @JoinColumn(name = "POPULAR_CARD")
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private FeedCard popularCard;
 
     @NotNull
     @Enumerated(value = EnumType.STRING)
     private PopularityType popularityType;
 
+    @Column(name = "version")
+    private int version;
+
     @Builder
-    public PopularFeed(FeedCard popularCard, PopularityType popularityType) {
+    public PopularFeed(FeedCard popularCard, PopularityType popularityType, int version) {
         this.popularCard = popularCard;
         this.popularityType = popularityType;
+        this.version = version;
     }
 }

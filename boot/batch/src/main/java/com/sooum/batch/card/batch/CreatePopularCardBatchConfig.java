@@ -2,7 +2,6 @@ package com.sooum.batch.card.batch;
 
 import com.sooum.batch.card.batch.service.DeletePreviousPopularCard;
 import com.sooum.batch.card.batch.service.SavePopularCardService;
-import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
@@ -28,9 +27,10 @@ public class CreatePopularCardBatchConfig {
     private final JobLauncher jobLauncher;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
-    private final EntityManagerFactory entityManagerFactory;
     private final SavePopularCardService savePopularCardService;
     private final DeletePreviousPopularCard deletePreviousPopularCard;
+    private static final String COMPLETED = "COMPLETED";
+    private static final String FAILED = "FAILED";
 
     @Scheduled(cron = "0 */10 * * * *")
     public void runBatch() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
@@ -45,10 +45,22 @@ public class CreatePopularCardBatchConfig {
     public Job createPopularCardJob() {
         return new JobBuilder("createPopularCardJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(deletePopularCardByLikeTasklet())
-                .next(savePopularCardByLikeTasklet())
-                .next(deletePopularCardByCommentTasklet())
-                .next(savePopularCardByCommentTasklet())
+                .start(savePopularCardByLikeTasklet())
+                    .on(COMPLETED)
+                    .to(deletePreviousPopularCardByLikeTasklet())
+
+                .from(savePopularCardByLikeTasklet())
+                .on(FAILED)
+                .to(savePopularCardByCommentTasklet())
+                .on(COMPLETED)
+                .to(deletePreviousPopularCardByCommentTasklet())
+
+                .from(deletePreviousPopularCardByLikeTasklet())
+                    .on("*")
+                    .to(savePopularCardByCommentTasklet())
+                    .on(COMPLETED)
+                    .to(deletePreviousPopularCardByCommentTasklet())
+                .end()
                 .build();
     }
 
@@ -56,7 +68,6 @@ public class CreatePopularCardBatchConfig {
     public Step savePopularCardByLikeTasklet() {
         return new StepBuilder("savePopularCardByLikeTasklet", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("savePopularCardByLikeTasklet");
                     savePopularCardService.savePopularCardByLike();
 
                     return RepeatStatus.FINISHED;
@@ -65,10 +76,9 @@ public class CreatePopularCardBatchConfig {
     }
 
     @Bean
-    public Step deletePopularCardByLikeTasklet() {
-        return new StepBuilder("savePopularCardByLikeTasklet", jobRepository)
+    public Step deletePreviousPopularCardByLikeTasklet() {
+        return new StepBuilder("deletePreviousPopularCardByLikeTasklet", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("deletePopularCardByLikeTasklet");
                     deletePreviousPopularCard.deletePreviousPopularFeedsByLike();
 
                     return RepeatStatus.FINISHED;
@@ -80,7 +90,6 @@ public class CreatePopularCardBatchConfig {
     public Step savePopularCardByCommentTasklet() {
         return new StepBuilder("savePopularCardByCommentTasklet", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("savePopularCardByCommentTasklet");
                     savePopularCardService.savePopularCardByComment();
 
                     return RepeatStatus.FINISHED;
@@ -89,10 +98,9 @@ public class CreatePopularCardBatchConfig {
     }
 
     @Bean
-    public TaskletStep deletePopularCardByCommentTasklet() {
-        return new StepBuilder("savePopularCardByCommentTasklet", jobRepository)
+    public TaskletStep deletePreviousPopularCardByCommentTasklet() {
+        return new StepBuilder("deletePreviousPopularCardByCommentTasklet", jobRepository)
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("deletePopularCardByCommentTasklet");
                     deletePreviousPopularCard.deletePreviousPopularFeedsByComment();
 
                     return RepeatStatus.FINISHED;
