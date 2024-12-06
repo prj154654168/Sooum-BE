@@ -1,11 +1,12 @@
 package com.sooum.data.notice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.sooum.data.notice.entity.noticetype.NoticeType;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -20,6 +21,13 @@ public class Notice {
 
     @Column(name = "url")
     private String url;
+
+    @Column(name = "date")
+    private LocalDate date;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "noticeType")
+    private NoticeType noticeType;
 
 
 }

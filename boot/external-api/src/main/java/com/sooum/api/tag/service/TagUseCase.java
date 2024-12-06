@@ -29,7 +29,7 @@ public class TagUseCase {
     public TagDto.TagSummary createTagSummary(Long tagPk, Long memberPk) {
         return TagDto.TagSummary.builder()
                 .content(tagService.findTag(tagPk).getContent())
-                .cardCnt(feedTagService.getCountTagFeeds(tagPk))
+                .cardCnt(tagService.findTag(tagPk).getCount())
                 .isFavorite(favoriteTagService.isExistsByTagPkAndMemberPk(tagPk, memberPk))
                 .build();
     }
