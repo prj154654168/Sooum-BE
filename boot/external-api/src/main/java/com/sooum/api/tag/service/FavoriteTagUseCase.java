@@ -9,6 +9,7 @@ import com.sooum.data.tag.service.TagService;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class FavoriteTagUseCase {
     private final ImgService imgService;
     private final TagService tagService;
 
+    @Transactional
     public List<TagDto.FavoriteTag> findMyFavoriteTags(Long memberPk, Long lastTagPk) {
         List<Long> favoriteTagPks = findMyFavoriteTagPks(memberPk, lastTagPk);
 
