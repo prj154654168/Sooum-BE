@@ -1,4 +1,4 @@
-package com.sooum.global.advice;
+package com.sooum.global.exceptionhandler;
 
 import com.sooum.global.responseform.ResponseStatus;
 import jakarta.persistence.EntityExistsException;
