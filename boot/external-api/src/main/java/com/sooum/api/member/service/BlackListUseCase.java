@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class BlackListUseCase {
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisStringTemplate;
     private final BlacklistService blacklistService;
     private static final String ACCESS_PREFIX = "blacklist:access:";
     private static final String REFRESH_PREFIX = "blacklist:refresh:";
@@ -22,14 +22,14 @@ public class BlackListUseCase {
     public void save(String token, LocalDateTime expiredAt) {
 
         if (tokenProvider.isAccessToken(token))
-            redisTemplate.opsForValue()
+            redisStringTemplate.opsForValue()
                     .set(
                             ACCESS_PREFIX + token,
                             "",
                             Duration.between(LocalDateTime.now(), expiredAt)
                     );
         else
-            redisTemplate.opsForValue()
+            redisStringTemplate.opsForValue()
                     .set(
                             REFRESH_PREFIX + token,
                             "",
@@ -45,10 +45,10 @@ public class BlackListUseCase {
     }
 
     public Boolean isAccessTokenExist(String token) {
-        return redisTemplate.hasKey(ACCESS_PREFIX + token);
+        return redisStringTemplate.hasKey(ACCESS_PREFIX + token);
     }
 
     public Boolean isRefreshTokenExist(String token) {
-        return redisTemplate.hasKey(REFRESH_PREFIX + token);
+        return redisStringTemplate.hasKey(REFRESH_PREFIX + token);
     }
 }
