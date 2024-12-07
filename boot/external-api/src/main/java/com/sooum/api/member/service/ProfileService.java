@@ -26,7 +26,7 @@ public class ProfileService {
 
     @Transactional
     public ProfileDto.MyProfileInfoResponse findMyProfileInfo(Long memberPk) {
-        Member profileOwner = memberService.findByPk(memberPk);
+        Member profileOwner = memberService.findMember(memberPk);
 
         Long totalVisitorCnt = memberService.findTotalVisitorCnt(profileOwner);
         Long currentDateVisitorCnt = visitorService.findCurrentDateVisitorCnt(profileOwner);
@@ -47,8 +47,8 @@ public class ProfileService {
 
     @Transactional
     public ProfileDto.ProfileInfoResponse findProfileInfo(Long profileOwnerPk, Long memberPk) {
-        Member profileOwner = memberService.findByPk(profileOwnerPk);
-        Member visitor = memberService.findByPk(memberPk);
+        Member profileOwner = memberService.findMember(profileOwnerPk);
+        Member visitor = memberService.findMember(memberPk);
         saveVisitor(profileOwner, visitor);
 
         Long totalVisitorCnt = memberService.findTotalVisitorCnt(profileOwner);
@@ -85,7 +85,7 @@ public class ProfileService {
 
     @Transactional
     public void updateProfile(ProfileDto.ProfileUpdate profileUpdate, Long memberPk) {
-        Member member = memberService.findByPk(memberPk);
+        Member member = memberService.findMember(memberPk);
 
         updateProfileImg(profileUpdate.getProfileImg(), member);
         member.updateNickname(profileUpdate.getNickname());

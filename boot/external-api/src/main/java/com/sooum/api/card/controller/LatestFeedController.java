@@ -1,7 +1,7 @@
 package com.sooum.api.card.controller;
 
 import com.sooum.api.card.dto.LatestFeedCardDto;
-import com.sooum.api.card.service.LatestFeedService;
+import com.sooum.api.card.service.LatestFeedUseCase;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
 import com.sooum.global.responseform.ResponseStatus;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("/cards/home")
 public class LatestFeedController {
 
-    private final LatestFeedService latestFeedService;
+    private final LatestFeedUseCase latestFeedUseCase;
 
     @GetMapping(value = {"/latest","/latest/{last}"})
     public ResponseEntity<?> getLatestFeed(@PathVariable(required = false, value = "last") Optional<Long> last,
@@ -28,7 +28,7 @@ public class LatestFeedController {
                                            @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
                                            @CurrentUser Long memberPk) {
 
-        List<LatestFeedCardDto> latestFeedInfo = latestFeedService.createLatestFeedInfo(last, memberPk, latitude, longitude);
+        List<LatestFeedCardDto> latestFeedInfo = latestFeedUseCase.createLatestFeedInfo(last, memberPk, latitude, longitude);
 
         if (latestFeedInfo.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

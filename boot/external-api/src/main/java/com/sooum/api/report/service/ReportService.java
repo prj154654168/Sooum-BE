@@ -31,7 +31,7 @@ public class ReportService {
     public void report(Long cardPk, ReportType reportType, Long memberPk) {
         validateDuplicateReport(cardPk, memberPk);
 
-        Member member = memberService.findByPk(memberPk);
+        Member member = memberService.findMember(memberPk);
 
         if(feedCardService.isExistFeedCard(cardPk)) {
             FeedCard feedCard = feedCardService.findByPk(cardPk);

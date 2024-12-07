@@ -19,8 +19,8 @@ public class FollowManagementService {
 
     @Transactional
     public void saveFollower(final Long fromMemberId, final Long toMemberId) {
-        Member fromMember = memberService.findByPk(fromMemberId);
-        Member toMember = memberService.findByPk(toMemberId);
+        Member fromMember = memberService.findMember(fromMemberId);
+        Member toMember = memberService.findMember(toMemberId);
         if (followService.isAlreadyFollowing(fromMember, toMember)) {
             throw new EntityExistsException(ExceptionMessage.ALREADY_Following.getMessage());
         }
@@ -29,8 +29,8 @@ public class FollowManagementService {
 
     @Transactional
     public void deleteFollower(final Long fromMemberId, final Long toMemberId) {
-        Member fromMember = memberService.findByPk(fromMemberId);
-        Member toMember = memberService.findByPk(toMemberId);
+        Member fromMember = memberService.findMember(fromMemberId);
+        Member toMember = memberService.findMember(toMemberId);
         followService.deleteFollower(fromMember, toMember);
     }
 

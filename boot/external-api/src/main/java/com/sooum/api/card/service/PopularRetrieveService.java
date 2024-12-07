@@ -33,7 +33,7 @@ public class PopularRetrieveService {
         List<FeedCard> popularFeeds = popularFeedService.getPopularFeeds(blockedMembers);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(popularFeeds);
-        List<CommentCard> comments = commentCardService.findByTargetList(popularFeeds);
+        List<CommentCard> comments = commentCardService.findCommentCardsIn(popularFeeds);
 
         return NextPageLinkGenerator.appendEachCardDetailLink(popularFeeds.stream()
                 .map(feed -> PopularCardRetrieve.builder()

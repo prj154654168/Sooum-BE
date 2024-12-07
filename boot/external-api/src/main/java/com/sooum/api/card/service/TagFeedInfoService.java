@@ -40,7 +40,7 @@ public class TagFeedInfoService {
         List<FeedCard> filteredTagFeeds = tagFeedService.findTagFeeds(tagPk, lastPk, blockMemberPks);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredTagFeeds);
-        List<CommentCard> commentCards = commentCardService.findByTargetList(filteredTagFeeds);
+        List<CommentCard> commentCards = commentCardService.findCommentCardsIn(filteredTagFeeds);
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredTagFeeds.stream()
                 .map(feedCard -> TagFeedCardDto.builder()

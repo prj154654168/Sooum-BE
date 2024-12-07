@@ -59,7 +59,7 @@ public class FeedService {
             throw new RuntimeException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
         }
 
-        Member member = memberService.findByPk(memberPk);
+        Member member = memberService.findMember(memberPk);
 
         if(member.getRole() == Role.BANNED) {
             String token = tokenProvider.getToken(request)
@@ -94,7 +94,7 @@ public class FeedService {
             validateUserImage(cardDto);
         }
 
-        Member member = memberService.findByPk(memberPk);
+        Member member = memberService.findMember(memberPk);
 
         if(member.getRole() == Role.BANNED) {
             String token = tokenProvider.getToken(request)
@@ -189,37 +189,54 @@ public class FeedService {
         switch (cardType) {
             case FEED_CARD -> deleteFeedCard(cardPk, writerPk);
             case COMMENT_CARD -> deleteCommentCard(cardPk, writerPk);
-            default -> throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
         }
     }
 
     private void deleteCommentCard(Long commentCardPk, Long writerPk) {
-        if (isNotCommentCardOwner(commentCardPk, writerPk)) return;
+        validateCommentCardOwner(commentCardPk, writerPk);
         CommentCard commentCard = commentCardService.findCommentCard(commentCardPk);
-        commentTagService.deleteByCommentCardPk(commentCardPk);
-        cardImgService.deleteUserUploadPic(commentCard.getImgName());
-        commentLikeService.deleteAllFeedLikes(commentCardPk);
-        commentReportService.deleteReport(commentCard);
+        deleteCommentCardDependencies(commentCard);
         commentCardService.deleteCommentCard(commentCardPk);
+    }
+
+    private void deleteCommentCardDependencies(CommentCard commentCard) {
+        commentTagService.deleteByCommentCardPk(commentCard.getPk());
+        cardImgService.deleteUserUploadPic(commentCard.getImgName());
+        commentLikeService.deleteAllFeedLikes(commentCard.getPk());
+        commentReportService.deleteReport(commentCard);
         //todo notification delete
+    }
+
+    private void validateCommentCardOwner(Long commentCardPk, Long writerPk) {
+        if (isNotCommentCardOwner(commentCardPk, writerPk)) {
+            throw new IllegalArgumentException("카드 작성자만 카드 삭제가 가능합니다.");
+        }
     }
 
     private boolean isNotCommentCardOwner(Long commentCardPk, Long writerPk) {
         return !commentCardService.findCommentCard(commentCardPk).getWriter().getPk().equals(writerPk);
     }
 
-
     void deleteFeedCard(Long feedCardPk, Long writerPk) {
-        if (isNotFeedCardOwner(feedCardPk, writerPk)) return;
+        validateFeedCardOwner(feedCardPk, writerPk);
         FeedCard feedCard = feedCardService.findFeedCard(feedCardPk);
-
-        feedTagService.deleteByFeedCardPk(feedCardPk);
-        cardImgService.deleteUserUploadPic(feedCard.getImgName());
-        feedLikeService.deleteAllFeedLikes(feedCardPk);
-        feedReportService.deleteReport(feedCardPk);
-        popularFeedService.deletePopularCard(feedCardPk);
+        deleteFeedCardDependencies(feedCard);
         feedCardService.deleteFeedCard(feedCardPk);
+    }
+
+    private void deleteFeedCardDependencies(FeedCard feedCard) {
+        feedTagService.deleteByFeedCardPk(feedCard.getPk());
+        cardImgService.deleteUserUploadPic(feedCard.getImgName());
+        feedLikeService.deleteAllFeedLikes(feedCard.getPk());
+        feedReportService.deleteReport(feedCard.getPk());
+        popularFeedService.deletePopularCard(feedCard.getPk());
         //todo notification delete
+    }
+
+    private void validateFeedCardOwner(Long commentCardPk, Long writerPk) {
+        if (isNotFeedCardOwner(commentCardPk, writerPk)) {
+            throw new IllegalArgumentException("카드 작성자만 카드 삭제가 가능합니다.");
+        }
     }
 
     private boolean isNotFeedCardOwner(Long feedCardPk, Long writerPk) {
