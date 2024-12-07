@@ -26,10 +26,12 @@ public class RsaService {
         return rsaRepository.save(rsa);
     }
 
+    public void deleteExpiredRsaKey() {
+        rsaRepository.deleteExpiredKey(LocalDateTime.now());
+    }
 
-
-    public Rsa findByExpiredAtIsAfter() {
-        return rsaRepository.findByExpiredAtIsAfter(LocalDateTime.now())
+    public Rsa findRsaKey() {
+        return rsaRepository.findRsa(LocalDateTime.now())
                 .orElseThrow(() -> new EntityNotFoundException("rsa 키를 찾을 수 없습니다."));
     }
 
