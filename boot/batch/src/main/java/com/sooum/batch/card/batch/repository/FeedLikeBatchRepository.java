@@ -17,9 +17,9 @@ public interface FeedLikeBatchRepository extends FeedLikeRepository {
     @Query("select fl.targetCard from FeedLike fl inner join fl.targetCard f " +
             "where f.isStory = false " +
                 "and f.isPublic = true " +
-                "and fl.targetCard.createdAt >= :dateTime " +
+                "and fl.targetCard.createdAt >= (current_timestamp - 2 day) " +
             "group by fl.targetCard.pk " +
                 "having count(fl.likedMember.pk) >= 2 " +
             "order by count(fl.targetCard.pk) desc")
-    List<FeedCard> findPopularCondFeedCards(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
+    List<FeedCard> findPopularCondFeedCards(Pageable pageable);
 }

@@ -24,12 +24,12 @@ public class FeedCardService {
 
     public List<FeedCard> findByLastId(Optional<Long> lastId, List<Long> blockMemberPkList) {
         Pageable pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
-        return feedCardRepository.findByNextPage(lastId.orElse(null), blockMemberPkList, LocalDateTime.now().minusDays(1), pageRequest);
+        return feedCardRepository.findByNextPage(lastId.orElse(null), blockMemberPkList, pageRequest);
     }
 
     public List<FeedCard> findFeedsByDistance (Optional<Long> lastPk, Point userLocation, double minDist, double maxDist, List<Long> blockMemberPks) {
         Pageable pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
-        return feedCardRepository.findNextByDistance(lastPk.orElse(null), userLocation, minDist, maxDist, blockMemberPks, LocalDateTime.now().minusDays(1) ,pageRequest);
+        return feedCardRepository.findNextByDistance(lastPk.orElse(null), userLocation, minDist, maxDist, blockMemberPks, pageRequest);
     }
 
     public void deleteFeedCard(Long feedCardPk) {
@@ -64,12 +64,12 @@ public class FeedCardService {
 
     public List<FeedCard> findMemberFeedCards(Long memberPk, Long lastPk) {
         PageRequest pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
-        return feedCardRepository.findMemberFeedCards(memberPk, lastPk, LocalDateTime.now().minusDays(1), pageRequest);
+        return feedCardRepository.findMemberFeedCards(memberPk, lastPk, pageRequest);
     }
 
     public List<FeedCard> findMyFeedCards(Long memberPk, Long lastPk) {
         PageRequest pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
-        return feedCardRepository.findMyFeedCards(memberPk, lastPk, LocalDateTime.now().minusDays(1),pageRequest);
+        return feedCardRepository.findMyFeedCards(memberPk, lastPk, pageRequest);
     }
 
     public void deleteFeedCardByMemberPk(Long memberPk) {
