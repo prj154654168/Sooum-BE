@@ -39,7 +39,7 @@ public class BlockMemberService {
         blockRepository.deleteBlockMember(fromMember, toMember);
     }
 
-    public List<Long> findAllBlockToPk(Long memberPk) {
+    public List<Long> findAllBlockMemberPks(Long memberPk) {
         return blockRepository.findAllBlockToPk(memberPk);
     }
 

@@ -65,7 +65,7 @@ public class DistanceFeedService {
     }
 
     private List<FeedCard> findFilteredDistanceFeeds(Optional<Long> lastPk, Long memberPk, Point userLocation, double minDistance, double maxDistance) {
-        List<Long> allBlockedPks = blockMemberService.findAllBlockToPk(memberPk);
+        List<Long> allBlockedPks = blockMemberService.findAllBlockMemberPks(memberPk);
         return feedCardService.findFeedsByDistance(lastPk, userLocation, minDistance, maxDistance, allBlockedPks);
     }
 }

@@ -29,7 +29,7 @@ public class PopularRetrieveService {
     public List<PopularCardRetrieve> findHomePopularFeeds(final Optional<Double> latitude,
                                                           final Optional<Double> longitude,
                                                           final Long memberPk) {
-        List<Long> blockedMembers = blockMemberService.findAllBlockToPk(memberPk);
+        List<Long> blockedMembers = blockMemberService.findAllBlockMemberPks(memberPk);
         List<FeedCard> popularFeeds = popularFeedService.getPopularFeeds(blockedMembers);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(popularFeeds);

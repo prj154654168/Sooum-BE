@@ -18,13 +18,10 @@ public interface FavoriteTagRepository extends JpaRepository<FavoriteTag, Long> 
     @Query("select ft.tag from FavoriteTag ft where ft.member.pk = :memberPk")
     List<Tag> findFavoriteTag(@Param("memberPk") Long memberPk);
 
-    @Query("select ft.tag.pk from FavoriteTag ft where ft.member.pk = :memberPk order by ft.pk desc")
-    List<Long> findFirstPageTagPks(@Param("memberPk") Long memberPk, Pageable pageable);
-
     @Query("select ft.tag.pk from FavoriteTag ft " +
-            "where ft.member.pk = :memberPk and ft.pk < (select ft2.pk from FavoriteTag ft2 where ft2.tag.pk = :lastTagPk) " +
+            "where ft.member.pk = :memberPk and (:lastTagPk is null or ft.tag.pk < :lastTagPk)" +
             "order by ft.pk desc")
-    List<Long> findNextPageTagPks(@Param("memberPk") Long memberPk, @Param("lastTagPk") Long lastTagPk, Pageable pageable);
+    List<Long> findMyFavoriteTags(@Param("memberPk") Long memberPk, @Param("lastTagPk") Long lastTagPk, Pageable pageable);
 
     @Modifying
     @Query("delete from FavoriteTag ft where ft.member.pk = :memberPk")

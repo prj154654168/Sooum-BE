@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 @Service
 @RequiredArgsConstructor
@@ -98,21 +100,5 @@ public class TagService {
     @Transactional
     public void deleteFavoriteTag(FavoriteTag favoriteTag) {
         favoriteTagRepository.delete(favoriteTag);
-    }
-
-    public List<FeedTag> findTop5FeedCardsByMemberPk(List<Long> favoriteTagIds, List<Long> blockedMemberPks) {
-        return feedTagRepository.findTop5FeedCardsByMemberPk(favoriteTagIds, blockedMemberPks);
-    }
-
-    public List<Long> findTagPksByLastPk(Long lastTagPk, Long memberPk) {
-        Pageable pageRequest = PageRequest.ofSize(20);
-        if (isFirstPageRequest(lastTagPk)) {
-            return favoriteTagRepository.findFirstPageTagPks(memberPk, pageRequest);
-        }
-        return favoriteTagRepository.findNextPageTagPks(memberPk, lastTagPk, pageRequest);
-    }
-
-    private static boolean isFirstPageRequest(Long lastTagPk) {
-        return lastTagPk.equals(0L);
     }
 }

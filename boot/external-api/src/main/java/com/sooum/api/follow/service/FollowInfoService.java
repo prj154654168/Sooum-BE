@@ -22,7 +22,7 @@ public class FollowInfoService {
     private final ImgService imgService;
 
     public List<FollowDto.FollowerInfo> findFollowersInfo(Long profileOwnerPk, Optional<Long> followerLastId, Long requesterPk) {
-        List<Long> blockedMembers = blockMemberService.findAllBlockToPk(requesterPk);
+        List<Long> blockedMembers = blockMemberService.findAllBlockMemberPks(requesterPk);
         List<Member> followers = followService.findFollowerWithoutBlockedMembers(followerLastId, profileOwnerPk, blockedMembers);
         List<Long> followedFollowersPk = followService.findFollowedFollowersPk(requesterPk, followers);
 
@@ -38,7 +38,7 @@ public class FollowInfoService {
     }
 
     public List<FollowDto.FollowingInfo> findFollowingsInfo(Long profileOwnerPk, Optional<Long> followingLastId, Long requesterPk) {
-        List<Long> blockedMembers = blockMemberService.findAllBlockToPk(requesterPk);
+        List<Long> blockedMembers = blockMemberService.findAllBlockMemberPks(requesterPk);
         List<Member> followings = followService.findFollowingWithoutBlockedMembers(followingLastId, profileOwnerPk, blockedMembers);
         List<Long> followedFollowingsPk = followService.findFollowedFollowingsPk(requesterPk, followings);
 
