@@ -9,12 +9,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 
 public interface RsaRepository extends JpaRepository<Rsa, Long> {
 
     @Query("select r from Rsa r where r.expiredAt > :currentDate order by r.id desc")
-    Optional<Rsa> findRsa(@Param("currentDate") LocalDateTime currentDate, Pageable pageable);
+    List<Rsa> findRsa(@Param("currentDate") LocalDateTime currentDate, Pageable pageable);
 
     @Transactional
     @Modifying

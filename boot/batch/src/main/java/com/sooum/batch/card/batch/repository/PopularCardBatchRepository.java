@@ -9,14 +9,12 @@ public interface PopularCardBatchRepository extends PopularFeedRepository {
     @Modifying
     @Query("delete from PopularFeed pf " +
             "where pf.popularityType = 'LIKE' " +
-                "and pf.createdAt < (current_timestamp - 5 minute) " +
                 "and pf.version = :version")
     void deletePreviousPopularFeedsByLike(@Param("version") int version);
 
     @Modifying
     @Query("delete from PopularFeed pf " +
             "where pf.popularityType = 'COMMENT' " +
-                "and pf.createdAt < (current_timestamp - 5 minute) " +
                 "and pf.version = :version")
     void deletePreviousPopularFeedsByComment(@Param("version") int version);
 }

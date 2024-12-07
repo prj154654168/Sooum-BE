@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +33,10 @@ public class RsaService {
     }
 
     public Rsa findRsaKey() {
-        return rsaRepository.findRsa(LocalDateTime.now(), PageRequest.ofSize(1))
-                .orElseThrow(() -> new EntityNotFoundException("rsa 키를 찾을 수 없습니다."));
+        List<Rsa> rsa = rsaRepository.findRsa(LocalDateTime.now(), PageRequest.ofSize(1));
+        if (rsa.isEmpty()) {
+            throw new IllegalArgumentException("rsa key가 없습니다 findRsaKey()");}
+        return rsa.get(0);
     }
 
 
