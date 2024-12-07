@@ -4,6 +4,7 @@ import com.sooum.data.rsa.entity.Rsa;
 import com.sooum.data.rsa.repository.RsaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ public class RsaService {
     }
 
     public Rsa findRsaKey() {
-        return rsaRepository.findRsa(LocalDateTime.now())
+        return rsaRepository.findRsa(LocalDateTime.now(), PageRequest.ofSize(1))
                 .orElseThrow(() -> new EntityNotFoundException("rsa 키를 찾을 수 없습니다."));
     }
 
