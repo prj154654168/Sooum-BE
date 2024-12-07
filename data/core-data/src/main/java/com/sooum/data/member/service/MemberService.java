@@ -28,7 +28,7 @@ public class MemberService {
                 .orElse(null);
     }
 
-    public Member findByPk(final Long memberPk) {
+    public Member findMember(final Long memberPk) {
         return memberRepository.findById(memberPk)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
     }

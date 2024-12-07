@@ -31,7 +31,7 @@ public class FavoriteTagService {
 
         FavoriteTag favoriteTag = FavoriteTag.builder()
                 .tag(tagService.findTag(tagPk))
-                .member(memberService.findByPk(memberPk))
+                .member(memberService.findMember(memberPk))
                 .build();
         tagService.saveFavoriteTag(favoriteTag);
     }

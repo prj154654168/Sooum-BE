@@ -34,7 +34,7 @@ public class CommentLikeService {
             return;
         }
 
-        Member likedMember = memberService.findByPk(requesterPk);
+        Member likedMember = memberService.findMember(requesterPk);
         CommentCard targetCard = commentCardService.findByPk(targetFeedCardPk);
         commentLikeRepository.save(
                 CommentLike.builder()

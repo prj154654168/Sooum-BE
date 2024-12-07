@@ -54,7 +54,7 @@ public class MemberWithdrawalService {
 
     @Transactional
     public void withdrawMember(Long memberPk, AuthDTO.Token token) throws InvalidTokenException {
-        Member member = memberService.findByPk(memberPk);
+        Member member = memberService.findMember(memberPk);
 
         handleSuspendedUser(member);
         addTokensToBlacklist(token);

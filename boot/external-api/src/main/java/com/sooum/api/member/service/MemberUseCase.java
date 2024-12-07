@@ -14,7 +14,7 @@ public class MemberUseCase {
 
     public MemberDto.MemberStatus findMemberStatus(Long memberPk) {
         return MemberDto.MemberStatus.builder()
-                .banEndAt(memberService.findByPk(memberPk).getUntilBan())
+                .banEndAt(memberService.findMember(memberPk).getUntilBan())
                 .build();
     }
 }

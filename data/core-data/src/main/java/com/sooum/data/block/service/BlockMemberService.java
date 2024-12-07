@@ -2,7 +2,6 @@ package com.sooum.data.block.service;
 
 import com.sooum.data.block.entity.Block;
 import com.sooum.data.block.repository.BlockRepository;
-import com.sooum.data.card.entity.Card;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.service.MemberService;
 import jakarta.persistence.EntityExistsException;
@@ -26,24 +25,17 @@ public class BlockMemberService {
             throw new EntityExistsException("이미 차단한 사용자입니다.");
         }
 
-        Member fromMember = memberService.findByPk(fromMemberPk);
-        Member toMember = memberService.findByPk(toMemberPk);
+        Member fromMember = memberService.findMember(fromMemberPk);
+        Member toMember = memberService.findMember(toMemberPk);
 
         blockRepository.save(Block.builder()
                 .toMember(toMember)
                 .fromMember(fromMember).build());
     }
 
-    public <T extends Card> List<T> filterBlockedMembers (List<T> cards, Long memberPk) {
-        List<Long> allBlockToPk = findAllBlockToPk(memberPk);
-        return cards.stream()
-                .filter(feedCard -> !allBlockToPk.contains(feedCard.getPk()))
-                .toList();
-    }
-
     public void deleteBlockMember(Long fromMemberPk, Long toMemberId) {
-        Member fromMember = memberService.findByPk(fromMemberPk);
-        Member toMember = memberService.findByPk(toMemberId);
+        Member fromMember = memberService.findMember(fromMemberPk);
+        Member toMember = memberService.findMember(toMemberId);
         blockRepository.deleteBlockMember(fromMember, toMember);
     }
 
