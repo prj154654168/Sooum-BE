@@ -18,9 +18,9 @@ public interface CommentCardBatchRepository extends CommentCardRepository {
     @Query("select fc from CommentCard cc inner join FeedCard fc on fc.pk = cc.masterCard " +
             "where fc.isStory = false " +
                 "and fc.isPublic = true " +
-                "and fc.createdAt >= :dateTime " +
+                "and fc.createdAt >= (current_timestamp - 2 day) " +
             "group by fc.pk " +
                 "having count(cc.pk) >= 2" +
             "order by count(fc.pk) desc ")
-    List<FeedCard> findPopularCondFeedCards(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
+    List<FeedCard> findPopularCondFeedCards(Pageable pageable);
 }
