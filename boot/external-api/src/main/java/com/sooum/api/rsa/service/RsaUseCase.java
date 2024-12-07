@@ -14,41 +14,45 @@ import static com.sooum.api.member.dto.AuthDTO.Key;
 public class RsaUseCase {
     private final RsaService rsaService;
     private final RsaProvider rsaProvider;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisStringTemplate;
 
     public Key findPublicKey() {
-        String publicKey;
+        String newPublicKey;
 
         try {
-            publicKey = redisTemplate.opsForValue().get("public");
-            if (publicKey == null) {
-                Rsa rsa = rsaService.findByExpiredAtIsAfter();
-                publicKey = rsa.getPublicKey();
+            newPublicKey = redisStringTemplate.opsForValue().get("rsa:public-key:new");
+            if (newPublicKey == null) {
+                Rsa rsa = rsaService.findRsaKey();
+                newPublicKey = rsa.getPublicKey();
             }
         } catch (Exception e) {
-            Rsa rsa = rsaService.findByExpiredAtIsAfter();
-            publicKey = rsa.getPublicKey();
+            Rsa rsa = rsaService.findRsaKey();
+            newPublicKey = rsa.getPublicKey();
         }
 
-        return new Key(publicKey);
+        return new Key(newPublicKey);
     }
 
 
 
     public String decodeDeviceId(String encryptedData) {
-        String privateKey;
+        String newPrivateKey;
+        String oldPrivateKey;
 
         try {
-            privateKey = redisTemplate.opsForValue().get("private");
-            if (privateKey == null) {
-                Rsa rsa = rsaService.findByExpiredAtIsAfter();
-                privateKey = rsa.getPrivateKey();
+            newPrivateKey = redisStringTemplate.opsForValue().get("rsa:private-key:new");
+            oldPrivateKey = redisStringTemplate.opsForValue().get("rsa:private-key:old");
+            if (newPrivateKey == null) {
+                Rsa rsa = rsaService.findRsaKey();
+                newPrivateKey = rsa.getPrivateKey();
+                oldPrivateKey = rsa.getPrivateKey();
             }
         } catch (Exception e) {
-            Rsa rsa = rsaService.findByExpiredAtIsAfter();
-            privateKey = rsa.getPrivateKey();
+            Rsa rsa = rsaService.findRsaKey();
+            newPrivateKey = rsa.getPrivateKey();
+            oldPrivateKey = rsa.getPrivateKey();
         }
 
-        return rsaProvider.decode(encryptedData, privateKey);
+        return rsaProvider.decode(encryptedData, oldPrivateKey, newPrivateKey);
     }
 }

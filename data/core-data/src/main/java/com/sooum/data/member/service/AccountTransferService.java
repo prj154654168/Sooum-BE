@@ -28,7 +28,7 @@ public class AccountTransferService {
     @Transactional
     public AccountTransfer saveAccountTransfer(Long memberPk) {
         return accountTransferRepository.save(AccountTransfer.builder()
-                .member(memberService.findByPk(memberPk))
+                .member(memberService.findMember(memberPk))
                 .transferId(createTransferId())
                 .build());
     }

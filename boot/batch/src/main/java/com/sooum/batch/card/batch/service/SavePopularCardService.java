@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,14 +22,14 @@ public class SavePopularCardService {
     private static final int PAGE_SIZE = 100;
 
     public void savePopularCardByLike() {
-        List<FeedCard> popularCondFeedCards = feedLikeBatchRepository.findPopularCondFeedCards(PageRequest.ofSize(PAGE_SIZE));
+        List<FeedCard> popularCondFeedCards = feedLikeBatchRepository.findPopularCondFeedCards(LocalDateTime.now().minusDays(2), PageRequest.ofSize(PAGE_SIZE));
         int newVersion = popularCardBatchRepository.findLatestVersionByLike().orElse(0) + 1;
 
         savePopularCard(popularCondFeedCards, PopularityType.LIKE, newVersion);
     }
 
     public void savePopularCardByComment() {
-        List<FeedCard> popularCondFeedCards = commentCardBatchRepository.findPopularCondFeedCards(PageRequest.ofSize(PAGE_SIZE));
+        List<FeedCard> popularCondFeedCards = commentCardBatchRepository.findPopularCondFeedCards(LocalDateTime.now().minusDays(2), PageRequest.ofSize(PAGE_SIZE));
         int newVersion = popularCardBatchRepository.findLatestVersionByComment().orElse(0) + 1;
 
         savePopularCard(popularCondFeedCards, PopularityType.COMMENT, newVersion);

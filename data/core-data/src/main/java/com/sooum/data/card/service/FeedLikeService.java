@@ -46,7 +46,7 @@ public class FeedLikeService {
             return;
         }
 
-        Member likedMember = memberService.findByPk(requesterPk);
+        Member likedMember = memberService.findMember(requesterPk);
         FeedCard targetCard = feedCardService.findByPk(targetFeedCardPk);
         feedLikeRepository.save(
                 FeedLike.builder()

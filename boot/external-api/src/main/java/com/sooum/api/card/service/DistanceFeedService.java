@@ -43,7 +43,7 @@ public class DistanceFeedService {
         List<FeedCard> filteredDistanceFeeds = findFilteredDistanceFeeds(lastPk, memberPk, userLocation, minDistance, maxDistance);
 
         List<FeedLike> feedLikeList = feedLikeService.findByTargetCards(filteredDistanceFeeds);
-        List<CommentCard> commentCardList = commentCardService.findByTargetList(filteredDistanceFeeds);
+        List<CommentCard> commentCardList = commentCardService.findCommentCardsIn(filteredDistanceFeeds);
 
         return NextPageLinkGenerator.appendEachCardDetailLink(filteredDistanceFeeds.stream()
                 .map(feedCard -> DistanceCardDto.builder()

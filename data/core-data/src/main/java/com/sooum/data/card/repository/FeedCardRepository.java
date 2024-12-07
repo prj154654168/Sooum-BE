@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
@@ -17,46 +18,53 @@ public interface FeedCardRepository extends JpaRepository<FeedCard, Long> {
             "from FeedCard f " +
             "where (:lastId is null or f.pk < :lastId) " +
                 "and f.writer.pk not in :blockMemberPkList " +
-                "and (f.isStory=false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day))) " +
+                "and (f.isStory=false or (f.isStory = true and f.createdAt > :dateTime)) " +
                 "and f.isDeleted = false " +
                 "and f.isPublic = true " +
             "order by f.pk desc")
-    List<FeedCard> findByNextPage(@Param("lastId") Long lastId, @Param("blockMemberPkList") List<Long> blockMemberPkList, Pageable pageable);
+    List<FeedCard> findByNextPage(@Param("lastId") Long lastId,
+                                  @Param("blockMemberPkList") List<Long> blockMemberPkList,
+                                  @Param("dateTime") LocalDateTime dateTime,
+                                  Pageable pageable);
 
     @Query("select f from FeedCard f " +
             "where (:lastPk is null or f.pk < :lastPk) " +
             "and f.writer.pk not in :blockMemberPks " +
             "and (St_Distance(f.location, :userLocation) <= :maxDist " +
                 "and St_Distance(f.location, :userLocation) >= :minDist " +
-                "and (f.isStory = false or (f.isStory = true and f.createdAt > (current_timestamp - 1 day)))) " +
+                "and (f.isStory = false or (f.isStory = true and f.createdAt > :dateTime))) " +
                 "and f.isDeleted = false " +
                 "and f.isPublic = true " +
             "order by f.pk desc")
     List<FeedCard> findNextByDistance(@Param("lastPk") Long lastPk, @Param("userLocation") Point userLocation,
                                       @Param("minDist") double minDist, @Param("maxDist") double maxDist,
-                                      @Param("blockMemberPks") List<Long> blockMemberPks, Pageable pageable);
+                                      @Param("blockMemberPks") List<Long> blockMemberPks,
+                                      @Param("dateTime") LocalDateTime dateTime,
+                                      Pageable pageable);
 
     @Query("select count(f) from FeedCard f where f.writer = :cardOwnerMember")
     Long findFeedCardCnt(@Param("cardOwnerMember") Member cardOwnerMember);
 
 
     @Query("select fc from FeedCard fc " +
-            "where (fc.isStory=false or (fc.isStory = true and fc.createdAt > (current_timestamp - 1 day))) " +
+            "where (fc.isStory=false or (fc.isStory = true and fc.createdAt > :dateTime)) " +
                 "and fc.writer.pk = :memberPk " +
                 "and (:lastPk is null or fc.pk < :lastPk) " +
             "order by fc.pk desc ")
     List<FeedCard> findMyFeedCards(@Param("memberPk") Long memberPk,
                                    @Param("lastPk") Long lastPk,
+                                   @Param("dateTime") LocalDateTime dateTime,
                                    PageRequest pageRequest);
 
     @Query("select fc from FeedCard fc " +
             "where fc.isPublic = true " +
-                "and (fc.isStory=false or (fc.isStory = true and fc.createdAt > (current_timestamp - 1 day))) " +
+                "and (fc.isStory=false or (fc.isStory = true and fc.createdAt > :dateTime)) " +
                 "and fc.writer.pk = :memberPk " +
                 "and (:lastPk is null or fc.pk < :lastPk) " +
             "order by fc.pk desc ")
     List<FeedCard> findMemberFeedCards(@Param("memberPk") Long memberPk,
                                        @Param("lastPk") Long lastPk,
+                                       @Param("dateTime") LocalDateTime dateTime,
                                        PageRequest pageRequest);
 
     @Modifying
