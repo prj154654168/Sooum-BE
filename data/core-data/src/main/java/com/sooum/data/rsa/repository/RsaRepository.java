@@ -1,6 +1,7 @@
 package com.sooum.data.rsa.repository;
 
 import com.sooum.data.rsa.entity.Rsa;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,8 +13,8 @@ import java.util.Optional;
 
 public interface RsaRepository extends JpaRepository<Rsa, Long> {
 
-    @Query("select r from Rsa r where r.expiredAt > :currentDate")
-    Optional<Rsa> findRsa(@Param("currentDate") LocalDateTime currentDate);
+    @Query("select r from Rsa r where r.expiredAt > :currentDate order by r.id desc")
+    Optional<Rsa> findRsa(@Param("currentDate") LocalDateTime currentDate, Pageable pageable);
 
     @Transactional
     @Modifying
