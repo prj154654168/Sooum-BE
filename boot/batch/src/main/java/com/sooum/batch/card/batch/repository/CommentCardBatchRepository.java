@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CommentCardBatchRepository extends CommentCardRepository {
@@ -17,9 +18,9 @@ public interface CommentCardBatchRepository extends CommentCardRepository {
     @Query("select fc from CommentCard cc inner join FeedCard fc on fc.pk = cc.masterCard " +
             "where fc.isStory = false " +
                 "and fc.isPublic = true " +
-                "and fc.createdAt >= (current_timestamp - 2 day) " +
+                "and fc.createdAt >= :dateTime " +
             "group by fc.pk " +
                 "having count(cc.pk) >= 2" +
             "order by count(fc.pk) desc ")
-    List<FeedCard> findPopularCondFeedCards(Pageable pageable);
+    List<FeedCard> findPopularCondFeedCards(@Param("dateTime") LocalDateTime dateTime, Pageable pageable);
 }
