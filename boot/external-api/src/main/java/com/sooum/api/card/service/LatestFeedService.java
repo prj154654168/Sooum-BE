@@ -53,7 +53,7 @@ public class LatestFeedService {
     }
 
     private List<FeedCard> findFilteredLatestFeed(Optional<Long> lastCardId, Long memberId) {
-        List<Long> allBlockToPk = blockMemberService.findAllBlockToPk(memberId);
+        List<Long> allBlockToPk = blockMemberService.findAllBlockMemberPks(memberId);
         return feedCardService.findByLastId(lastCardId, allBlockToPk);
     }
 }

@@ -32,6 +32,16 @@ public class FeedTagService {
         return feedTagRepository.countTagFeeds(tagPk);
     }
 
+    public List<FeedTag> findTop5FeedTags(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
+        return blockedMemberPks.isEmpty()
+                ? feedTagRepository.findTop5FeedTagsWithoutBlock(favoriteTagPks)
+                : feedTagRepository.findTop5FeedTagsWithBlock(favoriteTagPks, blockedMemberPks);
+    }
+
+    public List<FeedTag> findLoadFeedTagsIn(List<FeedTag> feedTags) {
+        return feedTagRepository.findLoadFeedTagsIn(feedTags);
+    }
+
     public void saveAll(List<FeedTag> feedTagList) {
         feedTagRepository.saveAll(feedTagList);
     }

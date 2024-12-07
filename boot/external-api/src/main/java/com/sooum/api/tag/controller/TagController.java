@@ -100,7 +100,7 @@ public class TagController {
     @GetMapping({"/favorites", "/favorites/{last}"})
     ResponseEntity<?> findFavoriteTags(@PathVariable(required = false, value = "last") Optional<Long> last,
                                        @CurrentUser Long memberPk) {
-        List<TagDto.FavoriteTag> myFavoriteTags = favoriteTagUseCase.findMyFavoriteTags(memberPk, last.orElse(0L));
+        List<TagDto.FavoriteTag> myFavoriteTags = favoriteTagUseCase.findTop5FeedByFavoriteTags(memberPk, last);
         if (myFavoriteTags.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

@@ -36,7 +36,7 @@ public class CommentInfoService {
                                                                 Optional<Double> longitude,
                                                                 Long currentCardPk,
                                                                 Long memberPk) {
-        List<Long> blockMemberPks = blockMemberService.findAllBlockToPk(memberPk);
+        List<Long> blockMemberPks = blockMemberService.findAllBlockMemberPks(memberPk);
         List<CommentCard> comments = commentCardService.findCommentsByLastPk(currentCardPk, lastPk, blockMemberPks);
         List<CommentLike> commentLikes = commentLikeService.findByTargetCards(comments);
         List<CommentCard> childComments = commentCardService.findChildCommentsByParents(comments);

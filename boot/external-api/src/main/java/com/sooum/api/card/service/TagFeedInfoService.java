@@ -36,7 +36,7 @@ public class TagFeedInfoService {
                                                    Optional<Double> latitude,
                                                    Optional<Double> longitude,
                                                    Long memberPk) {
-        List<Long> blockMemberPks = blockMemberService.findAllBlockToPk(memberPk);
+        List<Long> blockMemberPks = blockMemberService.findAllBlockMemberPks(memberPk);
         List<FeedCard> filteredTagFeeds = tagFeedService.findTagFeeds(tagPk, lastPk, blockMemberPks);
 
         List<FeedLike> feedLikes = feedLikeService.findByTargetCards(filteredTagFeeds);
