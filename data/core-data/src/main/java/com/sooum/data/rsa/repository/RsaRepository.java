@@ -12,8 +12,6 @@ import java.util.Optional;
 
 public interface RsaRepository extends JpaRepository<Rsa, Long> {
 
-    Optional<Rsa> findByExpiredAtIsAfter(LocalDateTime now);
-
     @Query("select r from Rsa r where r.expiredAt > :currentDate")
     Optional<Rsa> findRsa(@Param("currentDate") LocalDateTime currentDate);
 
