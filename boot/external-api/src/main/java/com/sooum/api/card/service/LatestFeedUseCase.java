@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class LatestFeedService {
+public class LatestFeedUseCase {
     private final FeedCardService feedCardService;
     private final FeedLikeService feedLikeService;
     private final CommentCardService commentCardService;
