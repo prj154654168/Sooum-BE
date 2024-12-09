@@ -40,11 +40,10 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
                                        @Param("blockMemberPks") List<Long> blockMemberPks,
                                        Pageable pageable);
 
-    @Query("select cc from CommentCard cc where cc.isDeleted = false and cc.writer.pk = :memberPk order by cc.pk desc ")
-    List<CommentCard> findCommentCardsFirstPage(@Param("memberPk") Long memberPK, Pageable pageable);
-
-    @Query("select cc from CommentCard cc where cc.isDeleted = false and cc.writer.pk = :memberPk and cc.pk < :lastPk order by cc.pk desc ")
-    List<CommentCard> findCommentCardsNextPage(@Param("memberPk") Long memberPK, @Param("lastPk") Long lastPk, Pageable pageable);
+    @Query("select cc from CommentCard cc where cc.writer.pk = :memberPk" +
+            " and (:lastPk is null or cc.pk < :lastPk)" +
+            " and cc.isDeleted = false order by cc.pk desc")
+    List<CommentCard> findCommentCards(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, Pageable pageable);
 
     @Modifying
     @Query("delete from CommentCard cc WHERE cc.writer.pk = :memberPk")

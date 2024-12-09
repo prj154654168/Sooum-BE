@@ -83,9 +83,7 @@ public class CommentCardService {
 
     public List<CommentCard> findCommentList(Long memberPk, Optional<Long> lastPk) {
         PageRequest pageRequest = PageRequest.ofSize(30);
-        return lastPk.isEmpty()
-                ? commentCardRepository.findCommentCardsFirstPage(memberPk, pageRequest)
-                : commentCardRepository.findCommentCardsNextPage(memberPk, lastPk.get(), pageRequest);
+        return commentCardRepository.findCommentCards(memberPk, lastPk.orElse(null), pageRequest);
     }
 
     public void deleteCommentCardByMemberPk(Long memberPk) {
