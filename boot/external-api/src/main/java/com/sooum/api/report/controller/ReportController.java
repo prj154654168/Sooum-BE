@@ -1,7 +1,7 @@
 package com.sooum.api.report.controller;
 
+import com.sooum.api.report.dto.ReportDto;
 import com.sooum.api.report.service.ReportService;
-import com.sooum.data.report.entity.reporttype.ReportType;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,9 @@ public class ReportController {
 
     @PostMapping("/cards/{cardPk}")
     public ResponseEntity<?> reportFeedCard(@PathVariable("cardPk") Long cardPk,
-                                            @RequestParam("reportType") ReportType reportType,
+                                            @RequestBody ReportDto.Request requestDto,
                                             @CurrentUser Long memberPk) {
-        reportService.report(cardPk, reportType, memberPk);
+        reportService.report(cardPk, requestDto.getReportType(), memberPk);
         return ResponseEntity.created(URI.create(""))
                 .body(
                         ResponseStatus.builder()
