@@ -243,9 +243,9 @@ public class FeedService {
         return !feedCardService.findFeedCard(feedCardPk).getWriter().getPk().equals(writerPk);
     }
 
-    public static boolean isWrittenCommentCard(Card feedCard, List<CommentCard> commentCardList, Long memberPk) {
+    public static boolean isWrittenCommentCard(Card card, List<CommentCard> commentCardList, Long memberPk) {
         return commentCardList.stream()
-                .filter(commentCard -> commentCard.getMasterCard().equals(feedCard.getPk()))
+                .filter(commentCard -> commentCard.getParentCardPk().equals(card.getPk()))
                 .anyMatch(commentCard -> commentCard.getWriter().getPk().equals(memberPk));
     }
 
