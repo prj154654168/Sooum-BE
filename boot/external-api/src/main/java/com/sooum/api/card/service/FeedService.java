@@ -243,8 +243,10 @@ public class FeedService {
         return !feedCardService.findFeedCard(feedCardPk).getWriter().getPk().equals(writerPk);
     }
 
-    public static boolean isWrittenCommentCard(List<CommentCard> commentCardList, Long memberPk) {
-        return commentCardList.stream().anyMatch(commentCard -> commentCard.getWriter().getPk().equals(memberPk));
+    public static boolean isWrittenCommentCard(Card card, List<CommentCard> commentCardList, Long memberPk) {
+        return commentCardList.stream()
+                .filter(commentCard -> commentCard.getParentCardPk().equals(card.getPk()))
+                .anyMatch(commentCard -> commentCard.getWriter().getPk().equals(memberPk));
     }
 
     public static boolean isLiked(FeedCard feed, List<FeedLike> feedLikes, Long memberPk) {

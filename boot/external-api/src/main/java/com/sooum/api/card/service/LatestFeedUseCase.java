@@ -58,7 +58,7 @@ public class LatestFeedUseCase {
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
                         .backgroundImgUrl(imgService.findCardImgUrl(feedCard.getImgType(),feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
-                        .isCommentWritten(FeedService.isWrittenCommentCard(commentCards, memberPk))
+                        .isCommentWritten(FeedService.isWrittenCommentCard(feedCard, commentCards, memberPk))
                         .isLiked(FeedService.isLiked(feedCard, feedLikes, memberPk))
                         .likeCnt(FeedService.countLikes(feedCard, feedLikes))
                         .commentCnt(FeedService.countComments(feedCard, commentCards))

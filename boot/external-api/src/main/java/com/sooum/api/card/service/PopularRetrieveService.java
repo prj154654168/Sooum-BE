@@ -47,7 +47,7 @@ public class PopularRetrieveService {
                         .createdAt(feed.getCreatedAt())
                         .isLiked(FeedService.isLiked(feed, feedLikes, memberPk))
                         .likeCnt(FeedService.countLikes(feed, feedLikes))
-                        .isCommentWritten(FeedService.isWrittenCommentCard(comments, memberPk))
+                        .isCommentWritten(FeedService.isWrittenCommentCard(feed, comments, memberPk))
                         .commentCnt(FeedService.countComments(feed, comments))
                         .build()
                 )

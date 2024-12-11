@@ -52,7 +52,7 @@ public class CommentInfoService {
                         .createdAt(comment.getCreatedAt())
                         .isLiked(FeedService.isLiked(comment, commentLikes, memberPk))
                         .likeCnt(FeedService.countLikes(comment, commentLikes))
-                        .isCommentWritten(FeedService.isWrittenCommentCard(childComments, memberPk))
+                        .isCommentWritten(FeedService.isWrittenCommentCard(comment, childComments, memberPk))
                         .commentCnt(FeedService.countComments(comment, childComments))
                         .build())
                 .toList());
