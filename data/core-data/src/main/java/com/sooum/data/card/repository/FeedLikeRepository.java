@@ -25,7 +25,7 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     Integer countByTargetCard_Pk(@Param("targetCardPk") Long targetCardPk);
 
     @Modifying
-    @Query("delete from FeedLike fl where fl.likedMember.pk = :memberPk")
+    @Query("delete from FeedLike fl where fl.likedMember.pk = :memberPk or fl.targetCard.writer.pk = :memberPk")
     void deleteAllMemberLikes(@Param("memberPk") Long memberPk);
 
     @Query("select fl from FeedLike fl " +
