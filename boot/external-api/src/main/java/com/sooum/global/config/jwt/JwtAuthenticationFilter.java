@@ -57,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 writer.flush();
                 writer.close();
             }
-        }catch (Exception e) {
+        }catch (InvalidTokenException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             PrintWriter writer = response.getWriter();
             writer.flush();
