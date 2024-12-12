@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/cards").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/cards/{cardPk}").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/users/token").hasRole("USER") // 토큰 재발급
-                .requestMatchers(HttpMethod.POST, "/members/suspension").permitAll() // 토큰 재발급
+                .requestMatchers(HttpMethod.POST, "/members/suspension").permitAll()
                 .requestMatchers(HttpMethod.GET, "/profiles/nickname/{nickname}/available").permitAll()
                 .requestMatchers(HttpMethod.POST, "/settings/transfer").permitAll()
                 // Authenticated
