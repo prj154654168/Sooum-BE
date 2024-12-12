@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
     Integer countByTargetCard_Pk(@Param("targetCardPk") Long targetCardPk);
 
     @Modifying
+    @Transactional
     @Query("delete from CommentLike cl where cl.likedMember.pk = :memberPk or cl.targetCard.writer.pk = :memberPk")
     void deleteAllMemberLikes(@Param("memberPk") Long memberPk);
 

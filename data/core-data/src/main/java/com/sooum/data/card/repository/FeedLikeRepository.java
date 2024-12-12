@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     List<FeedLike> findByTargetList(@Param("targetList") List<FeedCard> targetList);
 
     @Modifying
+    @Transactional
     @Query("delete from FeedLike fl where fl.targetCard.pk = :feedCardPk")
     void deleteAllFeedLikes(@Param("feedCardPk") Long feedCardPk);
 
@@ -25,6 +27,7 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     Integer countByTargetCard_Pk(@Param("targetCardPk") Long targetCardPk);
 
     @Modifying
+    @Transactional
     @Query("delete from FeedLike fl where fl.likedMember.pk = :memberPk or fl.targetCard.writer.pk = :memberPk")
     void deleteAllMemberLikes(@Param("memberPk") Long memberPk);
 

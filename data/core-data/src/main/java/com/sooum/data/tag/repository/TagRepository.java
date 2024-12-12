@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     List<Tag> findRecommendTagList(@Param("excludeTags") List<Tag> excludeTags, Pageable pageable);
 
     @Modifying
+    @Transactional
     @Query("update Tag t set t.count = t.count + 1 where t in :tags")
     void incrementTagCount(@Param("tags") List<Tag> tags);
 }

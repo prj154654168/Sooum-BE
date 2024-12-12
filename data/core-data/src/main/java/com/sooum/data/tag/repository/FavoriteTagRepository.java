@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ public interface FavoriteTagRepository extends JpaRepository<FavoriteTag, Long> 
     List<Long> findMyFavoriteTags(@Param("memberPk") Long memberPk, @Param("lastTagPk") Long lastTagPk, Pageable pageable);
 
     @Modifying
+    @Transactional
     @Query("delete from FavoriteTag ft where ft.member.pk = :memberPk")
     void deleteAllFavoriteTag(@Param("memberPk") Long memberPk);
 }

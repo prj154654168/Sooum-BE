@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,7 @@ public interface CommentCardRepository extends JpaRepository<CommentCard, Long> 
     List<CommentCard> findCommentCards(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, Pageable pageable);
 
     @Modifying
+    @Transactional
     @Query("delete from CommentCard cc WHERE cc.writer.pk = :memberPk")
     void deleteCommentCardByMemberPk(@Param("memberPk") Long memberPk);
 }
