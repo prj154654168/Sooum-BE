@@ -68,7 +68,7 @@ public class MemberAuthController {
 
     @PostMapping("/token")
     public ResponseEntity<?> reissueAccessToken(HttpServletRequest request) {
-        return ResponseEntity.ok(ResponseEntity.ok(ResponseEntityModel.<ReissuedToken>builder()
+        return ResponseEntity.ok(ResponseEntityModel.<ReissuedToken>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)
                         .httpCode(HttpStatus.OK.value())
@@ -77,6 +77,6 @@ public class MemberAuthController {
                 )
                 .content(memberInfoService.reissueAccessToken(request))
                 .build()
-                .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/login").withRel("login"))));
+                .add(WebMvcLinkBuilder.linkTo(methodOn(MemberAuthController.class).getClass()).slash("/login").withRel("login")));
     }
 }
