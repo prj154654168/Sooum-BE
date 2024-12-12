@@ -25,7 +25,7 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
     Integer countByTargetCard_Pk(@Param("targetCardPk") Long targetCardPk);
 
     @Modifying
-    @Query("delete from CommentLike cl where cl.likedMember.pk = :memberPk")
+    @Query("delete from CommentLike cl where cl.likedMember.pk = :memberPk or cl.targetCard.writer.pk = :memberPk")
     void deleteAllMemberLikes(@Param("memberPk") Long memberPk);
 
     @Query("select cl from CommentLike cl " +
