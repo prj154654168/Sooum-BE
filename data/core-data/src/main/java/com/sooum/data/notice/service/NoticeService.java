@@ -1,4 +1,4 @@
-package com.sooum.data.notification.service;
+package com.sooum.data.notice.service;
 
 import com.sooum.data.notice.entity.Notice;
 import com.sooum.data.notice.repository.NoticeRepository;

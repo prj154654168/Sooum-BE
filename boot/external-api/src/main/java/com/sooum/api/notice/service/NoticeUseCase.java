@@ -2,7 +2,7 @@ package com.sooum.api.notice.service;
 
 import com.sooum.api.notice.dto.NoticeDto;
 import com.sooum.data.notice.entity.Notice;
-import com.sooum.data.notification.service.NoticeService;
+import com.sooum.data.notice.service.NoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
