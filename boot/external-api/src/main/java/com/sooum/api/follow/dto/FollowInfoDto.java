@@ -13,7 +13,7 @@ public class FollowInfoDto extends RepresentationModel<FollowInfoDto> {
     private final String nickname;
     private final Link backgroundImgUrl;
     @JsonProperty(value = "isFollowing")
-    private final boolean isFollowing;
+    private boolean isFollowing;
 
     public FollowInfoDto(Link backgroundImgUrl, String id, String nickname, boolean isFollowing) {
         this.backgroundImgUrl = backgroundImgUrl;
