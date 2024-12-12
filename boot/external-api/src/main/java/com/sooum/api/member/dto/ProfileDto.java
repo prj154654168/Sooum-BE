@@ -22,6 +22,7 @@ public class ProfileDto {
     }
 
     @Getter
+    @Setter
     @Builder
     public static class ProfileInfoResponse{
         private String nickname;
