@@ -1,7 +1,5 @@
 package com.sooum.data.notification.entity;
 
-import com.sooum.data.card.entity.CommentCard;
-import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.common.entity.BaseEntity;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
@@ -20,34 +18,32 @@ public class NotificationHistory extends BaseEntity {
     @Id @Tsid
     private Long pk;
 
+    @Column(name = "targetCardPk")
+    private Long targetCardPk;
+
+    @Column(name = "isRead")
+    private boolean isRead;
+
     @NotNull
     @Enumerated(value = EnumType.STRING)
     private NotificationType notificationType;
 
-    @JoinColumn(name = "FEED_CARD")
+    @NotNull
+    @JoinColumn(name = "fromMember", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne(fetch = FetchType.LAZY)
-    private FeedCard feedCard;
-
-    @JoinColumn(name = "COMMENT_CARD")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CommentCard commentCard;
+    private Member fromMember;
 
     @NotNull
-    @JoinColumn(name = "MEMBER")
+    @JoinColumn(name = "toMember", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private Member toMember;
 
     @Builder
-    public NotificationHistory(NotificationType notificationType, FeedCard feedCard, Member member) {
+    public NotificationHistory(Member fromMember, NotificationType notificationType, Long targetCardPk, Member toMember) {
+        this.isRead = false;
+        this.fromMember = fromMember;
         this.notificationType = notificationType;
-        this.feedCard = feedCard;
-        this.member = member;
-    }
-
-    @Builder
-    public NotificationHistory(NotificationType notificationType, CommentCard commentCard, Member member) {
-        this.notificationType = notificationType;
-        this.commentCard = commentCard;
-        this.member = member;
+        this.targetCardPk = targetCardPk;
+        this.toMember = toMember;
     }
 }
