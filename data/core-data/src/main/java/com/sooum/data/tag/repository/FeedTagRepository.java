@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -63,6 +64,7 @@ public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
     List<FeedTag> findLoadFeedTagsIn(@Param("feedTags") List<FeedTag> feedTags);
 
     @Modifying
+    @Transactional
     @Query("delete from FeedTag ft where ft.feedCard.writer.pk = :memberPk")
    void deleteFeedTag(@Param("memberPk") Long memberPk);
 }

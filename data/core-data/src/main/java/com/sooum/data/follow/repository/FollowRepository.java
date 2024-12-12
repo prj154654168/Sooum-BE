@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     Optional<Follow> findFollow(@Param("fromMember") Member fromMember, @Param("toMember") Member toMember);
 
     @Modifying
+    @Transactional
     @Query("delete from Follow f where f.fromMember = :fromMember and f.toMember = :toMember")
     void deleteFollower(@Param("fromMember") Member fromMember, @Param("toMember") Member toMember);
 
@@ -61,6 +63,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     List<Long> findFollowedFollowings(@Param("requesterPk") Long requesterPk, @Param("followings") List<Member> followings);
 
     @Modifying
+    @Transactional
     @Query("delete from Follow f where f.fromMember.pk = :memberPk or f.toMember.pk = :memberPk")
     void deleteAllFollow(@Param("memberPk") Long memberPk);
 }

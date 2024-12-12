@@ -16,8 +16,8 @@ public interface RsaRepository extends JpaRepository<Rsa, Long> {
     @Query("select r from Rsa r where r.expiredAt > :currentDate order by r.id desc")
     List<Rsa> findRsa(@Param("currentDate") LocalDateTime currentDate, Pageable pageable);
 
-    @Transactional
     @Modifying
+    @Transactional
     @Query("delete from Rsa r where r.expiredAt < :currentDate ")
     void deleteExpiredKey(@Param("currentDate")LocalDateTime currentDate);
 }

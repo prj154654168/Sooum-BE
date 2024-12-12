@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,10 +16,12 @@ public interface BlockRepository extends JpaRepository<Block, Long> {
     boolean existsByFromMemberPkAndToMemberPk(Long fromMemberPk, Long toMemberPk);
 
     @Modifying
+    @Transactional
     @Query("delete from Block b where b.fromMember = :fromMember and b.toMember = :toMember")
     void deleteBlockMember(@Param("fromMember") Member fromMember, @Param("toMember") Member toMember);
 
     @Modifying
+    @Transactional
     @Query("delete from Block b where b.fromMember.pk = :memberPk or b.toMember.pk = :memberPk")
     void deleteAllBlockMember(@Param("memberPk") Long memberPk);
 }
