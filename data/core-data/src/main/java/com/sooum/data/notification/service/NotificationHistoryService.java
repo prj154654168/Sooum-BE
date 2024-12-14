@@ -96,4 +96,8 @@ public class NotificationHistoryService {
     public void updateToRead(Long notificationPk) {
         notificationHistoryRepository.updateToRead(notificationPk);
     }
+
+    public void deleteNotification(Long targetCardPk) {
+        notificationHistoryRepository.deleteNotification(targetCardPk);
+    }
 }

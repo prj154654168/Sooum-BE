@@ -5,6 +5,7 @@ import com.sooum.api.card.dto.CreateCommentDto;
 import com.sooum.api.card.dto.CreateFeedCardDto;
 import com.sooum.api.img.service.ImgService;
 import com.sooum.api.member.service.BlackListUseCase;
+import com.sooum.api.notification.service.NotificationUseCase;
 import com.sooum.data.card.entity.*;
 import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.card.entity.parenttype.CardType;
@@ -13,6 +14,7 @@ import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.entity.Role;
 import com.sooum.data.member.service.MemberService;
+import com.sooum.data.notification.service.NotificationHistoryService;
 import com.sooum.data.report.service.CommentReportService;
 import com.sooum.data.report.service.FeedReportService;
 import com.sooum.data.tag.entity.CommentTag;
@@ -52,6 +54,7 @@ public class FeedService {
     private final TokenProvider tokenProvider;
     private final BlackListUseCase blackListUseCase;
     private final PopularFeedService popularFeedService;
+    private final NotificationHistoryService notificationHistoryService;
 
     @Transactional
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto, HttpServletRequest request) {
@@ -204,7 +207,7 @@ public class FeedService {
         cardImgService.deleteUserUploadPic(commentCard.getImgName());
         commentLikeService.deleteAllFeedLikes(commentCard.getPk());
         commentReportService.deleteReport(commentCard);
-        //todo notification delete
+        notificationHistoryService.deleteNotification(commentCard.getPk());
     }
 
     private void validateCommentCardOwner(Long commentCardPk, Long writerPk) {
@@ -230,7 +233,7 @@ public class FeedService {
         feedLikeService.deleteAllFeedLikes(feedCard.getPk());
         feedReportService.deleteReport(feedCard.getPk());
         popularFeedService.deletePopularCard(feedCard.getPk());
-        //todo notification delete
+        notificationHistoryService.deleteNotification(feedCard.getPk());
     }
 
     private void validateFeedCardOwner(Long commentCardPk, Long writerPk) {

@@ -222,4 +222,9 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
     @Modifying
     @Query("update NotificationHistory n set n.isRead = true where n.pk = :notificationPk")
     void updateToRead(@Param("notificationPk") Long notificationPk);
+
+    @Transactional
+    @Modifying
+    @Query("delete from NotificationHistory n where n.targetCardPk = :targetCardPk")
+    void deleteNotification(@Param("targetCardPk") Long targetCardPk);
 }
