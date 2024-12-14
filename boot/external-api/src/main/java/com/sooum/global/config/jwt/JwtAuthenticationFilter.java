@@ -27,7 +27,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/users/login", HttpMethod.POST,
             "/members", HttpMethod.GET,
             "/profiles/nickname/**/available", HttpMethod.GET,
-            "/members/suspension", HttpMethod.POST
+            "/members/suspension", HttpMethod.POST,
+            "/app/version/**", HttpMethod.GET
     );
     private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
