@@ -1,5 +1,9 @@
 package com.sooum.data.notification.entity;
 
+import com.sooum.data.card.entity.font.Font;
+import com.sooum.data.card.entity.fontsize.FontSize;
+import com.sooum.data.card.entity.imgtype.CardImgType;
+import com.sooum.data.card.entity.parenttype.CardType;
 import com.sooum.data.common.entity.BaseEntity;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
@@ -10,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 @Getter
 @Entity
@@ -21,6 +26,21 @@ public class NotificationHistory extends BaseEntity {
     @Column(name = "targetCardPk")
     private Long targetCardPk;
 
+    @Column(name = "CONTENT", columnDefinition = "TEXT")
+    private String content;
+
+    @Enumerated(value = EnumType.STRING)
+    private FontSize fontSize;
+
+    @Enumerated(value = EnumType.STRING)
+    private Font font;
+
+    @Enumerated(value = EnumType.STRING)
+    private CardImgType imgType;
+
+    @Column(name = "IMG_NAME")
+    private String imgName;
+
     @Column(name = "isRead")
     private boolean isRead;
 
@@ -28,7 +48,6 @@ public class NotificationHistory extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private NotificationType notificationType;
 
-    @NotNull
     @JoinColumn(name = "fromMember", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne(fetch = FetchType.LAZY)
     private Member fromMember;
