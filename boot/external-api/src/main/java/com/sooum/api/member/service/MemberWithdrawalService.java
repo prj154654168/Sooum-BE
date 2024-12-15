@@ -99,16 +99,13 @@ public class MemberWithdrawalService {
     }
 
     private void addTokensToBlacklist(AuthDTO.Token token) throws InvalidTokenException {
-        tokenProvider.validateToken(token.accessToken());
-        tokenProvider.validateToken(token.refreshToken());
-
         List<Blacklist> blacklistList = List.of(
                 Blacklist.builder()
                         .token(token.accessToken())
-                        .expiredAt(tokenProvider.getExpiration(token.accessToken())).build(),
+                        .expiredAt(tokenProvider.getExpirationAllowExpired(token.accessToken())).build(),
                 Blacklist.builder()
                         .token(token.refreshToken())
-                        .expiredAt(tokenProvider.getExpiration(token.refreshToken())).build()
+                        .expiredAt(tokenProvider.getExpirationAllowExpired(token.refreshToken())).build()
         );
         blacklistService.saveAll(blacklistList);
     }
