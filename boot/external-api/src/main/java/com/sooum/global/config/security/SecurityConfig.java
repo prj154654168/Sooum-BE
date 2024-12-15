@@ -25,10 +25,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        // 모든 요청 HTTPS 강제
-//        http.requiresChannel(channelRequestMatcherRegistry ->
-//                channelRequestMatcherRegistry.anyRequest().requiresSecure());
-
         http.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -46,6 +42,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/members/suspension").permitAll()
                 .requestMatchers(HttpMethod.GET, "/profiles/nickname/{nickname}/available").permitAll()
                 .requestMatchers(HttpMethod.POST, "/settings/transfer").permitAll()
+                .requestMatchers(HttpMethod.GET, "/app/version/**").permitAll()
                 // Authenticated
                 .anyRequest().authenticated()
         );
