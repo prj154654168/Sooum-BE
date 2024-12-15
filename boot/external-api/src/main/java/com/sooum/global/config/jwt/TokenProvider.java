@@ -132,4 +132,20 @@ public class TokenProvider {
     public LocalDateTime getExpiration(String token) {
         return getClaims(token).getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
+
+    public LocalDateTime getExpirationAllowExpired(String token) {
+        try {
+            return getClaims(token).getExpiration()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getExpiration()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+        } catch (Exception e) {
+            throw new InvalidTokenException();
+        }
+    }
 }
