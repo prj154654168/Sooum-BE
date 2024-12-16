@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class RekognitionService {
-    @Value("${spring.cloud.aws.s3.bucket}")
+    @Value("${spring.cloud.aws.s3.img.bucket}")
     private String bucket;
 
     private final RekognitionClient rekognitionClient;

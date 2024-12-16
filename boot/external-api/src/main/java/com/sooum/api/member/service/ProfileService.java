@@ -83,6 +83,7 @@ public class ProfileService {
                 .build();
     }
 
+    // todo profile_img entity update
     @Transactional
     public void updateProfile(ProfileDto.ProfileUpdate profileUpdate, Long memberPk) {
         Member member = memberService.findMember(memberPk);

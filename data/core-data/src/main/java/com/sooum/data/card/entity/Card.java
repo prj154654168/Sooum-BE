@@ -40,7 +40,6 @@ public abstract class Card extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private CardImgType imgType;
 
-    @NotNull
     @Column(name = "IMG_NAME")
     private String imgName;
 

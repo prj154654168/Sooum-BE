@@ -1,5 +1,6 @@
 package com.sooum.data.notification.entity;
 
+import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
 import com.sooum.data.card.entity.imgtype.CardImgType;
@@ -58,11 +59,16 @@ public class NotificationHistory extends BaseEntity {
     private Member toMember;
 
     @Builder
-    public NotificationHistory(Member fromMember, NotificationType notificationType, Long targetCardPk, Member toMember) {
+    public NotificationHistory(Member fromMember, Member toMember, NotificationType notificationType, Card card) {
         this.isRead = false;
-        this.fromMember = fromMember;
+        this.content = card == null ? null : card.getContent();
+        this.font = card == null ? null : card.getFont();
+        this.fontSize = card == null ? null : card.getFontSize();
+        this.imgName = card == null ? null : card.getImgName();
+        this.imgType = card == null ? null : card.getImgType();
+        this.targetCardPk = card == null ? null : card.getPk();
         this.notificationType = notificationType;
-        this.targetCardPk = targetCardPk;
+        this.fromMember = fromMember;
         this.toMember = toMember;
     }
 }

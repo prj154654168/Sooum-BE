@@ -17,6 +17,7 @@ spring:
 sooum:
   server:
     ip: ${IP}
+    host: ${HOST}
     img:
       path: ${IMG_PATH}
       default-size: 50

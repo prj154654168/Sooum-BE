@@ -37,7 +37,7 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
     @Query("select count(n) from NotificationHistory n " +
             "where n.toMember.pk = :memberPk " +
                 "and n.isRead = false " +
-                "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_CARD " +
+                "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_WRITE " +
                 "and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
                     "or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED)")
     Long findUnreadCardNotificationCount(@Param("memberPk") Long memberPk);
@@ -138,7 +138,7 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
                 "and (:lastPk is null or n.pk < :lastPk) " +
                 "and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
                     "or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED) " +
-                "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_CARD " +
+                "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_WRITE " +
                 "and n.isRead = false " +
             "order by n.pk desc ")
     List<NotificationHistory> findUnreadCardNotifications(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, Pageable page);
@@ -161,7 +161,7 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
                 "and (:lastPk is null or n.pk < :lastPk) " +
                 "and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
                     "or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED) " +
-                "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_CARD " +
+                "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_WRITE " +
                 "and n.isRead = true " +
                 "and n.createdAt > :minusOneDays " +
             "order by n.pk desc ")

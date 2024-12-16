@@ -100,4 +100,9 @@ public class NotificationHistoryService {
     public void deleteNotification(Long targetCardPk) {
         notificationHistoryRepository.deleteNotification(targetCardPk);
     }
+
+    @Transactional
+    public void save(NotificationHistory notificationHistory) {
+        notificationHistoryRepository.save(notificationHistory);
+    }
 }

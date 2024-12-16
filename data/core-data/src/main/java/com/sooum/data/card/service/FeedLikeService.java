@@ -16,10 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class FeedLikeService {
-    private final MemberService memberService;
-    private final FeedCardService feedCardService;
     private final FeedLikeRepository feedLikeRepository;
 
     public List<FeedLike> findByTargetCards(List<FeedCard> targetCards) {
@@ -34,38 +31,17 @@ public class FeedLikeService {
         return feedLikeRepository.countByTargetCard_Pk(feedCardPk);
     }
 
-    @Transactional
-    public void createFeedLike(Long targetFeedCardPk, Long requesterPk) {
-        Optional<FeedLike> findFeedLiked = feedLikeRepository.findFeedLiked(targetFeedCardPk, requesterPk);
-        if (findFeedLiked.isPresent()) {
-            if (!findFeedLiked.get().isDeleted()) {
-                throw new EntityExistsException("이미 좋아요 이력이 존재합니다.");
-            }
-
-            findFeedLiked.get().create();
-            return;
-        }
-
-        Member likedMember = memberService.findMember(requesterPk);
-        FeedCard targetCard = feedCardService.findByPk(targetFeedCardPk);
-        feedLikeRepository.save(
-                FeedLike.builder()
-                        .likedMember(likedMember)
-                        .targetCard(targetCard)
-                        .build()
-        );
+    public void save(FeedLike feedLike) {
+        feedLikeRepository.save(feedLike);
     }
 
-    @Transactional
-    public void deleteFeedLike(Long likedFeedCardPk, Long likedMemberPk) {
-        FeedLike feedLiked = feedLikeRepository.findFeedLiked(likedFeedCardPk, likedMemberPk)
+    public Optional<FeedLike> findFeedLikedOp(Long targetFeedCardPk, Long requesterPk) {
+        return feedLikeRepository.findFeedLiked(targetFeedCardPk, requesterPk);
+    }
+
+    public FeedLike findFeedLiked(Long likedFeedCardPk, Long likedMemberPk) {
+        return feedLikeRepository.findFeedLiked(likedFeedCardPk, likedMemberPk)
                 .orElseThrow(() -> new EntityNotFoundException("좋아요 이력을 찾을 수 않습니다."));
-
-        if (feedLiked.isDeleted()) {
-            throw new EntityExistsException("이미 삭제된 좋아요입니다.");
-        }
-
-        feedLiked.delete();
     }
 
     public boolean isLiked(Long cardPk, Long memberPk){

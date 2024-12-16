@@ -5,7 +5,7 @@ import com.sooum.api.card.dto.CreateCommentDto;
 import com.sooum.api.card.dto.CreateFeedCardDto;
 import com.sooum.api.img.service.ImgService;
 import com.sooum.api.member.service.BlackListUseCase;
-import com.sooum.api.notification.service.NotificationUseCase;
+import com.sooum.api.notification.service.SaveNotificationService;
 import com.sooum.data.card.entity.*;
 import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.card.entity.parenttype.CardType;
@@ -55,6 +55,7 @@ public class FeedService {
     private final BlackListUseCase blackListUseCase;
     private final PopularFeedService popularFeedService;
     private final NotificationHistoryService notificationHistoryService;
+    private final SaveNotificationService saveNotificationService;
 
     @Transactional
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto, HttpServletRequest request) {
@@ -120,6 +121,7 @@ public class FeedService {
         } else throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
 
         commentCardService.saveComment(commentCard);
+        saveNotificationService.saveCommentWriteHistory(memberPk, card);
 
         if (isUserImage(cardDto)){
             cardImgService.updateCardImg(commentCard, cardDto.getImgName());
