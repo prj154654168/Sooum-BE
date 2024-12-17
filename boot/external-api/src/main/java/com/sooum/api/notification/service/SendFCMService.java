@@ -1,7 +1,7 @@
 package com.sooum.api.notification.service;
 
 import com.google.firebase.messaging.Message;
-import com.sooum.data.member.entity.devicetype.DeviceType;
+import com.sooum.api.notification.dto.FCMDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,27 +11,27 @@ public class SendFCMService {
     private final FCMMsgGenerator fcmMsgGenerator;
     private final FCMSender fcmSender;
 
-    public void sendCommentWriteMsg(DeviceType deviceType, Long targetCardPk, String writerNickname, String fcmToken) {
-        Message message = fcmMsgGenerator.generateCommentWriteMsg(deviceType, targetCardPk, fcmToken, writerNickname);
+    public void sendCommentWriteMsg(FCMDto.GeneralFcm fcmDto) {
+        Message message = fcmMsgGenerator.generateCommentWriteMsg(fcmDto);
         fcmSender.send(message);
     }
 
-    public void sendFeedLikeMsg(DeviceType deviceType, Long targetCardPk, String writerNickname, String fcmToken) {
-        Message message = fcmMsgGenerator.generateFeedLikeMsg(deviceType, targetCardPk, fcmToken, writerNickname);
+    public void sendFeedLikeMsg(FCMDto.GeneralFcm fcmDto) {
+        Message message = fcmMsgGenerator.generateFeedLikeMsg(fcmDto);
         fcmSender.send(message);
     }
 
-    public void sendCommentLikeMsg(DeviceType deviceType, Long targetCardPk, String writerNickname, String fcmToken) {
-        Message message = fcmMsgGenerator.generateCommentLikeMsg(deviceType, targetCardPk, fcmToken, writerNickname);
+    public void sendCommentLikeMsg(FCMDto.GeneralFcm fcmDto) {
+        Message message = fcmMsgGenerator.generateCommentLikeMsg(fcmDto);
         fcmSender.send(message);
     }
 
-    public void sendCardDeletedByReportMsg(DeviceType deviceType, String fcmToken) {
-        Message message = fcmMsgGenerator.generateCardDeletedByReportMsg(deviceType, fcmToken);
+    public void sendCardDeletedMsgByReport(FCMDto.SystemFcm fcmDto) {
+        Message message = fcmMsgGenerator.generateCardDeletedMsgByReport(fcmDto);
         fcmSender.send(message);
     }
-    public void sendBlockedMsg(DeviceType deviceType, String fcmToken) {
-        Message message = fcmMsgGenerator.generateBlockedMsg(deviceType, fcmToken);
+    public void sendBlockedMsg(FCMDto.SystemFcm fcmDto) {
+        Message message = fcmMsgGenerator.generateBlockedMsg(fcmDto);
         fcmSender.send(message);
     }
 }

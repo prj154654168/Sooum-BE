@@ -1,5 +1,6 @@
 package com.sooum.api.card.service;
 
+import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.api.notification.service.NotificationUseCase;
 import com.sooum.api.notification.service.SendFCMService;
 import com.sooum.data.card.entity.CommentCard;
@@ -13,8 +14,10 @@ import com.sooum.data.card.service.FeedLikeService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.member.service.MemberService;
+import com.sooum.data.notification.entity.notificationtype.NotificationType;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,7 @@ public class CardLikeService {
     private final MemberService memberService;
     private final NotificationUseCase notificationUseCase;
     private final SendFCMService sendFCMService;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     public void createFeedLike(Long targetFeedCardPk, Long requesterPk) {
@@ -53,6 +57,15 @@ public class CardLikeService {
         );
 
         notificationUseCase.saveFeedLikeHistory(requesterPk, targetCard);
+        publisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
+                .notificationType(NotificationType.FEED_LIKE)
+                .fcmToken(targetCard.getWriter().getFirebaseToken())
+                .deviceType(targetCard.getWriter().getDeviceType())
+                .requesterNickname(likedMember.getNickname())
+                .targetCardPk(targetCard.getPk())
+                .source(this)
+                .build()
+                );
     }
 
     @Transactional
@@ -86,7 +99,15 @@ public class CardLikeService {
                 .build());
 
         notificationUseCase.saveCommentLikeHistory(requesterPk, targetCard);
-        sendFCMService.sendCommentLikeMsg(DeviceType.ANDROID, targetFeedCardPk, targetCard.getWriter().getNickname(), "c78DeTomQF6yjOy86mcJ11:APA91bGtHV5-17g6u8d7vVH_LrYtqoJiVgmlMpHG3ahV9wMteIw2I_77jJviBWxPXWjXEC8W3BAcNQNqZaEZn6eErsbKTIMuMMP8aH88UCkK1QEl3mtAtcc");
+        publisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
+                .notificationType(NotificationType.COMMENT_LIKE)
+                .fcmToken(targetCard.getWriter().getFirebaseToken())
+                .deviceType(targetCard.getWriter().getDeviceType())
+                .requesterNickname(likedMember.getNickname())
+                .targetCardPk(targetCard.getPk())
+                .source(this)
+                .build()
+        );
     }
 
     @Transactional
