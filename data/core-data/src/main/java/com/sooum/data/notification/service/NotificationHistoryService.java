@@ -105,4 +105,9 @@ public class NotificationHistoryService {
     public void save(NotificationHistory notificationHistory) {
         notificationHistoryRepository.save(notificationHistory);
     }
+
+    @Transactional
+    public void deletePreviousBlockedHistories(Long memberPk) {
+        notificationHistoryRepository.deletePreviousBlockedHistories(memberPk);
+    }
 }

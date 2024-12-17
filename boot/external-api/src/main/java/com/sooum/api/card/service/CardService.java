@@ -1,7 +1,7 @@
 package com.sooum.api.card.service;
 
 import com.sooum.api.card.dto.CardSummary;
-import com.sooum.api.notification.service.SaveNotificationService;
+import com.sooum.api.notification.service.NotificationUseCase;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.parenttype.CardType;
@@ -36,7 +36,7 @@ public class CardService {
     private final CommentReportService commentReportService;
     private final CommentTagService commentTagService;
     private final FeedTagService feedTagService;
-    private final SaveNotificationService saveNotificationService;
+    private final NotificationUseCase notificationUseCase;
 
     public CardSummary findCardSummary(Long parentCardPk, Long memberPk) {
         int commentCnt = commentCardService.countComment(parentCardPk);
@@ -114,7 +114,7 @@ public class CardService {
         feedTagService.deleteByFeedCardPk(cardPk);
         feedLikeService.deleteAllFeedLikes(cardPk);
 
-        saveNotificationService.saveCardDeletedHistoryByReport(feedCard.getWriter().getPk());
+        notificationUseCase.saveCardDeletedHistoryByReport(feedCard.getWriter().getPk());
         feedCardService.deleteFeedCard(cardPk);
     }
 
@@ -125,7 +125,7 @@ public class CardService {
         commentTagService.deleteByCommentCardPk(cardPk);
         commentLikeService.deleteAllFeedLikes(cardPk);
 
-        saveNotificationService.saveCardDeletedHistoryByReport(commentCard.getWriter().getPk());
+        notificationUseCase.saveCardDeletedHistoryByReport(commentCard.getWriter().getPk());
         commentCardService.deleteCommentCard(cardPk);
     }
 }

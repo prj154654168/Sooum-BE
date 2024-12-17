@@ -227,4 +227,11 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
     @Modifying
     @Query("delete from NotificationHistory n where n.targetCardPk = :targetCardPk")
     void deleteNotification(@Param("targetCardPk") Long targetCardPk);
+
+    @Transactional
+    @Modifying
+    @Query("delete from NotificationHistory n " +
+            "where n.toMember.pk = :toMemberPk " +
+            "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED")
+    void deletePreviousBlockedHistories(@Param("toMemberPk") Long toMemberPk);
 }

@@ -1,7 +1,7 @@
 package com.sooum.api.report.service;
 
 import com.sooum.api.card.service.CardService;
-import com.sooum.api.notification.service.SaveNotificationService;
+import com.sooum.api.notification.service.NotificationUseCase;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.member.entity.Member;
@@ -20,7 +20,7 @@ public class CommentReportUseCase {
     private final CommentCardService commentCardService;
     private final CommentReportService commentReportService;
     private final CardService cardService;
-    private final SaveNotificationService saveNotificationService;
+    private final NotificationUseCase notificationUseCase;
 
     private static final int REPORT_LIMIT = 7;
 
@@ -41,7 +41,7 @@ public class CommentReportUseCase {
     }
 
     private void writerBan(Member writer) {
-        saveNotificationService.saveBlockedHistory(writer.getPk());
+        notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
         writer.ban();
     }
 
