@@ -9,13 +9,13 @@ import org.springframework.context.ApplicationEvent;
 public class FCMDto {
     @Getter
     private abstract static class CommonFCM extends ApplicationEvent {
-        private DeviceType deviceType;
-        private String fcmToken;
+        private DeviceType targetDeviceType;
+        private String targetFcmToken;
 
-        public CommonFCM(Object source, DeviceType deviceType, String fcmToken) {
+        public CommonFCM(Object source, DeviceType targetDeviceType, String targetFcmToken) {
             super(source);
-            this.deviceType = deviceType;
-            this.fcmToken = fcmToken;
+            this.targetDeviceType = targetDeviceType;
+            this.targetFcmToken = targetFcmToken;
         }
     }
 
@@ -31,8 +31,8 @@ public class FCMDto {
         private String requesterNickname;
         private Long targetCardPk;
 
-        public GeneralFcm(Object source, DeviceType deviceType, String fcmToken, Long targetCardPk, String requesterNickname) {
-            super(source, deviceType, fcmToken);
+        public GeneralFcm(Object source, DeviceType targetDeviceType, String targetFcmToken, Long targetCardPk, String requesterNickname) {
+            super(source, targetDeviceType, targetFcmToken);
             this.targetCardPk = targetCardPk;
             this.requesterNickname = requesterNickname;
         }
@@ -43,8 +43,8 @@ public class FCMDto {
         private NotificationType notificationType;
 
         @Builder
-        public SystemFcmSendEvent(Object source, DeviceType deviceType, String fcmToken, NotificationType notificationType) {
-            super(source, deviceType, fcmToken);
+        public SystemFcmSendEvent(Object source, DeviceType targetDeviceType, String targetFcmToken, NotificationType notificationType) {
+            super(source, targetDeviceType, targetFcmToken);
 
             if (notificationType.isNotSystem()) {
                 throw new IllegalArgumentException();
@@ -58,8 +58,8 @@ public class FCMDto {
         private NotificationType notificationType;
 
         @Builder
-        public GeneralFcmSendEvent(Object source, DeviceType deviceType, String fcmToken, Long targetCardPk, String requesterNickname, NotificationType notificationType) {
-            super(source, deviceType, fcmToken, targetCardPk, requesterNickname);
+        public GeneralFcmSendEvent(Object source, DeviceType targetDeviceType, String targetFcmToken, Long targetCardPk, String requesterNickname, NotificationType notificationType) {
+            super(source, targetDeviceType, targetFcmToken, targetCardPk, requesterNickname);
 
             if (notificationType.isNotGeneral()) {
                 throw new IllegalArgumentException();

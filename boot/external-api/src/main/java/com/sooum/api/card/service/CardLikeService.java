@@ -32,7 +32,6 @@ public class CardLikeService {
     private final CommentLikeService commentLikeService;
     private final MemberService memberService;
     private final NotificationUseCase notificationUseCase;
-    private final SendFCMService sendFCMService;
     private final ApplicationEventPublisher publisher;
 
     @Transactional
@@ -59,8 +58,8 @@ public class CardLikeService {
         notificationUseCase.saveFeedLikeHistory(requesterPk, targetCard);
         publisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
                 .notificationType(NotificationType.FEED_LIKE)
-                .fcmToken(targetCard.getWriter().getFirebaseToken())
-                .deviceType(targetCard.getWriter().getDeviceType())
+                .targetFcmToken(targetCard.getWriter().getFirebaseToken())
+                .targetDeviceType(targetCard.getWriter().getDeviceType())
                 .requesterNickname(likedMember.getNickname())
                 .targetCardPk(targetCard.getPk())
                 .source(this)
@@ -101,8 +100,8 @@ public class CardLikeService {
         notificationUseCase.saveCommentLikeHistory(requesterPk, targetCard);
         publisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
                 .notificationType(NotificationType.COMMENT_LIKE)
-                .fcmToken(targetCard.getWriter().getFirebaseToken())
-                .deviceType(targetCard.getWriter().getDeviceType())
+                .targetFcmToken(targetCard.getWriter().getFirebaseToken())
+                .targetDeviceType(targetCard.getWriter().getDeviceType())
                 .requesterNickname(likedMember.getNickname())
                 .targetCardPk(targetCard.getPk())
                 .source(this)

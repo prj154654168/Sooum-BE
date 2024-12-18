@@ -48,8 +48,8 @@ public class CommentReportUseCase {
         cardService.deleteCommentAndAssociationsByReport(reports, commentCard);
         publisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.DELETED)
-                .deviceType(commentCard.getWriter().getDeviceType())
-                .fcmToken(commentCard.getWriter().getFirebaseToken())
+                .targetDeviceType(commentCard.getWriter().getDeviceType())
+                .targetFcmToken(commentCard.getWriter().getFirebaseToken())
                 .source(this)
                 .build()
         );
@@ -60,8 +60,8 @@ public class CommentReportUseCase {
         writer.ban();
         publisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.BLOCKED)
-                .deviceType(writer.getDeviceType())
-                .fcmToken(writer.getFirebaseToken())
+                .targetDeviceType(writer.getDeviceType())
+                .targetFcmToken(writer.getFirebaseToken())
                 .source(this)
                 .build());
     }

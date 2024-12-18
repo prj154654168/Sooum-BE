@@ -23,7 +23,6 @@ import static com.slack.api.webhook.WebhookPayloads.payload;
 
 @Slf4j
 @Service
-@Profile("prod")
 @RequiredArgsConstructor
 public class SlackService {
     @Value("${slack.webhook.url}")
@@ -31,9 +30,16 @@ public class SlackService {
     private final Slack slack = Slack.getInstance();
 
     @Async
-    public void sendSlackMsg(Exception e, RequestDto requestDto) {
+    public void sendSlackErrorMsg(Exception e, RequestDto requestDto) {
         try {
             slack.send(url, payload(p -> p.attachments(List.of(createSlackMsg(e, requestDto)))));
+        } catch (IOException ignored) {
+        }
+    }
+
+    public void sendSlackFCMMsg() {
+        try {
+            slack.send(url, payload(p -> p.attachments(List.of(createFcmSlackMsg()))));
         } catch (IOException ignored) {
         }
     }
@@ -88,6 +94,34 @@ public class SlackService {
                                                         "```")
                                                 .build()
                                 ))
+                                .build()
+                ))
+                .build();
+    }
+
+    private Attachment createFcmSlackMsg() {
+        return Attachment.builder()
+                .blocks(List.of(
+                        ContextBlock.builder()
+                                .blockId("error_context")
+                                .elements(List.of(
+                                        MarkdownTextObject.builder()
+                                                .text("*🚨 FCM 에러 발생 알림 🚨*").build()
+                                ))
+                                .build(),
+
+                        SectionBlock.builder()
+                                .blockId("error_time")
+                                .text(MarkdownTextObject.builder()
+                                        .text("*Error Execute Time:*\n`" + LocalDateTime.now() + "`")
+                                        .build())
+                                .build(),
+
+                        SectionBlock.builder()
+                                .blockId("error_message")
+                                .text(MarkdownTextObject.builder()
+                                        .text("*Error Message:*\n```" + "FCM Server 문제로 알림 전송이 안됩니다." + "```")
+                                        .build())
                                 .build()
                 ))
                 .build();

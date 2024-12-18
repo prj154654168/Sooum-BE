@@ -140,8 +140,8 @@ public class FeedService {
         publisher.publishEvent(
                 FCMDto.GeneralFcmSendEvent.builder()
                         .notificationType(NotificationType.COMMENT_WRITE)
-                        .deviceType(card.getWriter().getDeviceType())
-                        .fcmToken(card.getWriter().getFirebaseToken())
+                        .targetDeviceType(card.getWriter().getDeviceType())
+                        .targetFcmToken(card.getWriter().getFirebaseToken())
                         .targetCardPk(commentCard.getPk())
                         .requesterNickname(member.getNickname())
                         .source(this)

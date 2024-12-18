@@ -48,8 +48,8 @@ public class FeedReportUseCase {
         cardService.deleteFeedAndAssociationsByReport(reports, feedCard);
         publisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.DELETED)
-                .deviceType(feedCard.getWriter().getDeviceType())
-                .fcmToken(feedCard.getWriter().getFirebaseToken())
+                .targetDeviceType(feedCard.getWriter().getDeviceType())
+                .targetFcmToken(feedCard.getWriter().getFirebaseToken())
                 .source(this)
                 .build()
         );
@@ -60,8 +60,8 @@ public class FeedReportUseCase {
         writer.ban();
         publisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.BLOCKED)
-                .deviceType(writer.getDeviceType())
-                .fcmToken(writer.getFirebaseToken())
+                .targetDeviceType(writer.getDeviceType())
+                .targetFcmToken(writer.getFirebaseToken())
                 .source(this)
                 .build());
     }

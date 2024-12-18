@@ -3,18 +3,44 @@ package com.sooum.api.notification.service;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
-import lombok.extern.slf4j.Slf4j;
+import com.google.firebase.messaging.MessagingErrorCode;
+import com.sooum.api.notification.exception.FcmServerException;
+import com.sooum.global.slack.service.SlackService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
-public class FCMSender {
+@RequiredArgsConstructor
+class FCMSender {
+    private final SlackService slackService;
+
+    @Retryable(retryFor = FcmServerException.class,
+            maxAttempts = 3,
+            recover = "sendSlackFcmError",
+            backoff = @Backoff(delay = 1000, multiplier = 2.0))
     public void send(Message message) {
         try {
-            String response = FirebaseMessaging.getInstance().send(message);
-            log.info("fcm response: {}", response);
+            FirebaseMessaging.getInstance().send(message);
         } catch (FirebaseMessagingException e) {
-            log.error(e.getMessage());
+            validateRetrySendFCM(e.getMessagingErrorCode());
         }
+    }
+
+    @Recover
+    public void sendSlackFcmError(FcmServerException e) {
+        slackService.sendSlackFCMMsg();
+    }
+
+    private void validateRetrySendFCM(MessagingErrorCode msgErrorCode) {
+        if (isRetryErrorCode(msgErrorCode)) {
+            throw new FcmServerException();
+        }
+    }
+
+    private boolean isRetryErrorCode(MessagingErrorCode msgErrorCode) {
+        return msgErrorCode.equals(MessagingErrorCode.INTERNAL) || msgErrorCode.equals(MessagingErrorCode.UNAVAILABLE);
     }
 }
