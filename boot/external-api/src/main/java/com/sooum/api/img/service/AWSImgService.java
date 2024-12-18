@@ -2,7 +2,7 @@ package com.sooum.api.img.service;
 
 import com.sooum.api.img.dto.ImgUrlInfo;
 import com.sooum.client.aws.rekognition.RekognitionService;
-import com.sooum.client.aws.s3.S3Service;
+import com.sooum.client.aws.s3.S3ImgService;
 import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.img.service.ProfileImgService;
@@ -32,7 +32,7 @@ public class AWSImgService implements ImgService{
     private final ProfileImgService profileImgService;
     private final CardImgService cardImgService;
     private final RekognitionService rekognitionService;
-    private final S3Service s3Service;
+    private final S3ImgService s3Service;
 
     private static final String DEFAULT_CARD_IMG = "card/default/";
     private static final String USER_CARD_IMG = "card/user/";

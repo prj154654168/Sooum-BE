@@ -17,7 +17,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.filter.RequestContextFilter;
 
@@ -25,7 +24,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cards")

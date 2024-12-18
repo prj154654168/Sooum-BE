@@ -4,7 +4,6 @@ import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.tag.entity.FavoriteTag;
-import com.sooum.data.tag.entity.FeedTag;
 import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.repository.CommentTagRepository;
 import com.sooum.data.tag.repository.FavoriteTagRepository;
@@ -13,13 +12,10 @@ import com.sooum.data.tag.repository.TagRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
 
 @Service
 @RequiredArgsConstructor

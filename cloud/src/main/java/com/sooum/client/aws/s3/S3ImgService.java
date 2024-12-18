@@ -14,8 +14,8 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class S3Service {
-    @Value("${spring.cloud.aws.s3.bucket}")
+public class S3ImgService {
+    @Value("${spring.cloud.aws.s3.img.bucket}")
     private String bucket;
 
     private final S3Presigner s3Presigner;

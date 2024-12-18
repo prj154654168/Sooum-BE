@@ -19,6 +19,8 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
     List<CommentLike> findByTargetCardIn(@Param("targetList") List<CommentCard> targetList);
 
     List<CommentLike> findAllByTargetCard_Pk(Long cardPk);
+
+    @Modifying
     @Query("delete from CommentLike cl where cl.targetCard in :cards")
     void deleteByCommentCard(@Param("cards") List<CommentCard> commentCards);
 

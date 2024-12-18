@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 @Slf4j
 @Service
@@ -99,5 +101,15 @@ public class NotificationHistoryService {
 
     public void deleteNotification(Long targetCardPk) {
         notificationHistoryRepository.deleteNotification(targetCardPk);
+    }
+
+    @Transactional
+    public void save(NotificationHistory notificationHistory) {
+        notificationHistoryRepository.save(notificationHistory);
+    }
+
+    @Transactional
+    public void deletePreviousBlockedHistories(Long memberPk) {
+        notificationHistoryRepository.deletePreviousBlockedHistories(memberPk);
     }
 }

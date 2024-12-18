@@ -21,8 +21,8 @@ public class ReportController {
     @PostMapping("/cards/{cardPk}")
     public ResponseEntity<?> reportFeedCard(@PathVariable("cardPk") Long cardPk,
                                             @RequestBody ReportDto.Request requestDto,
-                                            @CurrentUser Long memberPk) {
-        reportService.report(cardPk, requestDto.getReportType(), memberPk);
+                                            @CurrentUser Long requesterPk) {
+        reportService.report(cardPk, requestDto.getReportType(), requesterPk);
         return ResponseEntity.created(URI.create(""))
                 .body(
                         ResponseStatus.builder()

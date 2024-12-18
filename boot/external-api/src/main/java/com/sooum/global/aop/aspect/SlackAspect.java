@@ -36,7 +36,7 @@ public class SlackAspect {
         if (request instanceof ContentCachingRequestWrapper requestWrapper) {
             Exception e = getException(args);
             RequestDto requestDto = new RequestDto(requestWrapper);
-            slackService.sendSlackMsg(e, requestDto);
+            slackService.sendSlackErrorMsg(e, requestDto);
         }
     }
 
