@@ -4,7 +4,6 @@ import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
 import com.sooum.data.card.entity.imgtype.CardImgType;
-import com.sooum.data.card.entity.parenttype.CardType;
 import com.sooum.data.common.entity.BaseEntity;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
@@ -15,7 +14,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Point;
 
 @Getter
 @Entity

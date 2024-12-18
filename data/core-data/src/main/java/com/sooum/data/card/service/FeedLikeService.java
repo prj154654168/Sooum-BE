@@ -3,13 +3,9 @@ package com.sooum.data.card.service;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.repository.FeedLikeRepository;
-import com.sooum.data.member.entity.Member;
-import com.sooum.data.member.service.MemberService;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;

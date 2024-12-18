@@ -1,13 +1,10 @@
 package com.sooum.data.report.service;
 
 import com.sooum.data.card.entity.CommentCard;
-import com.sooum.data.card.service.CommentCardService;
-import com.sooum.data.card.service.CommentLikeService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.report.entity.CommentReport;
 import com.sooum.data.report.entity.reporttype.ReportType;
 import com.sooum.data.report.repository.CommentReportRepository;
-import com.sooum.data.tag.service.CommentTagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

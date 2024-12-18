@@ -2,7 +2,6 @@ package com.sooum.api.card.service;
 
 import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.api.notification.service.NotificationUseCase;
-import com.sooum.api.notification.service.SendFCMService;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.CommentLike;
 import com.sooum.data.card.entity.FeedCard;
@@ -12,7 +11,6 @@ import com.sooum.data.card.service.CommentLikeService;
 import com.sooum.data.card.service.FeedCardService;
 import com.sooum.data.card.service.FeedLikeService;
 import com.sooum.data.member.entity.Member;
-import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
 import jakarta.persistence.EntityExistsException;
