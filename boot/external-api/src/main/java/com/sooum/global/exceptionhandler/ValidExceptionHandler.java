@@ -1,5 +1,6 @@
 package com.sooum.global.exceptionhandler;
 
+import com.sooum.api.member.exception.BannedUserException;
 import com.sooum.global.responseform.ResponseStatus;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -54,5 +55,17 @@ public class ValidExceptionHandler {
     public ResponseEntity<Void> internalServerException(Exception e) {
         return ResponseEntity.internalServerError()
                 .build();
+    }
+
+    @ExceptionHandler(BannedUserException.class)
+    public ResponseEntity<ResponseStatus> bannedUserException(BannedUserException e) {
+        return ResponseEntity.badRequest()
+                .body(
+                        ResponseStatus.builder()
+                                .httpCode(HttpStatus.LOCKED.value())
+                                .httpStatus(HttpStatus.LOCKED)
+                                .responseMessage(e.getMessage())
+                                .build()
+                );
     }
 }
