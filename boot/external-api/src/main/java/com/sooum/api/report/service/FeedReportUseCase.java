@@ -24,7 +24,7 @@ public class FeedReportUseCase {
     private final FeedReportService feedReportService;
     private final CardService cardService;
     private final NotificationUseCase notificationUseCase;
-    private final ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher sendFCMEventPublisher;
 
     private static final int REPORT_LIMIT = 7;
 
@@ -46,7 +46,7 @@ public class FeedReportUseCase {
 
     private void deleteFeedAndAssociationsByReport(FeedCard feedCard, List<FeedReport> reports) {
         cardService.deleteFeedAndAssociationsByReport(reports, feedCard);
-        publisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+        sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.DELETED)
                 .targetDeviceType(feedCard.getWriter().getDeviceType())
                 .targetFcmToken(feedCard.getWriter().getFirebaseToken())
@@ -58,7 +58,7 @@ public class FeedReportUseCase {
     private void writerBan(Member writer) {
         notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
         writer.ban();
-        publisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+        sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.BLOCKED)
                 .targetDeviceType(writer.getDeviceType())
                 .targetFcmToken(writer.getFirebaseToken())

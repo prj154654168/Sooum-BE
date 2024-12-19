@@ -64,4 +64,8 @@ public abstract class Card extends BaseEntity {
         this.imgName = imgName;
         this.writer = writer;
     }
+
+    public boolean isWriter(Long compareMemberPk) {
+        return this.writer.getPk().equals(compareMemberPk);
+    }
 }

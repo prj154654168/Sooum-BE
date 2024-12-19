@@ -30,7 +30,7 @@ public class CardLikeService {
     private final CommentLikeService commentLikeService;
     private final MemberService memberService;
     private final NotificationUseCase notificationUseCase;
-    private final ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher sendFCMEventPublisher;
 
     @Transactional
     public void createFeedLike(Long targetFeedCardPk, Long requesterPk) {
@@ -53,16 +53,17 @@ public class CardLikeService {
                         .build()
         );
 
-        notificationUseCase.saveFeedLikeHistory(requesterPk, targetCard);
-        publisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
-                .notificationType(NotificationType.FEED_LIKE)
-                .targetFcmToken(targetCard.getWriter().getFirebaseToken())
-                .targetDeviceType(targetCard.getWriter().getDeviceType())
-                .requesterNickname(likedMember.getNickname())
-                .targetCardPk(targetCard.getPk())
-                .source(this)
-                .build()
-                );
+        if (!targetCard.isWriter(requesterPk)) {
+            notificationUseCase.saveFeedLikeHistory(requesterPk, targetCard);
+            sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
+                    .notificationType(NotificationType.FEED_LIKE)
+                    .targetFcmToken(targetCard.getWriter().getFirebaseToken())
+                    .targetDeviceType(targetCard.getWriter().getDeviceType())
+                    .requesterNickname(likedMember.getNickname())
+                    .targetCardPk(targetCard.getPk())
+                    .source(this)
+                    .build());
+        }
     }
 
     @Transactional
@@ -95,16 +96,17 @@ public class CardLikeService {
                 .targetCard(targetCard)
                 .build());
 
-        notificationUseCase.saveCommentLikeHistory(requesterPk, targetCard);
-        publisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
-                .notificationType(NotificationType.COMMENT_LIKE)
-                .targetFcmToken(targetCard.getWriter().getFirebaseToken())
-                .targetDeviceType(targetCard.getWriter().getDeviceType())
-                .requesterNickname(likedMember.getNickname())
-                .targetCardPk(targetCard.getPk())
-                .source(this)
-                .build()
-        );
+        if (!targetCard.isWriter(requesterPk)) {
+            notificationUseCase.saveCommentLikeHistory(requesterPk, targetCard);
+            sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
+                    .notificationType(NotificationType.COMMENT_LIKE)
+                    .targetFcmToken(targetCard.getWriter().getFirebaseToken())
+                    .targetDeviceType(targetCard.getWriter().getDeviceType())
+                    .requesterNickname(likedMember.getNickname())
+                    .targetCardPk(targetCard.getPk())
+                    .source(this)
+                    .build());
+        }
     }
 
     @Transactional

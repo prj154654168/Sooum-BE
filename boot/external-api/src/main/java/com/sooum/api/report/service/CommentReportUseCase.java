@@ -24,7 +24,7 @@ public class CommentReportUseCase {
     private final CommentReportService commentReportService;
     private final CardService cardService;
     private final NotificationUseCase notificationUseCase;
-    private final ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher sendFCMEventPublisher;
 
     private static final int REPORT_LIMIT = 7;
 
@@ -46,7 +46,7 @@ public class CommentReportUseCase {
 
     private void deleteCommentAndAssociationsByReport(CommentCard commentCard, List<CommentReport> reports) {
         cardService.deleteCommentAndAssociationsByReport(reports, commentCard);
-        publisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+        sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.DELETED)
                 .targetDeviceType(commentCard.getWriter().getDeviceType())
                 .targetFcmToken(commentCard.getWriter().getFirebaseToken())
@@ -58,7 +58,7 @@ public class CommentReportUseCase {
     private void writerBan(Member writer) {
         notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
         writer.ban();
-        publisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+        sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.BLOCKED)
                 .targetDeviceType(writer.getDeviceType())
                 .targetFcmToken(writer.getFirebaseToken())

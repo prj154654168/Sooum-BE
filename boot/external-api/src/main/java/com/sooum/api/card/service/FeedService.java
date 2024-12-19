@@ -59,7 +59,7 @@ public class FeedService {
     private final PopularFeedService popularFeedService;
     private final NotificationHistoryService notificationHistoryService;
     private final NotificationUseCase notificationUseCase;
-    private final ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher sendFCMEventPublisher;
 
     @Transactional
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto, HttpServletRequest request) {
@@ -136,17 +136,18 @@ public class FeedService {
                 .toList();
         commentTagService.saveAll(commentTagList);
 
-        notificationUseCase.saveCommentWriteHistory(memberPk, card);
-        publisher.publishEvent(
-                FCMDto.GeneralFcmSendEvent.builder()
-                        .notificationType(NotificationType.COMMENT_WRITE)
-                        .targetDeviceType(card.getWriter().getDeviceType())
-                        .targetFcmToken(card.getWriter().getFirebaseToken())
-                        .targetCardPk(commentCard.getPk())
-                        .requesterNickname(member.getNickname())
-                        .source(this)
-                        .build()
-                );
+        if (!card.isWriter(memberPk)) {
+            notificationUseCase.saveCommentWriteHistory(memberPk, card);
+            sendFCMEventPublisher.publishEvent(
+                    FCMDto.GeneralFcmSendEvent.builder()
+                            .notificationType(NotificationType.COMMENT_WRITE)
+                            .targetDeviceType(card.getWriter().getDeviceType())
+                            .targetFcmToken(card.getWriter().getFirebaseToken())
+                            .targetCardPk(commentCard.getPk())
+                            .requesterNickname(member.getNickname())
+                            .source(this)
+                            .build());
+        }
     }
 
     private List<Tag> processTags(CreateCardDto cardDto){

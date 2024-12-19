@@ -136,10 +136,6 @@ public class NotificationUseCase {
 
     @Transactional
     public void saveCommentWriteHistory(Long fromMemberPk, Card card) {
-        if (fromMemberPk.equals(card.getWriter().getPk())) {
-            return;
-        }
-
         notificationHistoryService.save(
                 NotificationHistory.builder()
                         .notificationType(NotificationType.COMMENT_WRITE)
@@ -152,10 +148,6 @@ public class NotificationUseCase {
 
     @Transactional
     public void saveFeedLikeHistory(Long fromMemberPk, FeedCard feedCard) {
-        if (fromMemberPk.equals(feedCard.getWriter().getPk())) {
-            return;
-        }
-
         notificationHistoryService.save(
                 NotificationHistory.builder()
                         .notificationType(NotificationType.FEED_LIKE)
@@ -168,10 +160,6 @@ public class NotificationUseCase {
 
     @Transactional
     public void saveCommentLikeHistory(Long fromMemberPk, CommentCard commentCard) {
-        if (fromMemberPk.equals(commentCard.getWriter().getPk())) {
-            return;
-        }
-
         notificationHistoryService.save(
                 NotificationHistory.builder()
                         .notificationType(NotificationType.COMMENT_LIKE)
@@ -184,6 +172,7 @@ public class NotificationUseCase {
 
     @Transactional
     public void saveBlockedHistoryAndDeletePreviousHistories(Long toMemberPk) {
+        notificationHistoryService.deletePreviousBlockedHistories(toMemberPk);
 
         notificationHistoryService.save(
                 NotificationHistory.builder()
@@ -195,8 +184,6 @@ public class NotificationUseCase {
 
     @Transactional
     public void saveCardDeletedHistoryByReport(Long toMemberPk) {
-        notificationHistoryService.deletePreviousBlockedHistories(toMemberPk);
-
         notificationHistoryService.save(
                 NotificationHistory.builder()
                         .notificationType(NotificationType.DELETED)

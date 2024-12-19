@@ -7,16 +7,12 @@ import com.google.firebase.messaging.Notification;
 import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Component
 public class FCMMsgGenerator {
-    @Value("${sooum.server.host}")
-    private String host;
-
     private static final String TITLE = "Sooum";
 
     public Message generateCommentWriteMsg(FCMDto.GeneralFcm fcmDto) {
@@ -56,17 +52,22 @@ public class FCMMsgGenerator {
 
     private Message generateGeneralMsgByAos(NotificationType notificationType, Long targetCardPk, String fcmToken, String body) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("link", generateCardDetailUrl(targetCardPk));
+        data.put("targetCardId", targetCardPk.toString());
         data.put("notificationType", notificationType.name());
 
         return Message.builder()
-                .setAndroidConfig(AndroidConfig.builder()
-                        .setNotification(AndroidNotification.builder()
+                .setNotification(
+                        Notification.builder()
                                 .setTitle(TITLE)
                                 .setBody(body)
+                                .build()
+                )
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setNotification(AndroidNotification.builder()
                                 .setClickAction(notificationType.toString())
                                 .build())
-                        .build())
+                        .build()
+                )
                 .putAllData(data)
                 .setToken(fcmToken)
                 .build();
@@ -74,7 +75,7 @@ public class FCMMsgGenerator {
 
     private Message generateGeneralMsgByIos(NotificationType notificationType, Long targetCardPk, String fcmToken, String body) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("link", generateCardDetailUrl(targetCardPk));
+        data.put("targetCardId", targetCardPk.toString());
         data.put("notificationType", notificationType.name());
 
         return Message.builder()
@@ -89,25 +90,11 @@ public class FCMMsgGenerator {
                 .build();
     }
 
-    private String generateCardDetailUrl(Long targetCardPk) {
-        return host + "/" + targetCardPk + "/detail";
-    }
-
     private Message generateSystemMsgByAos(NotificationType notificationType, String fcmToken, String body) {
-        return Message.builder()
-                .setAndroidConfig(AndroidConfig.builder()
-                        .setNotification(AndroidNotification.builder()
-                                .setTitle(TITLE)
-                                .setBody(body)
-                                .setClickAction(notificationType.toString())
-                                .build())
-                        .build())
-                .putData("notificationType", notificationType.name())
-                .setToken(fcmToken)
-                .build();
-    }
+        HashMap<String, String> data = new HashMap<>();
+        data.put("targetCardId", null);
+        data.put("notificationType", notificationType.name());
 
-    private Message generateSystemMsgByIos(NotificationType notificationType, String fcmToken, String body) {
         return Message.builder()
                 .setNotification(
                         Notification.builder()
@@ -115,7 +102,30 @@ public class FCMMsgGenerator {
                                 .setBody(body)
                                 .build()
                 )
-                .putData("notificationType", notificationType.name())
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setNotification(AndroidNotification.builder()
+                                .setClickAction(notificationType.toString())
+                                .build())
+                        .build()
+                )
+                .putAllData(data)
+                .setToken(fcmToken)
+                .build();
+    }
+
+    private Message generateSystemMsgByIos(NotificationType notificationType, String fcmToken, String body) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("targetCardId", null);
+        data.put("notificationType", notificationType.name());
+
+        return Message.builder()
+                .setNotification(
+                        Notification.builder()
+                                .setTitle(TITLE)
+                                .setBody(body)
+                                .build()
+                )
+                .putAllData(data)
                 .setToken(fcmToken)
                 .build();
     }
