@@ -4,6 +4,7 @@ import com.sooum.api.card.dto.CreateCardDto;
 import com.sooum.api.card.dto.CreateCommentDto;
 import com.sooum.api.card.dto.CreateFeedCardDto;
 import com.sooum.api.img.service.ImgService;
+import com.sooum.api.member.exception.BannedUserException;
 import com.sooum.api.member.service.BlackListUseCase;
 import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.api.notification.service.NotificationUseCase;
@@ -32,6 +33,7 @@ import com.sooum.global.regex.BadWordFiltering;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FeedService {
     private final MemberService memberService;
     private final CommentCardService commentCardService;
@@ -75,7 +78,7 @@ public class FeedService {
                     .orElseThrow(InvalidTokenException::new);
             blackListUseCase.save(token, member.getUntilBan());
 
-            throw new InvalidTokenException();
+            throw new BannedUserException(ExceptionMessage.BANNED_USER.getMessage());
         }
 
         if (isUserImage(cardDto)) {
@@ -110,7 +113,7 @@ public class FeedService {
                     .orElseThrow(InvalidTokenException::new);
             blackListUseCase.save(token, member.getUntilBan());
 
-            throw new InvalidTokenException();
+            throw new BannedUserException(ExceptionMessage.BANNED_USER.getMessage());
         }
 
         Card card = feedCardService.isExistFeedCard(cardPk)
