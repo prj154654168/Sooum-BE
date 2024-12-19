@@ -6,6 +6,7 @@ import com.sooum.api.card.dto.CreateFeedCardDto;
 import com.sooum.api.img.service.ImgService;
 import com.sooum.api.member.exception.BannedUserException;
 import com.sooum.api.member.service.BlackListUseCase;
+import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.api.notification.service.NotificationUseCase;
 import com.sooum.data.card.entity.*;
 import com.sooum.data.card.entity.imgtype.CardImgType;
@@ -15,6 +16,7 @@ import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.entity.Role;
 import com.sooum.data.member.service.MemberService;
+import com.sooum.data.notification.entity.notificationtype.NotificationType;
 import com.sooum.data.notification.service.NotificationHistoryService;
 import com.sooum.data.report.service.CommentReportService;
 import com.sooum.data.report.service.FeedReportService;
@@ -32,6 +34,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +61,8 @@ public class FeedService {
     private final BlackListUseCase blackListUseCase;
     private final PopularFeedService popularFeedService;
     private final NotificationHistoryService notificationHistoryService;
+    private final NotificationUseCase notificationUseCase;
+    private final ApplicationEventPublisher sendFCMEventPublisher;
 
     @Transactional
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto, HttpServletRequest request) {
@@ -132,8 +137,20 @@ public class FeedService {
         List<CommentTag> commentTagList = tagContents.stream()
                 .map(tag -> CommentTag.builder().commentCard(commentCard).tag(tag).build())
                 .toList();
-
         commentTagService.saveAll(commentTagList);
+
+        if (!card.isWriter(memberPk)) {
+            notificationUseCase.saveCommentWriteHistory(memberPk, card);
+            sendFCMEventPublisher.publishEvent(
+                    FCMDto.GeneralFcmSendEvent.builder()
+                            .notificationType(NotificationType.COMMENT_WRITE)
+                            .targetDeviceType(card.getWriter().getDeviceType())
+                            .targetFcmToken(card.getWriter().getFirebaseToken())
+                            .targetCardPk(commentCard.getPk())
+                            .requesterNickname(member.getNickname())
+                            .source(this)
+                            .build());
+        }
     }
 
     private List<Tag> processTags(CreateCardDto cardDto){

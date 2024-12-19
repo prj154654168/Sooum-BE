@@ -8,14 +8,12 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class CommentCardService {
     private final CommentCardRepository commentCardRepository;
     private final static int MAX_PAGE_SIZE = 50;
@@ -88,5 +86,9 @@ public class CommentCardService {
 
     public void deleteCommentCardByMemberPk(Long memberPk) {
         commentCardRepository.deleteCommentCardByMemberPk(memberPk);
+    }
+
+    public void deleteAllComments(List<CommentCard> comments) {
+        commentCardRepository.deleteAllInBatch(comments);
     }
 }

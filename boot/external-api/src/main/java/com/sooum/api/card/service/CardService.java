@@ -1,25 +1,42 @@
 package com.sooum.api.card.service;
 
 import com.sooum.api.card.dto.CardSummary;
+import com.sooum.api.notification.service.NotificationUseCase;
+import com.sooum.data.card.entity.CommentCard;
+import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.parenttype.CardType;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.CommentLikeService;
 import com.sooum.data.card.service.FeedCardService;
 import com.sooum.data.card.service.FeedLikeService;
+import com.sooum.data.report.entity.CommentReport;
+import com.sooum.data.report.entity.FeedReport;
+import com.sooum.data.report.service.CommentReportService;
+import com.sooum.data.report.service.FeedReportService;
+import com.sooum.data.tag.service.CommentTagService;
+import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.global.exceptionmessage.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CardService {
+    private final CardLikeService cardLikeService;
     private final FeedLikeService feedLikeService;
     private final CommentLikeService commentLikeService;
     private final CommentCardService commentCardService;
     private final FeedCardService feedCardService;
+    private final FeedReportService feedReportService;
+    private final CommentReportService commentReportService;
+    private final CommentTagService commentTagService;
+    private final FeedTagService feedTagService;
+    private final NotificationUseCase notificationUseCase;
 
     public CardSummary findCardSummary(Long parentCardPk, Long memberPk) {
         int commentCnt = commentCardService.countComment(parentCardPk);
@@ -57,8 +74,8 @@ public class CardService {
         CardType cardType = findCardType(cardPk);
 
         switch (cardType) {
-            case FEED_CARD -> feedLikeService.createFeedLike(cardPk, memberPk);
-            case COMMENT_CARD -> commentLikeService.createCommentLike(cardPk, memberPk);
+            case FEED_CARD -> cardLikeService.createFeedLike(cardPk, memberPk);
+            case COMMENT_CARD -> cardLikeService.createCommentLike(cardPk, memberPk);
             default -> throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
         }
     }
@@ -68,8 +85,8 @@ public class CardService {
         CardType cardType = findCardType(likedCardPk);
 
         switch (cardType) {
-            case FEED_CARD -> feedLikeService.deleteFeedLike(likedCardPk, likedMemberPk);
-            case COMMENT_CARD -> commentLikeService.deleteCommentLike(likedCardPk, likedMemberPk);
+            case FEED_CARD -> cardLikeService.deleteFeedLike(likedCardPk, likedMemberPk);
+            case COMMENT_CARD -> cardLikeService.deleteCommentLike(likedCardPk, likedMemberPk);
             default -> throw new EntityNotFoundException(ExceptionMessage.CARD_NOT_FOUND.getMessage());
         }
     }
@@ -80,5 +97,35 @@ public class CardService {
 
     public boolean isNotExistCard(Long cardPk) {
         return !feedCardService.isExistFeedCard(cardPk) && !commentCardService.isExistCommentCard(cardPk);
+    }
+
+    @Transactional
+    public void deleteFeedAndAssociationsByReport(List<FeedReport> reports, FeedCard feedCard) {
+        feedReportService.deleteAllFeedReports(reports);
+        Long cardPk = feedCard.getPk();
+
+        if(commentCardService.hasChildCard(cardPk)) {
+            List<CommentCard> comments = commentCardService.findByMasterCardPk(cardPk);
+            commentTagService.deleteByCommentCards(comments);
+            commentLikeService.deleteByCommentCards(comments);
+            commentCardService.deleteAllComments(comments);
+        }
+
+        feedTagService.deleteByFeedCardPk(cardPk);
+        feedLikeService.deleteAllFeedLikes(cardPk);
+
+        notificationUseCase.saveCardDeletedHistoryByReport(feedCard.getWriter().getPk());
+        feedCardService.deleteFeedCard(cardPk);
+    }
+
+    @Transactional
+    public void deleteCommentAndAssociationsByReport(List<CommentReport> reports, CommentCard commentCard) {
+        Long cardPk = commentCard.getPk();
+        commentReportService.deleteAllCommentReports(reports);
+        commentTagService.deleteByCommentCardPk(cardPk);
+        commentLikeService.deleteAllFeedLikes(cardPk);
+
+        notificationUseCase.saveCardDeletedHistoryByReport(commentCard.getWriter().getPk());
+        commentCardService.deleteCommentCard(cardPk);
     }
 }

@@ -100,4 +100,8 @@ public class Member extends BaseEntity {
     public void updateDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
+
+    public void updateFCMToken(String fcmToken) {
+        this.firebaseToken = fcmToken;
+    }
 }

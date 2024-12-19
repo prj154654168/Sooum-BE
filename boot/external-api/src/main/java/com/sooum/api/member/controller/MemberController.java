@@ -5,6 +5,8 @@ import com.sooum.api.card.dto.MyFeedCardDto;
 import com.sooum.api.card.service.CommentInfoService;
 import com.sooum.api.card.service.FeedCardUseCase;
 import com.sooum.api.member.dto.AuthDTO;
+import com.sooum.api.member.dto.MemberDto;
+import com.sooum.api.member.service.MemberUseCase;
 import com.sooum.api.member.service.MemberWithdrawalService;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
@@ -25,6 +27,7 @@ public class MemberController {
     private final CommentInfoService commentInfoService;
     private final FeedCardUseCase feedCardUseCase;
     private final MemberWithdrawalService memberWithdrawalService;
+    private final MemberUseCase memberUseCase;
 
     @GetMapping(value = {"/feed-cards", "/{targetMemberId}/feed-cards"})
     public ResponseEntity<?> findMyFeedCards(@RequestParam(required = false) Optional<Long> lastId,
@@ -73,6 +76,13 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<?> withdrawMember(@CurrentUser Long memberPk, @RequestBody AuthDTO.Token token) {
         memberWithdrawalService.withdrawMember(memberPk, token);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/fcm")
+    public ResponseEntity<Void> updateFCMToken(@RequestBody MemberDto.FCMTokenUpdateRequest requestDto,
+                                               @CurrentUser Long memberPk) {
+        memberUseCase.updateFCMToken(requestDto, memberPk);
         return ResponseEntity.noContent().build();
     }
 }

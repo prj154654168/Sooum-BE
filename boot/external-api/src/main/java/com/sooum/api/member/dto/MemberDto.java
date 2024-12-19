@@ -34,4 +34,10 @@ public class MemberDto {
             this.banEndAt = banEndAt;
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class FCMTokenUpdateRequest {
+        private String fcmToken;
+    }
 }

@@ -2,7 +2,6 @@ package com.sooum.data.rsa.service;
 
 import com.sooum.data.rsa.entity.Rsa;
 import com.sooum.data.rsa.repository.RsaRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

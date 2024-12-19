@@ -40,7 +40,6 @@ public abstract class Card extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private CardImgType imgType;
 
-    @NotNull
     @Column(name = "IMG_NAME")
     private String imgName;
 
@@ -64,5 +63,9 @@ public abstract class Card extends BaseEntity {
         this.imgType = imgType;
         this.imgName = imgName;
         this.writer = writer;
+    }
+
+    public boolean isWriter(Long compareMemberPk) {
+        return this.writer.getPk().equals(compareMemberPk);
     }
 }

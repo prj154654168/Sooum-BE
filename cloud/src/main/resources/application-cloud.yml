@@ -8,7 +8,11 @@ spring:
           accessKey: ${accessKey}
           secretKey: ${secretKey}
       s3:
-        bucket: sooum-img
+        img:
+          bucket: sooum-img
+        fcm:
+          bucket: sooum-fcm
+          sdk: ${FCM_SDK}
         credentials:
           accessKey: ${accessKey}
           secretKey: ${secretKey}
