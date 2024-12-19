@@ -4,6 +4,8 @@ import com.sooum.api.img.service.ImgService;
 import com.sooum.api.member.dto.ProfileDto;
 import com.sooum.data.card.service.FeedCardService;
 import com.sooum.data.follow.service.FollowService;
+import com.sooum.data.img.entity.ProfileImg;
+import com.sooum.data.img.service.ProfileImgService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.visitor.service.VisitorService;
@@ -23,6 +25,7 @@ public class ProfileService {
     private final FollowService followService;
     private final ImgService imgService;
     private final BadWordFiltering badWordFiltering;
+    private final ProfileImgService profileImgService;
 
     @Transactional
     public ProfileDto.MyProfileInfoResponse findMyProfileInfo(Long memberPk) {
@@ -83,7 +86,6 @@ public class ProfileService {
                 .build();
     }
 
-    // todo profile_img entity update
     @Transactional
     public void updateProfile(ProfileDto.ProfileUpdate profileUpdate, Long memberPk) {
         Member member = memberService.findMember(memberPk);
@@ -92,8 +94,8 @@ public class ProfileService {
         member.updateNickname(profileUpdate.getNickname());
     }
 
-    private void updateProfileImg(String profileImgName, Member member) {
-        if (profileImgName == null) {
+    private void updateProfileImg(String profileImgName, Member profileOwner) {
+        if (profileImgName == null || profileImgName.isBlank()) {
             return;
         }
 
@@ -103,6 +105,10 @@ public class ProfileService {
         if (imgService.isModeratingProfileImg(profileImgName)) {
             throw new EntityNotFoundException(ExceptionMessage.IMAGE_REJECTED_BY_MODERATION.getMessage());
         }
-        member.updateProfileImgName(profileImgName);
+
+        ProfileImg profileImg = profileImgService.findProfileImg(profileImgName);
+        profileImg.updateProfileOwner(profileOwner);
+
+        profileOwner.updateProfileImgName(profileImgName);
     }
 }
