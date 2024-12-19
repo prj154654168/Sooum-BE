@@ -27,4 +27,8 @@ public class ProfileImg extends Img{
     public ProfileImg(String imgName) {
         super(imgName);
     }
+
+    public void updateProfileOwner(Member profileOwner) {
+        this.profileOwner = profileOwner;
+    }
 }
