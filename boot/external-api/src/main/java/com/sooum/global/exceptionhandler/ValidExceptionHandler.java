@@ -59,7 +59,7 @@ public class ValidExceptionHandler {
 
     @ExceptionHandler(BannedUserException.class)
     public ResponseEntity<ResponseStatus> bannedUserException(BannedUserException e) {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(HttpStatus.LOCKED)
                 .body(
                         ResponseStatus.builder()
                                 .httpCode(HttpStatus.LOCKED.value())
