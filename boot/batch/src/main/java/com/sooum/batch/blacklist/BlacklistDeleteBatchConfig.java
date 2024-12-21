@@ -71,7 +71,7 @@ public class BlacklistDeleteBatchConfig {
     }
 
     @Bean
-    public ItemWriter<Blacklist> blacklistWriter() {
+    public ItemWriter<Blacklist> deleteBlacklistWriter() {
         return items -> {
             List<String> tokens = items.getItems().stream()
                     .map(Blacklist::getToken)
