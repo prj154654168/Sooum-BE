@@ -56,7 +56,7 @@ public class BlacklistDeleteBatchConfig {
         return new StepBuilder("deleteBlacklistStep", jobRepository)
                 .<Blacklist, Blacklist>chunk(CHUNK_SIZE, transactionManager)
                 .reader(deleteBlacklistReader())
-                .writer(blacklistWriter())
+                .writer(deleteBlacklistWriter())
                 .build();
     }
 
