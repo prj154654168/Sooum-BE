@@ -1,4 +1,4 @@
-package com.sooum.batch.member.repository;
+package com.sooum.batch.suspended.repository;
 
 import com.sooum.data.suspended.repository.SuspendedRepository;
 import org.springframework.data.jpa.repository.Modifying;

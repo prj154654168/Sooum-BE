@@ -1,6 +1,6 @@
-package com.sooum.batch.member.service;
+package com.sooum.batch.suspended.service;
 
-import com.sooum.batch.member.repository.SuspendedBatchRepository;
+import com.sooum.batch.suspended.repository.SuspendedBatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
