@@ -23,4 +23,10 @@ public class MemberUseCase {
         Member requester = memberService.findMember(requesterPk);
         requester.updateFCMToken(requestDto.getFcmToken());
     }
+
+    @Transactional
+    public void updateNotifyAllow(MemberDto.NotifyAllowUpdateRequest requestDto, Long requesterPk) {
+        Member requester = memberService.findMember(requesterPk);
+        requester.updateNotifyAllow(requestDto.isAllowNotify());
+    }
 }

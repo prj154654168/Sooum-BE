@@ -104,4 +104,8 @@ public class Member extends BaseEntity {
     public void updateFCMToken(String fcmToken) {
         this.firebaseToken = fcmToken;
     }
+
+    public void updateNotifyAllow(boolean isAllowNotify) {
+        this.isAllowNotify = isAllowNotify;
+    }
 }

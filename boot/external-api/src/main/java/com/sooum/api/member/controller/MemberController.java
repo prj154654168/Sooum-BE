@@ -85,4 +85,11 @@ public class MemberController {
         memberUseCase.updateFCMToken(requestDto, memberPk);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/notify")
+    public ResponseEntity<Void> updateNotifyAllow(@RequestBody MemberDto.NotifyAllowUpdateRequest requestDto,
+                                                  @CurrentUser Long memberPk) {
+        memberUseCase.updateNotifyAllow(requestDto, memberPk);
+        return ResponseEntity.noContent().build();
+    }
 }

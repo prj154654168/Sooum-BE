@@ -53,7 +53,7 @@ public class CardLikeService {
                         .build()
         );
 
-        if (!targetCard.isWriter(requesterPk)) {
+        if (!targetCard.isWriter(requesterPk) && targetCard.getWriter().isAllowNotify()) {
             notificationUseCase.saveFeedLikeHistory(requesterPk, targetCard);
             sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
                     .notificationType(NotificationType.FEED_LIKE)
@@ -96,7 +96,7 @@ public class CardLikeService {
                 .targetCard(targetCard)
                 .build());
 
-        if (!targetCard.isWriter(requesterPk)) {
+        if (!targetCard.isWriter(requesterPk) && targetCard.getWriter().isAllowNotify()) {
             notificationUseCase.saveCommentLikeHistory(requesterPk, targetCard);
             sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
                     .notificationType(NotificationType.COMMENT_LIKE)

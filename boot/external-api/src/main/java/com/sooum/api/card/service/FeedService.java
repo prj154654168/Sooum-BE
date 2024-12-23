@@ -139,7 +139,7 @@ public class FeedService {
                 .toList();
         commentTagService.saveAll(commentTagList);
 
-        if (!card.isWriter(memberPk)) {
+        if (!card.isWriter(memberPk) && card.getWriter().isAllowNotify()) {
             notificationUseCase.saveCommentWriteHistory(memberPk, card);
             sendFCMEventPublisher.publishEvent(
                     FCMDto.GeneralFcmSendEvent.builder()
