@@ -53,16 +53,19 @@ public class CardLikeService {
                         .build()
         );
 
-        if (!targetCard.isWriter(requesterPk) && targetCard.getWriter().isAllowNotify()) {
+        if (!targetCard.isWriter(requesterPk)) {
             notificationUseCase.saveFeedLikeHistory(requesterPk, targetCard);
-            sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
-                    .notificationType(NotificationType.FEED_LIKE)
-                    .targetFcmToken(targetCard.getWriter().getFirebaseToken())
-                    .targetDeviceType(targetCard.getWriter().getDeviceType())
-                    .requesterNickname(likedMember.getNickname())
-                    .targetCardPk(targetCard.getPk())
-                    .source(this)
-                    .build());
+
+            if (targetCard.getWriter().isAllowNotify()) {
+                sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
+                        .notificationType(NotificationType.FEED_LIKE)
+                        .targetFcmToken(targetCard.getWriter().getFirebaseToken())
+                        .targetDeviceType(targetCard.getWriter().getDeviceType())
+                        .requesterNickname(likedMember.getNickname())
+                        .targetCardPk(targetCard.getPk())
+                        .source(this)
+                        .build());
+            }
         }
     }
 
@@ -96,16 +99,19 @@ public class CardLikeService {
                 .targetCard(targetCard)
                 .build());
 
-        if (!targetCard.isWriter(requesterPk) && targetCard.getWriter().isAllowNotify()) {
+        if (!targetCard.isWriter(requesterPk)) {
             notificationUseCase.saveCommentLikeHistory(requesterPk, targetCard);
-            sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
-                    .notificationType(NotificationType.COMMENT_LIKE)
-                    .targetFcmToken(targetCard.getWriter().getFirebaseToken())
-                    .targetDeviceType(targetCard.getWriter().getDeviceType())
-                    .requesterNickname(likedMember.getNickname())
-                    .targetCardPk(targetCard.getPk())
-                    .source(this)
-                    .build());
+
+            if (targetCard.getWriter().isAllowNotify()) {
+                sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
+                        .notificationType(NotificationType.COMMENT_LIKE)
+                        .targetFcmToken(targetCard.getWriter().getFirebaseToken())
+                        .targetDeviceType(targetCard.getWriter().getDeviceType())
+                        .requesterNickname(likedMember.getNickname())
+                        .targetCardPk(targetCard.getPk())
+                        .source(this)
+                        .build());
+            }
         }
     }
 

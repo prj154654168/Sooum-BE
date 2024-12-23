@@ -139,17 +139,20 @@ public class FeedService {
                 .toList();
         commentTagService.saveAll(commentTagList);
 
-        if (!card.isWriter(memberPk) && card.getWriter().isAllowNotify()) {
+        if (!card.isWriter(memberPk)) {
             notificationUseCase.saveCommentWriteHistory(memberPk, card);
-            sendFCMEventPublisher.publishEvent(
-                    FCMDto.GeneralFcmSendEvent.builder()
-                            .notificationType(NotificationType.COMMENT_WRITE)
-                            .targetDeviceType(card.getWriter().getDeviceType())
-                            .targetFcmToken(card.getWriter().getFirebaseToken())
-                            .targetCardPk(commentCard.getPk())
-                            .requesterNickname(member.getNickname())
-                            .source(this)
-                            .build());
+
+            if (card.getWriter().isAllowNotify()) {
+                sendFCMEventPublisher.publishEvent(
+                        FCMDto.GeneralFcmSendEvent.builder()
+                                .notificationType(NotificationType.COMMENT_WRITE)
+                                .targetDeviceType(card.getWriter().getDeviceType())
+                                .targetFcmToken(card.getWriter().getFirebaseToken())
+                                .targetCardPk(commentCard.getPk())
+                                .requesterNickname(member.getNickname())
+                                .source(this)
+                                .build());
+            }
         }
     }
 
