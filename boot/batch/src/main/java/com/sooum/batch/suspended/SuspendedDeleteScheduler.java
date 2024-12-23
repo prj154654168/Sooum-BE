@@ -1,6 +1,6 @@
-package com.sooum.batch.member;
+package com.sooum.batch.suspended;
 
-import com.sooum.batch.member.service.DeleteSuspensionService;
+import com.sooum.batch.suspended.service.DeleteSuspensionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
