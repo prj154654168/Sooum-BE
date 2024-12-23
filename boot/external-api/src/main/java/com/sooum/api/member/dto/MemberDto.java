@@ -50,4 +50,17 @@ public class MemberDto {
         @JsonProperty("isAllowNotify")
         private boolean isAllowNotify;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class NotifyAllowResponse {
+        @JsonProperty("isAllowNotify")
+        private boolean isAllowNotify;
+
+        @Builder
+        public NotifyAllowResponse(boolean isAllowNotify) {
+            this.isAllowNotify = isAllowNotify;
+        }
+    }
 }

@@ -29,4 +29,10 @@ public class MemberUseCase {
         Member requester = memberService.findMember(requesterPk);
         requester.updateNotifyAllow(requestDto.isAllowNotify());
     }
+
+    public MemberDto.NotifyAllowResponse findNotifyAllow(Long requesterPk) {
+        return MemberDto.NotifyAllowResponse.builder()
+                .isAllowNotify(memberService.findMemberNotifyAllow(requesterPk))
+                .build();
+    }
 }

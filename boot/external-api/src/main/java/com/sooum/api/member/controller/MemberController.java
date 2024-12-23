@@ -10,6 +10,7 @@ import com.sooum.api.member.service.MemberUseCase;
 import com.sooum.api.member.service.MemberWithdrawalService;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
+import com.sooum.global.responseform.ResponseEntityModel;
 import com.sooum.global.responseform.ResponseStatus;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -91,5 +92,19 @@ public class MemberController {
                                                   @CurrentUser Long memberPk) {
         memberUseCase.updateNotifyAllow(requestDto, memberPk);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/notify")
+    public ResponseEntity<ResponseEntityModel<MemberDto.NotifyAllowResponse>> findNotifyAllow(@CurrentUser Long memberPk) {
+        return ResponseEntity.ok(
+                ResponseEntityModel.<MemberDto.NotifyAllowResponse>builder()
+                        .status(ResponseStatus.builder()
+                                .httpCode(HttpStatus.OK.value())
+                                .httpStatus(HttpStatus.OK)
+                                .responseMessage("Retrieved notify allow successfully .")
+                                .build())
+                        .content(memberUseCase.findNotifyAllow(memberPk))
+                        .build()
+        );
     }
 }
