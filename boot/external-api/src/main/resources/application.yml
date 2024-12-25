@@ -30,3 +30,18 @@ jwt:
 slack:
   webhook:
     url: ${URL}
+
+exclude-auth-path-patterns:
+    paths:
+      - pathPattern: /users/key
+        method: GET
+      - pathPattern: /users/sign-up
+        method: POST
+      - pathPattern: /users/login
+        method: POST
+      - pathPattern: /profiles/nickname/**/available
+        method: GET
+      - pathPattern: /members/suspension
+        method: POST
+      - pathPattern: /app/version/**
+        method: GET

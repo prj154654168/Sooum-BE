@@ -4,6 +4,8 @@ package com.sooum.global.config.mvc;
 import com.sooum.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.global.auth.resolver.CurrentUserArgumentResolver;
 import com.sooum.global.config.jwt.TokenProvider;
+import com.sooum.global.config.ratelimiter.RateLimitInterceptor;
+import com.sooum.global.config.security.path.ExcludeAuthPathProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -18,6 +20,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final TokenProvider tokenProvider;
     private final JwtBlacklistInterceptor jwtBlacklistInterceptor;
+    private final RateLimitInterceptor rateLimitInterceptor;
+    private final ExcludeAuthPathProperties excludeAuthPathProperties;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -27,12 +31,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtBlacklistInterceptor)
-                .excludePathPatterns(
-                        "/users/key",
-                        "/users/sign-up",
-                        "/users/login",
-                        "/members" ,
-                        "/profiles/nickname/**/available"
-                );
+                .excludePathPatterns(excludeAuthPathProperties.getExcludeAuthPaths());
+
+        registry.addInterceptor(rateLimitInterceptor)
+                .excludePathPatterns(excludeAuthPathProperties.getExcludeAuthPaths());
     }
 }
