@@ -21,9 +21,12 @@ import com.sooum.data.visitor.service.VisitorService;
 import com.sooum.global.config.jwt.InvalidTokenException;
 import com.sooum.global.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -51,6 +54,8 @@ public class MemberWithdrawalService {
     private final AccountTransferService accountTransferService;
     private final FeedTagService feedTagService;
     private final CommentTagService commentTagService;
+
+    private final RedisTemplate<String, String> redisStringTemplate;
 
     @Transactional
     public void withdrawMember(Long memberPk, AuthDTO.Token token) throws InvalidTokenException {
@@ -99,13 +104,30 @@ public class MemberWithdrawalService {
     }
 
     private void addTokensToBlacklist(AuthDTO.Token token) throws InvalidTokenException {
+        LocalDateTime accessTokenExpiredAt = tokenProvider.getExpirationAllowExpired(token.accessToken());
+        LocalDateTime refreshTokenExpiredAt = tokenProvider.getExpirationAllowExpired(token.refreshToken());
+
+        if (accessTokenExpiredAt.isAfter(LocalDateTime.now())) {
+            redisStringTemplate.opsForValue().set(
+                    "blacklist:access:withdraw", token.accessToken(),
+                    Duration.between(LocalDateTime.now(), accessTokenExpiredAt)
+            );
+        }
+
+        if (refreshTokenExpiredAt.isAfter(LocalDateTime.now())) {
+            redisStringTemplate.opsForValue().set(
+                    "blacklist:refresh:withdraw", token.refreshToken(),
+                    Duration.between(LocalDateTime.now(), refreshTokenExpiredAt)
+            );
+        }
+
         List<Blacklist> blacklistList = List.of(
                 Blacklist.builder()
                         .token(token.accessToken())
-                        .expiredAt(tokenProvider.getExpirationAllowExpired(token.accessToken())).build(),
+                        .expiredAt(accessTokenExpiredAt).build(),
                 Blacklist.builder()
                         .token(token.refreshToken())
-                        .expiredAt(tokenProvider.getExpirationAllowExpired(token.refreshToken())).build()
+                        .expiredAt(refreshTokenExpiredAt).build()
         );
         blacklistService.saveAll(blacklistList);
     }
