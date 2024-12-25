@@ -39,9 +39,11 @@ exclude-auth-path-patterns:
         method: POST
       - pathPattern: /users/login
         method: POST
-      - pathPattern: /profiles/nickname/**/available
-        method: GET
+      - pathPattern: /profiles/nickname/available
+        method: POST
       - pathPattern: /members/suspension
         method: POST
       - pathPattern: /app/version/**
         method: GET
+      - path-pattern: /settings/transfer
+        method: POST

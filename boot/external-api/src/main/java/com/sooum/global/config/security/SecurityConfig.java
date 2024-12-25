@@ -2,6 +2,8 @@ package com.sooum.global.config.security;
 
 import com.sooum.global.config.jwt.JwtAuthenticationFilter;
 import com.sooum.global.config.jwt.TokenProvider;
+import com.sooum.global.config.security.path.ExcludeAuthPathProperties;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final ExcludeAuthPathProperties excludeAuthPathProperties;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -30,19 +33,17 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(AbstractHttpConfigurer::disable);
 
+        http.authorizeHttpRequests(request -> {
+            excludeAuthPathProperties.getPaths().iterator()
+                    .forEachRemaining(authPath ->
+                            request.requestMatchers(HttpMethod.valueOf(authPath.getMethod()), authPath.getPathPattern()).permitAll()
+                    );
+        });
+
         http.authorizeHttpRequests(request -> request
-                // No Auth
-                .requestMatchers(HttpMethod.GET, "/users/key").permitAll()
-                .requestMatchers(HttpMethod.POST, "/users/sign-up").permitAll()  // 회원가입
-                .requestMatchers(HttpMethod.POST, "/users/login").permitAll()  // 로그인
-                .requestMatchers(HttpMethod.GET, "/members").permitAll()
                 .requestMatchers(HttpMethod.POST, "/cards").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/cards/{cardPk}").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/users/token").hasRole("USER") // 토큰 재발급
-                .requestMatchers(HttpMethod.POST, "/members/suspension").permitAll()
-                .requestMatchers(HttpMethod.GET, "/profiles/nickname/{nickname}/available").permitAll()
-                .requestMatchers(HttpMethod.POST, "/settings/transfer").permitAll()
-                .requestMatchers(HttpMethod.GET, "/app/version/**").permitAll()
                 // Authenticated
                 .anyRequest().authenticated()
         );
@@ -63,7 +64,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(tokenProvider);
+        return new JwtAuthenticationFilter(tokenProvider, excludeAuthPathProperties);
     }
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

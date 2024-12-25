@@ -1,5 +1,6 @@
 package com.sooum.global.config.jwt;
 
+import com.sooum.global.config.security.path.ExcludeAuthPathProperties;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,30 +8,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.server.PathContainer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
+    private final ExcludeAuthPathProperties excludeAuthPathProperties;
 
-    private final Map<String, HttpMethod> EXCLUDE_AUTH_PATH = Map.of(
-            "/users/key", HttpMethod.GET,
-            "/users/sign-up", HttpMethod.POST,
-            "/users/login", HttpMethod.POST,
-            "/members", HttpMethod.GET,
-            "/profiles/nickname/**/available", HttpMethod.GET,
-            "/members/suspension", HttpMethod.POST,
-            "/app/version/**", HttpMethod.GET
-    );
-    private static final AntPathMatcher antPathMatcher = new AntPathMatcher();
+    private static final PathPatternParser pathPatternParser = new PathPatternParser();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -73,9 +66,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String requestPath = request.getRequestURI();
         HttpMethod requestMethod = HttpMethod.valueOf(request.getMethod());
 
-        return EXCLUDE_AUTH_PATH.entrySet().stream()
-                .anyMatch(entry -> antPathMatcher.match(entry.getKey(), requestPath)
-                        && entry.getValue().equals(requestMethod));
+        return excludeAuthPathProperties.getPaths().stream()
+                .anyMatch(authPath ->
+                        pathPatternParser.parse(authPath.getPathPattern())
+                                .matches(PathContainer.parsePath(requestPath))
+                        && requestMethod.equals(HttpMethod.valueOf(authPath.getMethod()))
+                );
     }
 
     private void setAuthentication(String token) {

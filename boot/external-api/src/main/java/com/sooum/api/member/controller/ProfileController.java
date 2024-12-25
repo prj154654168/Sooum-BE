@@ -11,7 +11,6 @@ import com.sooum.global.responseform.ResponseStatus;
 import com.sooum.global.util.NextPageLinkGenerator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @RestController
 @RequestMapping("/profiles")
 @RequiredArgsConstructor
@@ -56,8 +54,8 @@ public class ProfileController {
                 .build());
     }
 
-    @GetMapping("/nickname/{nickname}/available")
-    public ResponseEntity<ResponseEntityModel<ProfileDto.NicknameAvailable>> verifyNicknameAvailable(@PathVariable("nickname") String nickname) {
+    @PostMapping("/nickname/available")
+    public ResponseEntity<ResponseEntityModel<ProfileDto.NicknameAvailable>> verifyNicknameAvailable(@RequestBody String nickname) {
         return ResponseEntity.ok(
                 ResponseEntityModel.<ProfileDto.NicknameAvailable>builder()
                         .status(
