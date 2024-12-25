@@ -44,4 +44,8 @@ public class MemberService {
     public void deleteMember(Long memberPk) {
         memberRepository.deleteById(memberPk);
     }
+
+    public boolean findMemberNotifyAllow(Long memberPk) {
+        return memberRepository.findMemberNotifyAllow(memberPk);
+    }
 }

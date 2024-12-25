@@ -1,8 +1,10 @@
 package com.sooum.api.member.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -39,5 +41,26 @@ public class MemberDto {
     @NoArgsConstructor
     public static class FCMTokenUpdateRequest {
         private String fcmToken;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class NotifyAllowUpdateRequest {
+        @JsonProperty("isAllowNotify")
+        private boolean isAllowNotify;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class NotifyAllowResponse {
+        @JsonProperty("isAllowNotify")
+        private boolean isAllowNotify;
+
+        @Builder
+        public NotifyAllowResponse(boolean isAllowNotify) {
+            this.isAllowNotify = isAllowNotify;
+        }
     }
 }

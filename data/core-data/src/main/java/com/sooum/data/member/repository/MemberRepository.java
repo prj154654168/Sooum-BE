@@ -20,4 +20,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m.totalVisitorCnt from Member m where m = :profileOwner")
     Long findTotalVisitorCnt(@Param("profileOwner") Member profileOwner);
+
+    @Query("select m.isAllowNotify from Member m where m.pk = :memberPk")
+    boolean findMemberNotifyAllow(@Param("memberPk") Long memberPk);
 }

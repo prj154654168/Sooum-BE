@@ -46,24 +46,30 @@ public class CommentReportUseCase {
 
     private void deleteCommentAndAssociationsByReport(CommentCard commentCard, List<CommentReport> reports) {
         cardService.deleteCommentAndAssociationsByReport(reports, commentCard);
-        sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
-                .notificationType(NotificationType.DELETED)
-                .targetDeviceType(commentCard.getWriter().getDeviceType())
-                .targetFcmToken(commentCard.getWriter().getFirebaseToken())
-                .source(this)
-                .build()
-        );
+        Member writer = commentCard.getWriter();
+
+        if (writer.isAllowNotify()) {
+            sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+                    .notificationType(NotificationType.DELETED)
+                    .targetDeviceType(writer.getDeviceType())
+                    .targetFcmToken(writer.getFirebaseToken())
+                    .source(this)
+                    .build());
+        }
     }
 
     private void writerBan(Member writer) {
         notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
         writer.ban();
-        sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
-                .notificationType(NotificationType.BLOCKED)
-                .targetDeviceType(writer.getDeviceType())
-                .targetFcmToken(writer.getFirebaseToken())
-                .source(this)
-                .build());
+
+        if (writer.isAllowNotify()) {
+            sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+                    .notificationType(NotificationType.BLOCKED)
+                    .targetDeviceType(writer.getDeviceType())
+                    .targetFcmToken(writer.getFirebaseToken())
+                    .source(this)
+                    .build());
+        }
     }
 
     private boolean isReportedOverLimit(List<CommentReport> reports) {

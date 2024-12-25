@@ -46,24 +46,31 @@ public class FeedReportUseCase {
 
     private void deleteFeedAndAssociationsByReport(FeedCard feedCard, List<FeedReport> reports) {
         cardService.deleteFeedAndAssociationsByReport(reports, feedCard);
-        sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
-                .notificationType(NotificationType.DELETED)
-                .targetDeviceType(feedCard.getWriter().getDeviceType())
-                .targetFcmToken(feedCard.getWriter().getFirebaseToken())
-                .source(this)
-                .build()
-        );
+
+        Member writer = feedCard.getWriter();
+        if (writer.isAllowNotify()) {
+            sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+                    .notificationType(NotificationType.DELETED)
+                    .targetDeviceType(writer.getDeviceType())
+                    .targetFcmToken(writer.getFirebaseToken())
+                    .source(this)
+                    .build()
+            );
+        }
     }
 
     private void writerBan(Member writer) {
         notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
         writer.ban();
+
+        if (writer.isAllowNotify()) {
         sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
                 .notificationType(NotificationType.BLOCKED)
                 .targetDeviceType(writer.getDeviceType())
                 .targetFcmToken(writer.getFirebaseToken())
                 .source(this)
                 .build());
+        }
     }
 
     private boolean isReportedOverLimit(List<FeedReport> reports) {
