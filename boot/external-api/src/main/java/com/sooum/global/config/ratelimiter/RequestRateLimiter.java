@@ -1,7 +1,6 @@
 package com.sooum.global.config.ratelimiter;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +8,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class RequestRateLimiter {
