@@ -14,8 +14,8 @@ public class FollowDto {
     public static class FollowerInfo extends FollowInfoDto {
 
         @Builder
-        public FollowerInfo(boolean isFollowing, Link backgroundImgUrl, String id, String nickname) {
-            super(backgroundImgUrl, id, nickname, isFollowing);
+        public FollowerInfo(Link backgroundImgUrl, String id, String nickname, boolean isFollowing, boolean isRequester) {
+            super(backgroundImgUrl, id, nickname, isFollowing, isRequester);
         }
     }
 
@@ -23,8 +23,8 @@ public class FollowDto {
     public static class FollowingInfo extends FollowInfoDto {
 
         @Builder
-        public FollowingInfo(boolean isFollowing, Link backgroundImgUrl, String id, String nickname) {
-            super(backgroundImgUrl, id, nickname, isFollowing);
+        public FollowingInfo(Link backgroundImgUrl, String id, String nickname, boolean isFollowing, boolean isRequester) {
+            super(backgroundImgUrl, id, nickname, isFollowing, isRequester);
         }
     }
 }

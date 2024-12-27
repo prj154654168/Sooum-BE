@@ -32,6 +32,7 @@ public class FollowInfoService {
                         .nickname(follower.getNickname())
                         .backgroundImgUrl(imgService.findProfileImgUrl(follower.getProfileImgName()))
                         .isFollowing(followedFollowersPk.contains(follower.getPk()))
+                        .isRequester(follower.getPk().equals(requesterPk))
                         .build()
                 ).toList()
         );
@@ -48,6 +49,7 @@ public class FollowInfoService {
                         .nickname(follower.getNickname())
                         .backgroundImgUrl(imgService.findProfileImgUrl(follower.getProfileImgName()))
                         .isFollowing(followedFollowingsPk.contains(follower.getPk()))
+                        .isRequester(follower.getPk().equals(requesterPk))
                         .build()
                 ).toList()
         );
