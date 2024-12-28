@@ -5,6 +5,7 @@ import com.sooum.api.notification.dto.NotificationDto;
 import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
+import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.notification.entity.NotificationHistory;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
@@ -135,38 +136,26 @@ public class NotificationUseCase {
     }
 
     @Transactional
-    public void saveCommentWriteHistory(Long fromMemberPk, Card card) {
+    public void saveCommentWriteHistory(Long fromMemberPk, Long targetCardPk, Card parentCard) {
+        Member fromMember = memberService.findMember(fromMemberPk);
         notificationHistoryService.save(
-                NotificationHistory.builder()
-                        .notificationType(NotificationType.COMMENT_WRITE)
-                        .fromMember(memberService.findMember(fromMemberPk))
-                        .toMember(card.getWriter())
-                        .card(card)
-                        .build()
+                NotificationHistory.ofCommentWrite(fromMember, targetCardPk, parentCard)
         );
     }
 
     @Transactional
     public void saveFeedLikeHistory(Long fromMemberPk, FeedCard feedCard) {
+        Member fromMember = memberService.findMember(fromMemberPk);
         notificationHistoryService.save(
-                NotificationHistory.builder()
-                        .notificationType(NotificationType.FEED_LIKE)
-                        .fromMember(memberService.findMember(fromMemberPk))
-                        .toMember(feedCard.getWriter())
-                        .card(feedCard)
-                        .build()
+                NotificationHistory.ofFeedLike(fromMember, feedCard)
         );
     }
 
     @Transactional
     public void saveCommentLikeHistory(Long fromMemberPk, CommentCard commentCard) {
+        Member fromMember = memberService.findMember(fromMemberPk);
         notificationHistoryService.save(
-                NotificationHistory.builder()
-                        .notificationType(NotificationType.COMMENT_LIKE)
-                        .fromMember(memberService.findMember(fromMemberPk))
-                        .toMember(commentCard.getWriter())
-                        .card(commentCard)
-                        .build()
+                NotificationHistory.ofCommentLike(fromMember, commentCard)
         );
     }
 
@@ -174,21 +163,17 @@ public class NotificationUseCase {
     public void saveBlockedHistoryAndDeletePreviousHistories(Long toMemberPk) {
         notificationHistoryService.deletePreviousBlockedHistories(toMemberPk);
 
+        Member toMember = memberService.findMember(toMemberPk);
         notificationHistoryService.save(
-                NotificationHistory.builder()
-                        .notificationType(NotificationType.BLOCKED)
-                        .toMember(memberService.findMember(toMemberPk))
-                        .build()
+                NotificationHistory.ofBlocked(toMember)
         );
     }
 
     @Transactional
     public void saveCardDeletedHistoryByReport(Long toMemberPk) {
+        Member toMember = memberService.findMember(toMemberPk);
         notificationHistoryService.save(
-                NotificationHistory.builder()
-                        .notificationType(NotificationType.DELETED)
-                        .toMember(memberService.findMember(toMemberPk))
-                        .build()
+                NotificationHistory.ofDeleted(toMember)
         );
     }
 }

@@ -15,6 +15,7 @@ import com.sooum.data.card.service.*;
 import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.entity.Role;
+import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
 import com.sooum.data.notification.service.NotificationHistoryService;
@@ -140,7 +141,7 @@ public class FeedService {
         commentTagService.saveAll(commentTagList);
 
         if (!card.isWriter(memberPk)) {
-            notificationUseCase.saveCommentWriteHistory(memberPk, card);
+            notificationUseCase.saveCommentWriteHistory(memberPk, commentCard.getPk(), card);
 
             if (card.getWriter().isAllowNotify()) {
                 sendFCMEventPublisher.publishEvent(
