@@ -45,11 +45,14 @@ public class CommentReportUseCase {
     }
 
     private void deleteCommentAndAssociationsByReport(CommentCard commentCard, List<CommentReport> reports) {
-        cardService.deleteCommentAndAssociationsByReport(reports, commentCard);
         Member writer = commentCard.getWriter();
+
+        cardService.deleteCommentAndAssociationsByReport(reports, commentCard);
+        Long notificationId = notificationUseCase.saveCardDeletedHistoryByReport(writer.getPk());
 
         if (writer.isAllowNotify()) {
             sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+                    .notificationId(notificationId)
                     .notificationType(NotificationType.DELETED)
                     .targetDeviceType(writer.getDeviceType())
                     .targetFcmToken(writer.getFirebaseToken())
@@ -59,11 +62,12 @@ public class CommentReportUseCase {
     }
 
     private void writerBan(Member writer) {
-        notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
+        Long notificationId = notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
         writer.ban();
 
         if (writer.isAllowNotify()) {
             sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+                    .notificationId(notificationId)
                     .notificationType(NotificationType.BLOCKED)
                     .targetDeviceType(writer.getDeviceType())
                     .targetFcmToken(writer.getFirebaseToken())

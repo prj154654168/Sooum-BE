@@ -45,11 +45,14 @@ public class FeedReportUseCase {
     }
 
     private void deleteFeedAndAssociationsByReport(FeedCard feedCard, List<FeedReport> reports) {
-        cardService.deleteFeedAndAssociationsByReport(reports, feedCard);
-
         Member writer = feedCard.getWriter();
+
+        cardService.deleteFeedAndAssociationsByReport(reports, feedCard);
+        Long notificationId = notificationUseCase.saveCardDeletedHistoryByReport(writer.getPk());
+
         if (writer.isAllowNotify()) {
             sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+                    .notificationId(notificationId)
                     .notificationType(NotificationType.DELETED)
                     .targetDeviceType(writer.getDeviceType())
                     .targetFcmToken(writer.getFirebaseToken())
@@ -60,11 +63,12 @@ public class FeedReportUseCase {
     }
 
     private void writerBan(Member writer) {
-        notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
+        Long notificationId = notificationUseCase.saveBlockedHistoryAndDeletePreviousHistories(writer.getPk());
         writer.ban();
 
         if (writer.isAllowNotify()) {
         sendFCMEventPublisher.publishEvent(FCMDto.SystemFcmSendEvent.builder()
+                .notificationId(notificationId)
                 .notificationType(NotificationType.BLOCKED)
                 .targetDeviceType(writer.getDeviceType())
                 .targetFcmToken(writer.getFirebaseToken())

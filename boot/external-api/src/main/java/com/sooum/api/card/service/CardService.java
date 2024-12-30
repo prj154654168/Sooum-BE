@@ -114,7 +114,6 @@ public class CardService {
         feedTagService.deleteByFeedCardPk(cardPk);
         feedLikeService.deleteAllFeedLikes(cardPk);
 
-        notificationUseCase.saveCardDeletedHistoryByReport(feedCard.getWriter().getPk());
         feedCardService.deleteFeedCard(cardPk);
     }
 
@@ -125,7 +124,6 @@ public class CardService {
         commentTagService.deleteByCommentCardPk(cardPk);
         commentLikeService.deleteAllFeedLikes(cardPk);
 
-        notificationUseCase.saveCardDeletedHistoryByReport(commentCard.getWriter().getPk());
         commentCardService.deleteCommentCard(cardPk);
     }
 }
