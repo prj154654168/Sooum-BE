@@ -4,10 +4,13 @@ name: SooumCI
 on:
   pull_request:
     branches:
-      - deploy
+      - main
 
 env:
   S3_BUCKET_NAME: sooum-ci-cd
+  S3_APP_SPEC_NAME: appspec
+  S3_APP_SPEC_SCRIPT_NAME: application_start.sh
+  S3_DEPLOY_FILE_NAME: deploy-sooum.zip
 
 jobs:
   build:
@@ -27,16 +30,30 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew boot:external-api:build -x test
 
+      - name: make appspec directory
+        run: mkdir $S3_APP_SPEC_NAME
+
+      - name: Download S3 bucket
+        run: |
+          aws s3 sync s3://$S3_BUCKET_NAME/$S3_APP_SPEC_NAME ./$S3_APP_SPEC_NAME
+
       - name: Make zip file
-        run: zip -j ./sooum_deploy.zip ./boot/external-api/build/libs/external-api-0.0.1-SNAPSHOT.jar
+        run: zip -j ./$deploy-sooum ./boot/external-api/build/libs/external-api-0.0.1-SNAPSHOT.jar ./$S3_APP_SPEC_NAME/$S3_APP_SPEC_NAME.yml ./$S3_APP_SPEC_NAME/$S3_APP_SPEC_SCRIPT_NAME.sh
         shell: bash
 
-      - name: Deliver to AWS S3
+      - name: Get AWS Credential
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ap-northeast-2
 
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./sooum_deploy.zip s3://$S3_BUCKET_NAME/sooum_deploy.zip
+        run: aws s3 cp --region ap-northeast-2 ./$deploy-sooum s3://$S3_BUCKET_NAME/$deploy-sooum
+
+      - name: Trigger CodeDeploy
+        run: |
+          aws deploy create-deployment \
+          --application-name BlueGreenDeploy \
+          --deployment-config-name CodeDeployDefault.AllAtOnce \
+          --deployment-group-name BlueGreenDeployGroup \
+          --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$deploy-sooum
