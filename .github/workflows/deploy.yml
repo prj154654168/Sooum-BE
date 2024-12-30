@@ -1,3 +1,4 @@
+# aws code deploy를 위해 s3로 jar파일 전송
 name: SooumCI
 
 on:
