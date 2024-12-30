@@ -2,9 +2,14 @@
 name: SooumCI
 
 on:
-  pull_request:
-    branches:
-      - main
+   pull_request_review:
+     types:
+       - submitted
+     branches:
+       - main
+     properties:
+       review:
+         state: approved
 
 env:
   S3_BUCKET_NAME: sooum-ci-cd
