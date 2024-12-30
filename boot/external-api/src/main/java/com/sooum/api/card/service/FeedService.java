@@ -141,11 +141,12 @@ public class FeedService {
         commentTagService.saveAll(commentTagList);
 
         if (!card.isWriter(memberPk)) {
-            notificationUseCase.saveCommentWriteHistory(memberPk, commentCard.getPk(), card);
+            Long notificationId = notificationUseCase.saveCommentWriteHistory(memberPk, commentCard.getPk(), card);
 
             if (card.getWriter().isAllowNotify()) {
                 sendFCMEventPublisher.publishEvent(
                         FCMDto.GeneralFcmSendEvent.builder()
+                                .notificationId(notificationId)
                                 .notificationType(NotificationType.COMMENT_WRITE)
                                 .targetDeviceType(card.getWriter().getDeviceType())
                                 .targetFcmToken(card.getWriter().getFirebaseToken())

@@ -104,8 +104,8 @@ public class NotificationHistoryService {
     }
 
     @Transactional
-    public void save(NotificationHistory notificationHistory) {
-        notificationHistoryRepository.save(notificationHistory);
+    public Long save(NotificationHistory notificationHistory) {
+        return notificationHistoryRepository.save(notificationHistory).getPk();
     }
 
     @Transactional

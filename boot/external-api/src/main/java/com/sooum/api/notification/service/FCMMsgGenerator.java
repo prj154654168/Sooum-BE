@@ -7,126 +7,133 @@ import com.google.firebase.messaging.Notification;
 import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Component
-public class FCMMsgGenerator {
+class FCMMsgGenerator {
     private static final String TITLE = "Sooum";
+    private static final String COMMENT_WRITE_SUFFIX = "님이 답카드를 작성했습니다.";
+    private static final String LIKE_SUFFIX = "님이 카드에 공감했습니다.";
+    private static final String BLOCKED_BODY = "지속적인 신고로 글쓰기 제한됐습니다.";
+    private static final String DELETED_BODY = "신고로 인해 카드가 삭제 처리됐습니다.";
 
-    public Message generateCommentWriteMsg(FCMDto.GeneralFcm fcmDto) {
-        String body = fcmDto.getRequesterNickname() + "님이 답카드를 작성했습니다.";
+    public Message generateGeneralMsg(FCMDto.GeneralFcm fcmDto) {
         return fcmDto.getTargetDeviceType().equals(DeviceType.IOS)
-                ? generateGeneralMsgByIos(NotificationType.COMMENT_WRITE, fcmDto.getTargetCardPk(), fcmDto.getTargetFcmToken(), body)
-                : generateGeneralMsgByAos(NotificationType.COMMENT_WRITE, fcmDto.getTargetCardPk(), fcmDto.getTargetFcmToken(), body);
+                ? generateGeneralMsgByIos(fcmDto)
+                : generateGeneralMsgByAos(fcmDto);
     }
 
-    public Message generateFeedLikeMsg(FCMDto.GeneralFcm fcmDto) {
-        String body = fcmDto.getRequesterNickname() + "님이 카드에 공감했습니다.";
+    public Message generateSystemMsg(FCMDto.SystemFcm fcmDto) {
         return fcmDto.getTargetDeviceType().equals(DeviceType.IOS)
-                ? generateGeneralMsgByIos(NotificationType.FEED_LIKE, fcmDto.getTargetCardPk(), fcmDto.getTargetFcmToken(), body)
-                : generateGeneralMsgByAos(NotificationType.FEED_LIKE, fcmDto.getTargetCardPk(), fcmDto.getTargetFcmToken(), body);
+                ? generateSystemMsgByIos(fcmDto)
+                : generateSystemMsgByAos(fcmDto);
     }
 
-    public Message generateCommentLikeMsg(FCMDto.GeneralFcm fcmDto) {
-        String body = fcmDto.getRequesterNickname() + "님이 카드에 공감했습니다.";
-        return fcmDto.getTargetDeviceType().equals(DeviceType.IOS)
-                ? generateGeneralMsgByIos(NotificationType.COMMENT_LIKE, fcmDto.getTargetCardPk(), fcmDto.getTargetFcmToken(), body)
-                : generateGeneralMsgByAos(NotificationType.COMMENT_LIKE, fcmDto.getTargetCardPk(), fcmDto.getTargetFcmToken(), body);
-    }
-
-    public Message generateCardDeletedMsgByReport(FCMDto.SystemFcm fcmDto) {
-        String body = "신고로 인해 카드가 삭제 처리됐습니다.";
-        return fcmDto.getTargetDeviceType().equals(DeviceType.IOS)
-                ? generateSystemMsgByIos(NotificationType.DELETED, fcmDto.getTargetFcmToken(), body)
-                : generateSystemMsgByAos(NotificationType.DELETED, fcmDto.getTargetFcmToken(), body);
-    }
-
-    public Message generateBlockedMsg(FCMDto.SystemFcm fcmDto) {
-        String body = "지속적인 신고로 글쓰기 제한됐습니다.";
-        return fcmDto.getTargetDeviceType().equals(DeviceType.IOS)
-                ? generateSystemMsgByIos(NotificationType.BLOCKED, fcmDto.getTargetFcmToken(), body)
-                : generateSystemMsgByAos(NotificationType.BLOCKED, fcmDto.getTargetFcmToken(), body);
-    }
-
-    private Message generateGeneralMsgByAos(NotificationType notificationType, Long targetCardPk, String fcmToken, String body) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("targetCardId", targetCardPk.toString());
-        data.put("notificationType", notificationType.name());
+    private Message generateGeneralMsgByAos(FCMDto.GeneralFcm fcmDto) {
+        HashMap<String, String> data = generateGeneralFcmData(fcmDto.getNotificationId(), fcmDto.getTargetCardPk(), fcmDto.getNotificationType());
 
         return Message.builder()
                 .setNotification(
                         Notification.builder()
                                 .setTitle(TITLE)
-                                .setBody(body)
+                                .setBody(generateGeneralMsgBody(fcmDto.getRequesterNickname(), fcmDto.getNotificationType()))
                                 .build()
                 )
                 .setAndroidConfig(AndroidConfig.builder()
                         .setNotification(AndroidNotification.builder()
-                                .setClickAction(notificationType.toString())
+                                .setClickAction(fcmDto.getNotificationType().name())
                                 .build())
                         .build()
                 )
                 .putAllData(data)
-                .setToken(fcmToken)
+                .setToken(fcmDto.getTargetFcmToken())
                 .build();
     }
 
-    private Message generateGeneralMsgByIos(NotificationType notificationType, Long targetCardPk, String fcmToken, String body) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("targetCardId", targetCardPk.toString());
-        data.put("notificationType", notificationType.name());
+    private Message generateGeneralMsgByIos(FCMDto.GeneralFcm fcmDto) {
+        HashMap<String, String> data = generateGeneralFcmData(fcmDto.getNotificationId(), fcmDto.getTargetCardPk(), fcmDto.getNotificationType());
 
         return Message.builder()
                 .setNotification(
                         Notification.builder()
                                 .setTitle(TITLE)
-                                .setBody(body)
+                                .setBody(generateGeneralMsgBody(fcmDto.getRequesterNickname(), fcmDto.getNotificationType()))
                                 .build()
                 )
                 .putAllData(data)
-                .setToken(fcmToken)
+                .setToken(fcmDto.getTargetFcmToken())
                 .build();
     }
 
-    private Message generateSystemMsgByAos(NotificationType notificationType, String fcmToken, String body) {
+    private static HashMap<String, String> generateGeneralFcmData(Long notificationId, Long targetCardPk, NotificationType notificationType) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("targetCardId", null);
+        data.put("notificationId", notificationId.toString());
+        data.put("targetCardId", targetCardPk.toString());
         data.put("notificationType", notificationType.name());
+        return data;
+    }
+
+    private static String generateGeneralMsgBody(String requesterName, NotificationType notificationType) {
+        return requesterName +
+                switch (notificationType) {
+            case COMMENT_WRITE -> COMMENT_WRITE_SUFFIX;
+            case FEED_LIKE, COMMENT_LIKE -> LIKE_SUFFIX;
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
+    private Message generateSystemMsgByAos(FCMDto.SystemFcm fcmDto) {
+        HashMap<String, String> data = generateSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
 
         return Message.builder()
                 .setNotification(
                         Notification.builder()
                                 .setTitle(TITLE)
-                                .setBody(body)
+                                .setBody(generateSystemMsgBody(fcmDto.getNotificationType()))
                                 .build()
                 )
                 .setAndroidConfig(AndroidConfig.builder()
                         .setNotification(AndroidNotification.builder()
-                                .setClickAction(notificationType.toString())
+                                .setClickAction(fcmDto.getNotificationType().name())
                                 .build())
                         .build()
                 )
                 .putAllData(data)
-                .setToken(fcmToken)
+                .setToken(fcmDto.getTargetFcmToken())
                 .build();
     }
 
-    private Message generateSystemMsgByIos(NotificationType notificationType, String fcmToken, String body) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("targetCardId", null);
-        data.put("notificationType", notificationType.name());
+    private Message generateSystemMsgByIos(FCMDto.SystemFcm fcmDto) {
+        HashMap<String, String> data = generateSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
 
         return Message.builder()
                 .setNotification(
                         Notification.builder()
                                 .setTitle(TITLE)
-                                .setBody(body)
+                                .setBody(generateSystemMsgBody(fcmDto.getNotificationType()))
                                 .build()
                 )
                 .putAllData(data)
-                .setToken(fcmToken)
+                .setToken(fcmDto.getTargetFcmToken())
                 .build();
+    }
+
+    private static HashMap<String, String> generateSystemFcmData(Long notificationId, NotificationType notificationType) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("notificationId", notificationId.toString());
+        data.put("targetCardId", null);
+        data.put("notificationType", notificationType.name());
+        return data;
+    }
+
+    private static String generateSystemMsgBody(NotificationType notificationType) {
+        return switch (notificationType) {
+            case BLOCKED -> BLOCKED_BODY;
+            case DELETED -> DELETED_BODY;
+            default -> throw new IllegalArgumentException();
+        };
     }
 }

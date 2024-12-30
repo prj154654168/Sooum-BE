@@ -136,43 +136,43 @@ public class NotificationUseCase {
     }
 
     @Transactional
-    public void saveCommentWriteHistory(Long fromMemberPk, Long targetCardPk, Card parentCard) {
+    public Long saveCommentWriteHistory(Long fromMemberPk, Long targetCardPk, Card parentCard) {
         Member fromMember = memberService.findMember(fromMemberPk);
-        notificationHistoryService.save(
+        return notificationHistoryService.save(
                 NotificationHistory.ofCommentWrite(fromMember, targetCardPk, parentCard)
         );
     }
 
     @Transactional
-    public void saveFeedLikeHistory(Long fromMemberPk, FeedCard feedCard) {
+    public Long saveFeedLikeHistory(Long fromMemberPk, FeedCard feedCard) {
         Member fromMember = memberService.findMember(fromMemberPk);
-        notificationHistoryService.save(
+        return notificationHistoryService.save(
                 NotificationHistory.ofFeedLike(fromMember, feedCard)
         );
     }
 
     @Transactional
-    public void saveCommentLikeHistory(Long fromMemberPk, CommentCard commentCard) {
+    public Long saveCommentLikeHistory(Long fromMemberPk, CommentCard commentCard) {
         Member fromMember = memberService.findMember(fromMemberPk);
-        notificationHistoryService.save(
+        return notificationHistoryService.save(
                 NotificationHistory.ofCommentLike(fromMember, commentCard)
         );
     }
 
     @Transactional
-    public void saveBlockedHistoryAndDeletePreviousHistories(Long toMemberPk) {
+    public Long saveBlockedHistoryAndDeletePreviousHistories(Long toMemberPk) {
         notificationHistoryService.deletePreviousBlockedHistories(toMemberPk);
 
         Member toMember = memberService.findMember(toMemberPk);
-        notificationHistoryService.save(
+        return notificationHistoryService.save(
                 NotificationHistory.ofBlocked(toMember)
         );
     }
 
     @Transactional
-    public void saveCardDeletedHistoryByReport(Long toMemberPk) {
+    public Long saveCardDeletedHistoryByReport(Long toMemberPk) {
         Member toMember = memberService.findMember(toMemberPk);
-        notificationHistoryService.save(
+        return notificationHistoryService.save(
                 NotificationHistory.ofDeleted(toMember)
         );
     }

@@ -12,26 +12,26 @@ public class SendFCMService {
     private final FCMSender fcmSender;
 
     public void sendCommentWriteMsg(FCMDto.GeneralFcm fcmDto) {
-        Message message = fcmMsgGenerator.generateCommentWriteMsg(fcmDto);
+        Message message = fcmMsgGenerator.generateGeneralMsg(fcmDto);
         fcmSender.send(message);
     }
 
     public void sendFeedLikeMsg(FCMDto.GeneralFcm fcmDto) {
-        Message message = fcmMsgGenerator.generateFeedLikeMsg(fcmDto);
+        Message message = fcmMsgGenerator.generateGeneralMsg(fcmDto);
         fcmSender.send(message);
     }
 
     public void sendCommentLikeMsg(FCMDto.GeneralFcm fcmDto) {
-        Message message = fcmMsgGenerator.generateCommentLikeMsg(fcmDto);
+        Message message = fcmMsgGenerator.generateGeneralMsg(fcmDto);
         fcmSender.send(message);
     }
 
     public void sendCardDeletedMsgByReport(FCMDto.SystemFcm fcmDto) {
-        Message message = fcmMsgGenerator.generateCardDeletedMsgByReport(fcmDto);
+        Message message = fcmMsgGenerator.generateSystemMsg(fcmDto);
         fcmSender.send(message);
     }
     public void sendBlockedMsg(FCMDto.SystemFcm fcmDto) {
-        Message message = fcmMsgGenerator.generateBlockedMsg(fcmDto);
+        Message message = fcmMsgGenerator.generateSystemMsg(fcmDto);
         fcmSender.send(message);
     }
 }

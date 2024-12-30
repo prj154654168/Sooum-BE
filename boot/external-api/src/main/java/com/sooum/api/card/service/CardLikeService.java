@@ -54,10 +54,11 @@ public class CardLikeService {
         );
 
         if (!targetCard.isWriter(requesterPk)) {
-            notificationUseCase.saveFeedLikeHistory(requesterPk, targetCard);
+            Long notificationId = notificationUseCase.saveFeedLikeHistory(requesterPk, targetCard);
 
             if (targetCard.getWriter().isAllowNotify()) {
                 sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
+                        .notificationId(notificationId)
                         .notificationType(NotificationType.FEED_LIKE)
                         .targetFcmToken(targetCard.getWriter().getFirebaseToken())
                         .targetDeviceType(targetCard.getWriter().getDeviceType())
@@ -100,10 +101,11 @@ public class CardLikeService {
                 .build());
 
         if (!targetCard.isWriter(requesterPk)) {
-            notificationUseCase.saveCommentLikeHistory(requesterPk, targetCard);
+            Long notificationId = notificationUseCase.saveCommentLikeHistory(requesterPk, targetCard);
 
             if (targetCard.getWriter().isAllowNotify()) {
                 sendFCMEventPublisher.publishEvent(FCMDto.GeneralFcmSendEvent.builder()
+                        .notificationId(notificationId)
                         .notificationType(NotificationType.COMMENT_LIKE)
                         .targetFcmToken(targetCard.getWriter().getFirebaseToken())
                         .targetDeviceType(targetCard.getWriter().getDeviceType())
