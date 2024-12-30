@@ -27,7 +27,7 @@ jobs:
         run: ./gradlew boot:external-api:build -x test
 
       - name: Make zip file
-        run: zip -r ./sooum_deploy.zip .
+        run: zip -r ./sooum_deploy.zip ./boot/external-api/build/libs/external-api-0.0.1-SNAPSHOT.jar
         shell: bash
 
       - name: Deliver to AWS S3
