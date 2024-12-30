@@ -2,9 +2,9 @@
 name: SooumCI
 
 on:
-  push:
+  pull_request:
     branches:
-      - main
+      - deploy
 
 env:
   S3_BUCKET_NAME: sooum-ci-cd
