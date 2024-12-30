@@ -3,7 +3,7 @@ name: SooumCI
 on:
   push:
     branches:
-      - test
+      - deploy/test
 
 env:
   S3_BUCKET_NAME: sooum-ci-cd
