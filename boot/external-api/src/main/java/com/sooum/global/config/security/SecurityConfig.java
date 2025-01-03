@@ -3,7 +3,6 @@ package com.sooum.global.config.security;
 import com.sooum.global.config.jwt.JwtAuthenticationFilter;
 import com.sooum.global.config.jwt.TokenProvider;
 import com.sooum.global.config.security.path.ExcludeAuthPathProperties;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
