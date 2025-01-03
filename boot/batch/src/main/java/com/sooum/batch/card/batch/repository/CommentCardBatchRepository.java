@@ -18,8 +18,8 @@ public interface CommentCardBatchRepository extends CommentCardRepository {
             "where fc.isStory = false " +
                 "and fc.isPublic = true " +
                 "and fc.createdAt >= (current_timestamp - 2 day) " +
-            "group by fc.pk " +
-                "having count(cc.pk) >= 2" +
+            "group by cc.masterCard " +
+                "having count(distinct cc.writer) >= 2" +
             "order by count(fc.pk) desc ")
     List<FeedCard> findPopularCondFeedCards(Pageable pageable);
 }
