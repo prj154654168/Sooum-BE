@@ -7,7 +7,6 @@ import com.google.firebase.messaging.Notification;
 import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
