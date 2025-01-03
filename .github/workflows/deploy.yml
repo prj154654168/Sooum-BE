@@ -2,14 +2,9 @@
 name: SooumCI
 
 on:
-   pull_request_review:
-     types:
-       - submitted
+   push:
      branches:
        - main
-     properties:
-       review:
-         state: approved
 
 env:
   S3_BUCKET_NAME: sooum-ci-cd
@@ -37,6 +32,7 @@ jobs:
         run: ./gradlew boot:external-api:build -x test
 
       - name: Get AWS Credential
+        if: success()
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -44,20 +40,25 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: make appspec directory
+        if: success()
         run: mkdir $S3_APP_SPEC_DIC_NAME
 
       - name: Download S3 bucket
+        if: success()
         run: |
           aws s3 sync s3://$S3_BUCKET_NAME/$S3_APP_SPEC_DIC_NAME ./$S3_APP_SPEC_DIC_NAME
 
       - name: Make zip file
+        if: success()
         run: zip -j ./$S3_DEPLOY_FILE_NAME ./boot/external-api/build/libs/external-api-0.0.1-SNAPSHOT.jar ./$S3_APP_SPEC_DIC_NAME/$S3_APP_SPEC_YML_NAME ./$S3_APP_SPEC_DIC_NAME/$S3_APP_SPEC_SCRIPT_NAME
         shell: bash
 
       - name: Upload to S3
+        if: success()
         run: aws s3 cp --region ap-northeast-2 ./$S3_DEPLOY_FILE_NAME s3://$S3_BUCKET_NAME/$S3_DEPLOY_FILE_NAME
 
       - name: Trigger CodeDeploy
+        if: success()
         run: |
           aws deploy create-deployment \
           --application-name BlueGreenDeploy \

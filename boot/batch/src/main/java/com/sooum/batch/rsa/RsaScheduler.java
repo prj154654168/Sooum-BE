@@ -1,6 +1,6 @@
-package com.sooum.global.rsa;
+package com.sooum.batch.rsa;
 
-import com.sooum.global.rsa.service.RsaSchedulerService;
+import com.sooum.batch.rsa.service.RsaSchedulerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

@@ -1,4 +1,4 @@
-package com.sooum.global.rsa.service;
+package com.sooum.batch.rsa.service;
 
 import com.sooum.data.rsa.entity.Rsa;
 import com.sooum.data.rsa.service.RsaService;
