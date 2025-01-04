@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface CommentCardBatchRepository extends CommentCardRepository {
 
-    @Query("select cc from CommentCard cc where cc.masterCard in :commentCardPk")
-    List<CommentCard> findCommentCardsForDeletion(@Param("commentCardPk")Long commentCardPk);
+    @Query("select cc from CommentCard cc where cc.masterCard in :feedCardPk")
+    List<CommentCard> findCommentCardsForDeletion(@Param("feedCardPk") Long feedCardPk);
 
     @Query("select fc from CommentCard cc inner join FeedCard fc on fc.pk = cc.masterCard " +
             "where fc.isStory = false " +

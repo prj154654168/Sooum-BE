@@ -7,11 +7,12 @@ import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.CommentLike;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.FeedLike;
+import com.sooum.data.notification.entity.NotificationHistory;
 import com.sooum.data.report.entity.CommentReport;
 import com.sooum.data.report.entity.FeedReport;
+import com.sooum.data.tag.entity.CommentTag;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -29,7 +30,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.List;
 
-@Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class StoryDeleteBatchConfig {
@@ -46,9 +46,11 @@ public class StoryDeleteBatchConfig {
     private final FeedCardBatchRepository feedCardBatchRepository;
     private final FeedLikeBatchRepository feedLikeBatchRepository;
     private final FeedReportBatchRepository feedReportBatchRepository;
+    private final CardImgBatchRepository cardImgBatchRepository;
+    private final NotificationBatchRepository notificationBatchRepository;
+    private final CommentTagBatchRepository commentTagBatchRepository;
 
     @Scheduled(cron = "0 0 4 * * ?")
-//    @Scheduled(cron = "0 */1 * * * ?")
     public void runJob() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("run.id", System.currentTimeMillis())
@@ -58,7 +60,6 @@ public class StoryDeleteBatchConfig {
 
     @Bean
     public Job commentCardReaderJob() {
-        log.info("commentCardReaderJob");
         return new JobBuilder("commentCardReaderJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
                 .start(deletedStoryCommentCardStep())
@@ -71,7 +72,6 @@ public class StoryDeleteBatchConfig {
 
     @Bean
     public Step deletedStoryCommentCardStep() {
-        log.info("deletedStoryCommentCardStep");
         return new StepBuilder("deletedStoryCommentCardStep", jobRepository)
                 .<FeedCard, CommentRelatedEntitiesDeletionDto>chunk(CHUNK_SIZE, transactionManager)
                 .reader(deletedStoryFeedReaderInCommentCardStep())
@@ -82,7 +82,6 @@ public class StoryDeleteBatchConfig {
 
     @Bean
     public Step deletedStoryFeedCardStep() {
-        log.info("deletedStoryFeedCardStep");
         return new StepBuilder("deletedStoryFeedCardStep", jobRepository)
                 .<FeedCard, FeedRelatedEntitiesDeletionDto>chunk(CHUNK_SIZE, transactionManager)
                 .reader(deletedStoryFeedReaderInFeedCardStep())
@@ -119,14 +118,20 @@ public class StoryDeleteBatchConfig {
 
     @Bean
     public ItemProcessor<FeedCard, CommentRelatedEntitiesDeletionDto> commentRelatedEntitiesDeletionProcessor() {
-        return commentCard -> {
-            List<CommentCard> commentCardsForDeletion = commentCardBatchRepository.findCommentCardsForDeletion(commentCard.getPk());
+        return feedCard -> {
+            List<CommentCard> commentCardsForDeletion = commentCardBatchRepository.findCommentCardsForDeletion(feedCard.getPk());
+            cardImgBatchRepository.updateCommentCardImgNull(commentCardsForDeletion);
+            List<CommentTag> commentTagsForDeletion = commentTagBatchRepository.findCommentTagsForDeletion(commentCardsForDeletion);
             List<CommentLike> commentLikesForDeletion = commentLikeBatchRepository.findCommentLikesForDeletion(commentCardsForDeletion);
             List<CommentReport> commentReportsForDeletion = commentReportBatchRepository.findCommentReportsForDeletion(commentCardsForDeletion);
+            List<NotificationHistory> notificationsForDeletion = notificationBatchRepository.findNotificationsForDeletion(commentCardsForDeletion.stream().map(CommentCard::getPk).toList());
+
             return CommentRelatedEntitiesDeletionDto.builder()
                     .commentCards(commentCardsForDeletion)
-                    .commentLike(commentLikesForDeletion)
+                    .commentLikes(commentLikesForDeletion)
                     .commentReports(commentReportsForDeletion)
+                    .notifications(notificationsForDeletion)
+                    .commentTags(commentTagsForDeletion)
                     .build();
         };
     }
@@ -148,8 +153,10 @@ public class StoryDeleteBatchConfig {
     public ItemWriter<CommentRelatedEntitiesDeletionDto> commentRelatedEntitiesDeletionWriter() {
         return items -> {
             for (CommentRelatedEntitiesDeletionDto deletionDto : items) {
-                commentReportBatchRepository.deleteAllInBatch(deletionDto.getCommentReports());
+                commentTagBatchRepository.deleteAllInBatch(deletionDto.getCommentTags());
                 commentLikeBatchRepository.deleteAllInBatch(deletionDto.getCommentLikes());
+                commentReportBatchRepository.deleteAllInBatch(deletionDto.getCommentReports());
+                notificationBatchRepository.deleteAllInBatch(deletionDto.getNotifications());
                 commentCardBatchRepository.deleteAllInBatch(deletionDto.getCommentCards());
             }
         };
@@ -159,8 +166,10 @@ public class StoryDeleteBatchConfig {
     public ItemWriter<FeedRelatedEntitiesDeletionDto> feedDeletionWriter() {
         return items -> {
             for (FeedRelatedEntitiesDeletionDto deletionDto : items) {
-                feedReportBatchRepository.deleteAllInBatch(deletionDto.getFeedReports());
+                cardImgBatchRepository.updateFeedCardImgNull(deletionDto.getFeedCard());
                 feedLikeBatchRepository.deleteAllInBatch(deletionDto.getFeedLikes());
+                feedReportBatchRepository.deleteAllInBatch(deletionDto.getFeedReports());
+                notificationBatchRepository.findNotificationsForDeletion(List.of(deletionDto.getFeedCard().getPk()));
                 feedCardBatchRepository.delete(deletionDto.getFeedCard());
             }
         };
