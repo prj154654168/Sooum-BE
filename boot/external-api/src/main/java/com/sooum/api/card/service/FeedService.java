@@ -120,7 +120,7 @@ public class FeedService {
                 ? feedCardService.findFeedCard(cardPk)
                 : commentCardService.findCommentCard(cardPk);
 
-        if (card instanceof FeedCard && ((FeedCard) card).isStory() && hasCommentTags(cardDto)) {
+        if (isStoryCardHasCommentTags(cardDto, card)) {
             throw new EntityNotFoundException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_MASTER_CARD_STORY.getMessage());
         }
 
@@ -159,6 +159,10 @@ public class FeedService {
                                 .build());
             }
         }
+    }
+
+    private static boolean isStoryCardHasCommentTags(CreateCommentDto cardDto, Card card) {
+        return card instanceof FeedCard feedCard && feedCard.isStory() && hasCommentTags(cardDto);
     }
 
     private List<Tag> processTags(CreateCardDto cardDto){

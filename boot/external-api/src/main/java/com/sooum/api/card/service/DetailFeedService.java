@@ -40,11 +40,11 @@ public class DetailFeedService {
     }
 
     public CardDto createDetailCardDto(Card card, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
-        if (card instanceof FeedCard) {
+        if (card instanceof FeedCard feedCard) {
             return FeedDetailCardDto.builder()
                     .id(card.getPk().toString())
                     .backgroundImgUrl(imgService.findCardImgUrl(card.getImgType(), card.getImgName()))
-                    .isStory(((FeedCard) card).isStory())
+                    .isStory(feedCard.isStory())
                     .createdAt(card.getCreatedAt())
                     .content(card.getContent())
                     .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))
@@ -53,7 +53,6 @@ public class DetailFeedService {
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
                     .tags(tagUseCase.readTags(card))
-                    .isMasterCardStory(((FeedCard) card).isStory())
                     .build();
         }
         if (card instanceof CommentCard commentCard) {
@@ -79,7 +78,7 @@ public class DetailFeedService {
                     .tags(tagUseCase.readTags(card))
                     .previousCardId(previousCardId)
                     .previousCardImgLink(previousCardImgLink)
-                    .isMasterCardStory(isMasterCardStory)
+                    .isFeedCardStory(isMasterCardStory)
                     .build();
         }
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());

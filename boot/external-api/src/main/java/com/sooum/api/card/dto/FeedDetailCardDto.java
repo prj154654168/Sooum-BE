@@ -21,21 +21,17 @@ public class FeedDetailCardDto extends CardDto {
     @JsonProperty(value = "isOwnCard")
     private boolean isOwnCard;
     private Double distance;
-    @JsonProperty(value = "isMasterCardStory")
-    private boolean isMasterCardStory;
-
 
     private MemberDto.DefaultMemberResponse member;
     private List<TagDto.ReadTagResponse> tags;
 
     @Builder
-    public FeedDetailCardDto(String id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, boolean isOwnCard, boolean isStory, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags, Double distance, boolean isMasterCardStory) {
+    public FeedDetailCardDto(String id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, boolean isOwnCard, boolean isStory, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags, Double distance) {
         super(id, content, createdAt, likeCnt, isLiked, commentCnt, isCommentWritten, backgroundImgUrl, font, fontSize);
         this.storyExpirationTime = isStory ? createdAt.plusDays(1L) : null;
         this.isOwnCard = isOwnCard;
         this.member = member;
         this.tags = tags;
         this.distance = distance;
-        this.isMasterCardStory = isMasterCardStory;
     }
 }

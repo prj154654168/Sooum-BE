@@ -25,9 +25,6 @@ public abstract class CardDto extends RepresentationModel<CardDto> {
     private Link backgroundImgUrl;
     private Font font;
     private FontSize fontSize;
-    @JsonProperty(value = "isMasterCardStory")
-    private boolean isMasterCardStory;
-
 
     public CardDto(String id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize) {
         this.id = id;
