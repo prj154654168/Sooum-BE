@@ -53,10 +53,14 @@ public class DetailFeedService {
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
                     .tags(tagUseCase.readTags(card))
+                    .isMasterCardStory(((FeedCard) card).isStory())
                     .build();
         }
         if (card instanceof CommentCard commentCard) {
             Card parentCard = feedService.findParentCard(commentCard);
+            FeedCard masterCard = feedCardService.findFeedCard(commentCard.getMasterCard());
+
+            boolean isMasterCardStory = (masterCard != null) && masterCard.isStory();
 
             String previousCardId = resolvePreviousCardPk(parentCard, commentCard.getParentCardPk());
             Link previousCardImgLink = parentCard != null ?
@@ -75,6 +79,7 @@ public class DetailFeedService {
                     .tags(tagUseCase.readTags(card))
                     .previousCardId(previousCardId)
                     .previousCardImgLink(previousCardImgLink)
+                    .isMasterCardStory(isMasterCardStory)
                     .build();
         }
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());

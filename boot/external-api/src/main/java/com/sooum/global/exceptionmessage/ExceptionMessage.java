@@ -13,6 +13,7 @@ public enum ExceptionMessage {
     UNHANDLED_OBJECT("처리되지 않은 객체입니다."),
     IMAGE_NOT_FOUND("이미지 파일이 존재하지 않습니다."),
     TAGS_NOT_ALLOWED_FOR_STORY("스토리일 경우 태그가 존재할 수 없습니다."),
+    TAGS_NOT_ALLOWED_FOR_MASTER_CARD_STORY("최상단 카드가 스토리일 경우 태그가 존재할 수 없습니다."),
     TAG_NOT_FOUND("태그를 찾을 수 없습니다."),
     ALREADY_TAG_FAVORITE("이미 즐겨찾기한 태그입니다"),
     UNSUPPORTED_IMAGE_FORMAT("지원하지 않는 확장자입니다."),
