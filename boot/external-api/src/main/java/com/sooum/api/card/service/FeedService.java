@@ -66,8 +66,8 @@ public class FeedService {
 
     @Transactional
     public void createFeedCard(Long memberPk, CreateFeedCardDto cardDto, HttpServletRequest request) {
-        if (checkForTagsInStory(cardDto)) {
-            throw new RuntimeException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
+        if (checkForFeedTagsInStory(cardDto)) {
+            throw new EntityNotFoundException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_STORY.getMessage());
         }
 
         Member member = memberService.findMember(memberPk);
@@ -120,6 +120,10 @@ public class FeedService {
                 ? feedCardService.findFeedCard(cardPk)
                 : commentCardService.findCommentCard(cardPk);
 
+        if (isStoryCardHasCommentTags(cardDto, card)) {
+            throw new EntityNotFoundException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_MASTER_CARD_STORY.getMessage());
+        }
+
         CommentCard commentCard;
         if (card instanceof FeedCard) {
             commentCard = cardDto.of(CardType.FEED_CARD, cardPk, cardPk, member);
@@ -157,6 +161,10 @@ public class FeedService {
         }
     }
 
+    private static boolean isStoryCardHasCommentTags(CreateCommentDto cardDto, Card card) {
+        return card instanceof FeedCard feedCard && feedCard.isStory() && hasCommentTags(cardDto);
+    }
+
     private List<Tag> processTags(CreateCardDto cardDto){
         List<Tag> tagContents = tagService.findTagList(cardDto.getTags());
         tagService.incrementTagCount(tagContents);
@@ -185,8 +193,11 @@ public class FeedService {
         }
     }
 
-    private static boolean checkForTagsInStory(CreateFeedCardDto cardDto) {
+    private static boolean checkForFeedTagsInStory(CreateFeedCardDto cardDto) {
         return cardDto.isStory() && hasTags(cardDto);
+    }
+    private static boolean hasCommentTags(CreateCommentDto cardDto) {
+        return cardDto.getCommentTags() != null && !cardDto.getCommentTags().isEmpty();
     }
 
     private static boolean hasTags(CreateCardDto cardDto) {
