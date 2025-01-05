@@ -1,5 +1,9 @@
 package com.sooum.data.notification.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
@@ -16,6 +20,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -45,6 +51,10 @@ public class NotificationHistory extends BaseEntity {
     @Column(name = "isRead")
     private boolean isRead;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime readAt;
+
     @NotNull
     @Enumerated(value = EnumType.STRING)
     private NotificationType notificationType;
@@ -59,7 +69,7 @@ public class NotificationHistory extends BaseEntity {
     private Member toMember;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private NotificationHistory(Member fromMember, Member toMember, NotificationType notificationType, Card card, Long targetCardPk) {
+    private NotificationHistory(Member fromMember, Member toMember, NotificationType notificationType, Card card, Long targetCardPk, LocalDateTime readAt) {
         this.isRead = false;
         this.content = card == null ? null : card.getContent();
         this.font = card == null ? null : card.getFont();
@@ -70,6 +80,7 @@ public class NotificationHistory extends BaseEntity {
         this.notificationType = notificationType;
         this.fromMember = fromMember;
         this.toMember = toMember;
+        this.readAt = readAt;
     }
 
     public static NotificationHistory ofCommentWrite(Member fromMember, Long targetCardPk, Card parentCard) {

@@ -96,7 +96,7 @@ public class NotificationHistoryService {
 
     @Transactional
     public void updateToRead(Long notificationPk) {
-        notificationHistoryRepository.updateToRead(notificationPk);
+        notificationHistoryRepository.updateToRead(notificationPk, LocalDateTime.now());
     }
 
     public void deleteNotification(Long targetCardPk) {
