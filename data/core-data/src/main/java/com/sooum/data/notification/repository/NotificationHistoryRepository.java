@@ -117,7 +117,7 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
                 "and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
                     "or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED) " +
                 "and n.isRead = true " +
-                "and n.createdAt > :minusOneDays " +
+                "and n.readAt > :minusOneDays " +
             "order by n.pk desc ")
     List<NotificationHistory> findReadNotifications(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, @Param("minusOneDays") LocalDateTime minusOneDays, Pageable page);
 
@@ -163,7 +163,7 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
                     "or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED) " +
                 "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_WRITE " +
                 "and n.isRead = true " +
-                "and n.createdAt > :minusOneDays " +
+                "and n.readAt > :minusOneDays " +
             "order by n.pk desc ")
     List<NotificationHistory> findReadCardNotifications(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, @Param("minusOneDays") LocalDateTime minusOneDays, Pageable page);
 
@@ -211,7 +211,7 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
                 "and (n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.FEED_LIKE " +
                     "or n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_LIKE) " +
                 "and n.isRead = true " +
-                "and n.createdAt > :minusOneDays " +
+                "and n.readAt > :minusOneDays " +
             "order by n.pk desc ")
     List<NotificationHistory> findReadLikeNotifications(@Param("memberPk") Long memberPk, @Param("lastPk") Long lastPk, @Param("minusOneDays") LocalDateTime minusOneDays, Pageable page);
 
@@ -220,8 +220,8 @@ public interface NotificationHistoryRepository extends JpaRepository<Notificatio
 
     @Transactional
     @Modifying
-    @Query("update NotificationHistory n set n.isRead = true where n.pk = :notificationPk")
-    void updateToRead(@Param("notificationPk") Long notificationPk);
+    @Query("update NotificationHistory n set n.isRead = true, n.readAt = :readAt where n.pk = :notificationPk")
+    void updateToRead(@Param("notificationPk") Long notificationPk, @Param("readAt") LocalDateTime readAt);
 
     @Transactional
     @Modifying
