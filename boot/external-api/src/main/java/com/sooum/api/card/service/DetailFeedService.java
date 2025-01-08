@@ -57,9 +57,9 @@ public class DetailFeedService {
         }
         if (card instanceof CommentCard commentCard) {
             Card parentCard = feedService.findParentCard(commentCard);
-            FeedCard masterCard = feedCardService.findFeedCard(commentCard.getMasterCard());
 
-            boolean isMasterCardStory = (masterCard != null) && masterCard.isStory();
+            Optional<FeedCard> optMasterCard = feedCardService.findOptFeedCard(commentCard.getParentCardPk());
+            boolean isMasterCardStory = optMasterCard.map(FeedCard::isStory).orElse(false);
 
             String previousCardId = resolvePreviousCardPk(parentCard, commentCard.getParentCardPk());
             Link previousCardImgLink = parentCard != null ?

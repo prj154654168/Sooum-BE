@@ -33,7 +33,6 @@ import com.sooum.global.regex.BadWordFiltering;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +41,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class FeedService {
     private final MemberService memberService;
     private final CommentCardService commentCardService;
@@ -92,7 +90,7 @@ public class FeedService {
             cardImgService.updateCardImg(feedCard, cardDto.getImgName());
         }
 
-        List<Tag> tagContents = processTags(cardDto);
+        List<Tag> tagContents = saveTags(cardDto);
         List<FeedTag> feedTagList = tagContents.stream()
                 .map(tag -> FeedTag.builder().feedCard(feedCard).tag(tag).build())
                 .toList();
@@ -116,43 +114,36 @@ public class FeedService {
             throw new BannedUserException(ExceptionMessage.BANNED_USER.getMessage());
         }
 
-        Card card = feedCardService.isExistFeedCard(cardPk)
-                ? feedCardService.findFeedCard(cardPk)
-                : commentCardService.findCommentCard(cardPk);
+        Card parentCard = getParentCard(cardPk);
+        CardType parentCardType = getCardType(parentCard);
 
-        if (isStoryCardHasCommentTags(cardDto, card)) {
-            throw new EntityNotFoundException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_MASTER_CARD_STORY.getMessage());
-        }
+        Long masterCardPk = getMasterCardPk(parentCard);
 
-        CommentCard commentCard;
-        if (card instanceof FeedCard) {
-            commentCard = cardDto.of(CardType.FEED_CARD, cardPk, cardPk, member);
-        } else if (card instanceof CommentCard commentParentCard) {
-            commentCard = cardDto.of(CardType.COMMENT_CARD, commentParentCard.getPk(), commentParentCard.getParentCardPk(), member);
-        } else throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
+        validateTagsNotAllowedForMasterCardStory(cardDto, masterCardPk);
 
+        CommentCard commentCard = cardDto.of(parentCardType, parentCard.getPk(), masterCardPk, member);
         commentCardService.saveComment(commentCard);
 
         if (isUserImage(cardDto)){
             cardImgService.updateCardImg(commentCard, cardDto.getImgName());
         }
 
-        List<Tag> tagContents = processTags(cardDto);
+        List<Tag> tagContents = saveTags(cardDto);
         List<CommentTag> commentTagList = tagContents.stream()
                 .map(tag -> CommentTag.builder().commentCard(commentCard).tag(tag).build())
                 .toList();
         commentTagService.saveAll(commentTagList);
 
-        if (!card.isWriter(memberPk)) {
-            Long notificationId = notificationUseCase.saveCommentWriteHistory(memberPk, commentCard.getPk(), card);
+        if (!parentCard.isWriter(memberPk)) {
+            Long notificationId = notificationUseCase.saveCommentWriteHistory(memberPk, commentCard.getPk(), parentCard);
 
-            if (card.getWriter().isAllowNotify()) {
+            if (parentCard.getWriter().isAllowNotify()) {
                 sendFCMEventPublisher.publishEvent(
                         FCMDto.GeneralFcmSendEvent.builder()
                                 .notificationId(notificationId)
                                 .notificationType(NotificationType.COMMENT_WRITE)
-                                .targetDeviceType(card.getWriter().getDeviceType())
-                                .targetFcmToken(card.getWriter().getFirebaseToken())
+                                .targetDeviceType(parentCard.getWriter().getDeviceType())
+                                .targetFcmToken(parentCard.getWriter().getFirebaseToken())
                                 .targetCardPk(commentCard.getPk())
                                 .requesterNickname(member.getNickname())
                                 .source(this)
@@ -161,28 +152,59 @@ public class FeedService {
         }
     }
 
-    private static boolean isStoryCardHasCommentTags(CreateCommentDto cardDto, Card card) {
-        return card instanceof FeedCard feedCard && feedCard.isStory() && hasCommentTags(cardDto);
+    private Card getParentCard(Long cardPk) {
+        return feedCardService.isExistFeedCard(cardPk)
+                ? feedCardService.findFeedCard(cardPk)
+                : commentCardService.findCommentCard(cardPk);
     }
 
-    private List<Tag> processTags(CreateCardDto cardDto){
-        List<Tag> tagContents = tagService.findTagList(cardDto.getTags());
-        tagService.incrementTagCount(tagContents);
+    private CardType getCardType(Card card) {
+        if(card instanceof FeedCard) {
+            return CardType.FEED_CARD;
+        }else {
+            return CardType.COMMENT_CARD;
+        }
+    }
 
-        if(hasTags(cardDto)) {
-            List<String> list = tagContents.stream().map(Tag::getContent).toList();
-            cardDto.getTags().removeAll(list);
+    private void validateTagsNotAllowedForMasterCardStory(CreateCommentDto cardDto, Long masterCardPk) {
+        feedCardService.findOptFeedCard(masterCardPk)
+                .filter(FeedCard::isStory)
+                .filter(masterCard -> hasCommentTags(cardDto))
+                .ifPresent(masterCard -> {
+                    throw new EntityNotFoundException(ExceptionMessage.TAGS_NOT_ALLOWED_FOR_MASTER_CARD_STORY.getMessage());
+                });
+    }
 
-            List<Tag> tagList = cardDto.getTags().stream()
-                    .map(tagContent -> Tag.builder().content(tagContent).isActive(badWordFiltering.checkBadWord(tagContent)).build())
-                    .toList();
+    private static Long getMasterCardPk(Card card) {
+        if (card instanceof FeedCard) {
+            return card.getPk();
+        } else if (card instanceof CommentCard commentCard) {
+            return commentCard.getMasterCard();
+        } else {
+            throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
+        }
+    }
 
-            tagService.saveAll(tagList);
-            tagContents.addAll(tagList);
+    private List<Tag> saveTags(CreateCardDto cardDto){
+        if (!hasTags(cardDto)) {
+            return List.of();
         }
 
-        return tagContents;
-    }
+        List<Tag> alreadyExistsTag = tagService.findTagList(cardDto.getTags());
+        tagService.incrementTagCount(alreadyExistsTag);
+
+        List<String> alreadyExistTagContents = alreadyExistsTag.stream().map(Tag::getContent).toList();
+        cardDto.getTags().removeAll(alreadyExistTagContents);
+
+        List<Tag> newTagsToSave = cardDto.getTags().stream()
+                .map(tagContent -> Tag.builder().content(tagContent).isActive(badWordFiltering.checkBadWord(tagContent)).build())
+                .toList();
+
+        tagService.saveAll(newTagsToSave);
+        alreadyExistsTag.addAll(newTagsToSave);
+
+        return alreadyExistsTag;
+   }
 
     private void validateUserImage(CreateCardDto cardDto) {
         if(!imgService.isCardImgSaved(cardDto.getImgName())) {
