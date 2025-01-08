@@ -26,18 +26,21 @@ public class NotificationHistoryService {
     }
 
     @Transactional(readOnly = true)
-    public Long findUnreadNotificationCount(Long memberPk) {
-        return notificationHistoryRepository.findUnreadNotificationCount(memberPk);
+    public String findUnreadNotificationCount(Long memberPk) {
+        Long unreadNotificationCount = notificationHistoryRepository.findUnreadNotificationCount(memberPk);
+        return unreadNotificationCount == 100 ? "99+" : String.valueOf(unreadNotificationCount);
     }
 
     @Transactional(readOnly = true)
-    public Long findUnreadCardNotificationCount(Long memberPk) {
-        return notificationHistoryRepository.findUnreadCardNotificationCount(memberPk);
+    public String findUnreadCardNotificationCount(Long memberPk) {
+        Long unreadCardNotificationCount = notificationHistoryRepository.findUnreadCardNotificationCount(memberPk);
+        return unreadCardNotificationCount == 100 ? "99+" : String.valueOf(unreadCardNotificationCount);
     }
 
     @Transactional(readOnly = true)
-    public Long findUnreadLikeNotificationCount(Long memberPk) {
-        return notificationHistoryRepository.findUnreadLikeNotificationCount(memberPk);
+    public String findUnreadLikeNotificationCount(Long memberPk) {
+        Long unreadLikeNotificationCount = notificationHistoryRepository.findUnreadLikeNotificationCount(memberPk);
+        return unreadLikeNotificationCount == 100 ? "99+" : String.valueOf(unreadLikeNotificationCount);
     }
 
     /**

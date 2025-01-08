@@ -6,17 +6,19 @@ import com.sooum.data.notification.entity.NotificationHistory;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.Link;
 
 import java.time.LocalDateTime;
 
 public class NotificationDto {
     @Getter
+    @NoArgsConstructor
     public static class NotificationCntResponse {
-        Long unreadCnt;
+        String unreadCnt;
 
         @Builder
-        public NotificationCntResponse(Long unreadCnt) {
+        public NotificationCntResponse(String unreadCnt) {
             this.unreadCnt = unreadCnt;
         }
     }
