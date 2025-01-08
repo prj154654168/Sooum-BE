@@ -15,48 +15,73 @@ import java.util.List;
 public interface NotificationHistoryRepository extends JpaRepository<NotificationHistory, Long> {
 
     /**
-     *{@code memberPk}가 읽지 않은 시스템 알림(정지, 삭제)을 포함한 전체 알림 개수를 검색합니다.
+     *{@code memberPk}가 읽지 않은 시스템 알림(정지, 삭제)을 포함한 전체 알림 개수를 검색합니다. 100개 이상이면 100을 반환합니다.
      * @param memberPk 알림 개수를 조회하는 사용자의 Pk.
      * @return 알림 개수(Long)
      *
      * @since 2024-12-14
      * @author jungwoo
      */
-    @Query("select count(n) from NotificationHistory n " +
-            "where n.toMember.pk = :memberPk and n.isRead = false ")
+    @Query("select case when exists (" +
+            "   select 1 from NotificationHistory n " +
+            "   where n.toMember.pk = :memberPk and n.isRead = false " +
+            "   group by n.toMember.pk having count(n) >= 100" +
+            ") then 100 else count(n) end " +
+            "from NotificationHistory n " +
+            "where n.toMember.pk = :memberPk and n.isRead = false")
     Long findUnreadNotificationCount(@Param("memberPk") Long memberPk);
 
     /**
-     *{@code memberPk}가 읽지 않은 시스템 알림(정지, 삭제)을 제외한 카드 알림 개수를 검색합니다.
+     *{@code memberPk}가 읽지 않은 시스템 알림(정지, 삭제)을 제외한 카드 알림 개수를 검색합니다. 100개 이상이면 100을 반환합니다.
      * @param memberPk 알림 개수를 조회하는 사용자의 Pk.
      * @return 알림 개수(Long)
      *
      * @since 2024-12-14
      * @author jungwoo
      */
-    @Query("select count(n) from NotificationHistory n " +
+    @Query("select case when exists (" +
+            "   select 1 from NotificationHistory n " +
+            "   where n.toMember.pk = :memberPk " +
+            "   and n.isRead = false " +
+            "   and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_WRITE " +
+            "   and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
+            "       or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED) " +
+            "   group by n.toMember.pk having count(n) >= 100" +
+            ") then 100 else count(n) end " +
+            "from NotificationHistory n " +
             "where n.toMember.pk = :memberPk " +
-                "and n.isRead = false " +
-                "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_WRITE " +
-                "and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
-                    "or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED)")
+            "and n.isRead = false " +
+            "and n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_WRITE " +
+            "and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
+            "   or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED)")
     Long findUnreadCardNotificationCount(@Param("memberPk") Long memberPk);
 
     /**
-     *{@code memberPk}가 읽지 않은 시스템 알림(정지, 삭제)을 제외한 공감 알림 개수를 검색합니다.
+     *{@code memberPk}가 읽지 않은 시스템 알림(정지, 삭제)을 제외한 공감 알림 개수를 검색합니다. 100개 이상이면 100을 반환합니다.
      * @param memberPk 알림 개수를 조회하는 사용자의 Pk.
      * @return 알림 개수(Long)
      *
      * @since 2024-12-14
      * @author jungwoo
      */
-    @Query("select count(n) from NotificationHistory n " +
+
+    @Query("select case when exists (" +
+            "   select 1 from NotificationHistory n " +
+            "   where n.toMember.pk = :memberPk " +
+            "   and n.isRead = false " +
+            "   and (n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.FEED_LIKE " +
+            "       or n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_LIKE)" +
+            "   and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
+            "       or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED) " +
+            "   group by n.toMember.pk having count(n) >= 100" +
+            ") then 100 else count(n) end " +
+            "from NotificationHistory n " +
             "where n.toMember.pk = :memberPk " +
-                "and n.isRead = false " +
-                "and (n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.FEED_LIKE " +
-                    "or n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_LIKE) " +
-                "and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
-                    "or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED)")
+            "and n.isRead = false " +
+            "and (n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.FEED_LIKE " +
+            "   or n.notificationType = com.sooum.data.notification.entity.notificationtype.NotificationType.COMMENT_LIKE) " +
+            "and (n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.DELETED " +
+            "   or n.notificationType != com.sooum.data.notification.entity.notificationtype.NotificationType.BLOCKED)")
     Long findUnreadLikeNotificationCount(@Param("memberPk") Long memberPk);
 
     /***

@@ -49,3 +49,24 @@ exclude-auth-path-patterns:
         method: GET
       - path-pattern: /settings/transfer
         method: POST
+
+exclude-ratelimiter-path-patterns:
+  paths:
+        - path-pattern: /notifications/unread-cnt
+          method: GET
+        - path-pattern: /notifications/card/unread-cnt
+          method: GET
+        - path-pattern: /notifications/like/unread-cnt
+          method: GET
+        - path-pattern: /notifications/read
+          method: GET
+        - path-pattern: /notifications/unread
+          method: GET
+        - path-pattern: /notifications/card/read
+          method: GET
+        - path-pattern: /notifications/card/unread
+          method: GET
+        - path-pattern: /notifications/like/read
+          method: GET
+        - path-pattern: /notifications/like/unread
+          method: GET

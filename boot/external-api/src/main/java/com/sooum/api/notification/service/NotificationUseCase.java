@@ -11,6 +11,7 @@ import com.sooum.data.notification.entity.NotificationHistory;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
 import com.sooum.data.notification.service.NotificationHistoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,18 +37,21 @@ public class NotificationUseCase {
         return notificationHistoryService.findToMember(notificationPk).getPk().equals(memberPk);
     }
 
+    @Cacheable(value = "unreadNotificationCnt", key = "#memberPk")
     public NotificationDto.NotificationCntResponse findUnreadNotificationCntResponse(Long memberPk) {
         return NotificationDto.NotificationCntResponse.builder()
                 .unreadCnt(notificationHistoryService.findUnreadNotificationCount(memberPk))
                 .build();
     }
 
+    @Cacheable(value = "unreadCardNotificationCnt", key = "#memberPk")
     public NotificationDto.NotificationCntResponse findUnreadCardNotificationCntResponse(Long memberPk) {
         return NotificationDto.NotificationCntResponse.builder()
                 .unreadCnt(notificationHistoryService.findUnreadCardNotificationCount(memberPk))
                 .build();
     }
 
+    @Cacheable(value = "unreadLikeNotificationCnt", key = "#memberPk")
     public NotificationDto.NotificationCntResponse findUnreadLikeNotificationCntResponse(Long memberPk) {
         return NotificationDto.NotificationCntResponse.builder()
                 .unreadCnt(notificationHistoryService.findUnreadLikeNotificationCount(memberPk))

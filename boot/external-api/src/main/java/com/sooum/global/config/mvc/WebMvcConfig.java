@@ -5,6 +5,7 @@ import com.sooum.global.auth.interceptor.JwtBlacklistInterceptor;
 import com.sooum.global.auth.resolver.CurrentUserArgumentResolver;
 import com.sooum.global.config.jwt.TokenProvider;
 import com.sooum.global.config.ratelimiter.RateLimitInterceptor;
+import com.sooum.global.config.ratelimiter.path.ExcludeRateLimitPathProperties;
 import com.sooum.global.config.security.path.ExcludeAuthPathProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final JwtBlacklistInterceptor jwtBlacklistInterceptor;
     private final RateLimitInterceptor rateLimitInterceptor;
     private final ExcludeAuthPathProperties excludeAuthPathProperties;
+    private final ExcludeRateLimitPathProperties excludeRateLimitPathProperties;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -34,6 +36,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .excludePathPatterns(excludeAuthPathProperties.getExcludeAuthPaths());
 
         registry.addInterceptor(rateLimitInterceptor)
+                .excludePathPatterns(excludeRateLimitPathProperties.getExcludeAuthPaths())
                 .excludePathPatterns(excludeAuthPathProperties.getExcludeAuthPaths());
     }
 }
