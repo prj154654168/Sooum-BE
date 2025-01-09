@@ -4,7 +4,7 @@ name: SooumCI
 on:
    push:
      branches:
-       - main
+       - production
 
 env:
   S3_BUCKET_NAME: sooum-ci-cd
