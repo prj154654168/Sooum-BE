@@ -23,7 +23,7 @@
 
 ## Overview
 
-<img src="https://github.com/user-attachments/assets/258fc717-bbdc-4fa3-9e7a-de94d4c91a8a" alt="beucol" width="220" height="500"> <img src="https://github.com/user-attachments/assets/e3a01e21-3cae-4edd-813e-773af88fc932" alt="chris" width="220" height="500"> <img src="https://github.com/user-attachments/assets/72943d0d-6603-4ede-9a64-1e4c153f2a87" alt="chris" width="220" height="500"> <img src="https://github.com/user-attachments/assets/0b335387-cce6-4aa4-ba9f-dbada86734bf" alt="chris" width="220" height="500">
+<img src="https://github.com/user-attachments/assets/258fc717-bbdc-4fa3-9e7a-de94d4c91a8a" alt="beucol" width="200" height="455"> <img src="https://github.com/user-attachments/assets/e3a01e21-3cae-4edd-813e-773af88fc932" alt="chris" width="200" height="455"> <img src="https://github.com/user-attachments/assets/72943d0d-6603-4ede-9a64-1e4c153f2a87" alt="chris" width="200" height="455"> <img src="https://github.com/user-attachments/assets/0b335387-cce6-4aa4-ba9f-dbada86734bf" alt="chris" width="200" height="455">
 
 * **회원가입** - 숨은 사용자의 개인정보를 일절 받지 않기 위해 기기 하나당 하나의 계정을 발급받도록 하였습니다. 이때 사용되는 기기ID는 RSA 암호화를 통해 서버로 전달되며, RSA 공개키는 하루에 한번 업데이트됩니다.
 * **기본 배경 사진** - 사용자는 랜덤하게 제공되는 기본 배경 사진을 글의 분위기에 맞게 선택할 수 있습니다. 현재 50장의 배경 사진을 제공하고 있으며 추후 더 다양한 사진을 제공할 계획입니다.
