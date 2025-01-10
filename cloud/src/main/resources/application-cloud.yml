@@ -16,3 +16,34 @@ spring:
         credentials:
           accessKey: ${accessKey}
           secretKey: ${secretKey}
+        DEFAULT_CARD_IMG: test/card/default/
+        USER_CARD_IMG: test/card/user/
+        PROFILE_IMG: test/profile/
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  cloud:
+    aws:
+      s3:
+        DEFAULT_CARD_IMG: prod/card/default/
+        USER_CARD_IMG: prod/card/user/
+        PROFILE_IMG: prod/profile/
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  cloud:
+    aws:
+      s3:
+        DEFAULT_CARD_IMG: test/card/default/
+        USER_CARD_IMG: test/card/user/
+        PROFILE_IMG: test/profile/

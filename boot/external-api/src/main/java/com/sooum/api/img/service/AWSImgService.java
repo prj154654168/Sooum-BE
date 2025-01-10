@@ -3,6 +3,7 @@ package com.sooum.api.img.service;
 import com.sooum.api.img.dto.ImgUrlInfo;
 import com.sooum.client.aws.rekognition.RekognitionService;
 import com.sooum.client.aws.s3.S3ImgService;
+import com.sooum.client.aws.s3.imgproperties.S3ImgPathProperties;
 import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.img.service.ProfileImgService;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,7 @@ import java.util.stream.IntStream;
 @Primary
 @Service
 @RequiredArgsConstructor
+@PropertySources({@PropertySource("classpath:application-core-data.yml")})
 public class AWSImgService implements ImgService{
     @Value("${sooum.server.img.default-size}")
     private int defaultImgSize;
@@ -33,10 +37,8 @@ public class AWSImgService implements ImgService{
     private final CardImgService cardImgService;
     private final RekognitionService rekognitionService;
     private final S3ImgService s3Service;
+    private final S3ImgPathProperties s3ImgPathProperties;
 
-    private static final String DEFAULT_CARD_IMG = "card/default/";
-    private static final String USER_CARD_IMG = "card/user/";
-    private static final String PROFILE_IMG = "profile/";
     private static final int DEFAULT_IMG_CNT = 8;
     private static final String DEFAULT_IMG_EXTENSION = "jpeg";
 
@@ -47,19 +49,19 @@ public class AWSImgService implements ImgService{
      */
     @Override
     public boolean isModeratingCardImg(String imgName) {
-        return rekognitionService.isModeratingImg(USER_CARD_IMG, imgName);
+        return rekognitionService.isModeratingImg(s3ImgPathProperties.getUSER_CARD_IMG_PATH(), imgName);
     }
 
     @Override
     public boolean isModeratingProfileImg(String imgName) {
-        return rekognitionService.isModeratingImg(PROFILE_IMG, imgName);
+        return rekognitionService.isModeratingImg(s3ImgPathProperties.getPROFILE_IMG_PATH(), imgName);
     }
 
     @Override
     public Link findCardImgUrl(CardImgType cardImgType, String imgName) {
         return switch (cardImgType) {
-            case DEFAULT -> createGetPresignedLink(DEFAULT_CARD_IMG, imgName);
-            case USER -> createGetPresignedLink(USER_CARD_IMG, imgName);
+            case DEFAULT -> createGetPresignedLink(s3ImgPathProperties.getDEFAULT_CARD_IMG_PATH(), imgName);
+            case USER -> createGetPresignedLink(s3ImgPathProperties.getUSER_CARD_IMG_PATH(), imgName);
         };
     }
 
@@ -95,13 +97,13 @@ public class AWSImgService implements ImgService{
     @Override
     @Transactional
     public ImgUrlInfo createCardImgUploadUrl(String extension) {
-        return createUploadUrlAndSaveImgEntity(USER_CARD_IMG, extension);
+        return createUploadUrlAndSaveImgEntity(s3ImgPathProperties.getUSER_CARD_IMG_PATH(), extension);
     }
 
     @Override
     @Transactional
     public ImgUrlInfo createProfileImgUploadUrl(String extension) {
-        return createUploadUrlAndSaveImgEntity(PROFILE_IMG, extension);
+        return createUploadUrlAndSaveImgEntity(s3ImgPathProperties.getPROFILE_IMG_PATH(), extension);
     }
 
     private ImgUrlInfo createUploadUrlAndSaveImgEntity(String filePath, String extension) {
@@ -110,11 +112,11 @@ public class AWSImgService implements ImgService{
         }
         String imgName = UUID.randomUUID() + "." + extension;
 
-        switch (filePath) {
-            case USER_CARD_IMG -> cardImgService.saveDefaultCardImg(imgName);
-            case PROFILE_IMG -> profileImgService.saveDefaultProfileImg(imgName);
-            default -> throw new IllegalArgumentException(ExceptionMessage.UNSUPPORTED_IMAGE_FORMAT.getMessage());
-        }
+        if (filePath.equals(s3ImgPathProperties.getUSER_CARD_IMG_PATH())) {
+            cardImgService.saveDefaultCardImg(imgName);
+        }else if (filePath.equals(s3ImgPathProperties.getPROFILE_IMG_PATH())) {
+            profileImgService.saveDefaultProfileImg(imgName);
+        }else throw new IllegalArgumentException(ExceptionMessage.UNSUPPORTED_IMAGE_FORMAT.getMessage());
 
         return ImgUrlInfo.builder()
                 .imgName(imgName)
@@ -124,12 +126,12 @@ public class AWSImgService implements ImgService{
 
     @Override
     public boolean isCardImgSaved(String imgName) {
-        return s3Service.isImgSaved(USER_CARD_IMG, imgName);
+        return s3Service.isImgSaved(s3ImgPathProperties.getUSER_CARD_IMG_PATH(), imgName);
     }
 
     @Override
     public boolean isProfileImgSaved(String profileImgName) {
-        return s3Service.isImgSaved(PROFILE_IMG, profileImgName);
+        return s3Service.isImgSaved(s3ImgPathProperties.getPROFILE_IMG_PATH(), profileImgName);
     }
 
     @Override
@@ -137,6 +139,6 @@ public class AWSImgService implements ImgService{
         if (imgName == null) {
             return null;
         }
-        return createGetPresignedLink(PROFILE_IMG, imgName);
+        return createGetPresignedLink(s3ImgPathProperties.getPROFILE_IMG_PATH(), imgName);
     }
 }
