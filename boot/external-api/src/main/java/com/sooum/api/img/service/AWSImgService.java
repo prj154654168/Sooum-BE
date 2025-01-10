@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +26,6 @@ import java.util.stream.IntStream;
 @Primary
 @Service
 @RequiredArgsConstructor
-@PropertySources({@PropertySource("classpath:application-core-data.yml")})
 public class AWSImgService implements ImgService{
     @Value("${sooum.server.img.default-size}")
     private int defaultImgSize;
