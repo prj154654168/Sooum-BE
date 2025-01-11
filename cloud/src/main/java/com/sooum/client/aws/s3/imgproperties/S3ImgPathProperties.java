@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Configuration
 public class S3ImgPathProperties {
-    @Value("${spring.cloud.aws.s3.USER_CARD_IMG}")
+    @Value("${spring.cloud.aws.s3.DEFAULT_CARD_IMG}")
     private String DEFAULT_CARD_IMG_PATH;
     @Value("${spring.cloud.aws.s3.USER_CARD_IMG}")
     private String USER_CARD_IMG_PATH;
