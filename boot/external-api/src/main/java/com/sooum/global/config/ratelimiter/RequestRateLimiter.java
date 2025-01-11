@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 @Component
@@ -26,7 +27,7 @@ public class RequestRateLimiter {
     private void saveRequest(String key) {
         stringLocalDateTimeRedisTemplate.opsForValue().set(key,
                 LocalDateTime.now(),
-                Duration.between(LocalDateTime.now(),LocalDateTime.now().plusSeconds(1))
+                Duration.between(LocalDateTime.now(),LocalDateTime.now().plus(500, ChronoUnit.MILLIS))
         );
     }
 }
