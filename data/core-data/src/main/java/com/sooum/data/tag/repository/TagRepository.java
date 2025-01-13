@@ -21,7 +21,13 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("select t from Tag t where t.content in :tagContents")
     List<Tag> findTagList(@Param("tagContents") List<String> tagContents);
 
-    @Query("select t from Tag t where t not in :excludeTags and (t.count > 0) order by t.count desc")
+    @Query("select t " +
+            "from Tag t " +
+            "where t not in :excludeTags " +
+            "   and (t.count > 0) " +
+            "   and t.isActive = true " +
+            "   and t.content != '19금' " +
+            "order by t.count desc")
     List<Tag> findRecommendTagList(@Param("excludeTags") List<Tag> excludeTags, Pageable pageable);
 
     @Modifying
