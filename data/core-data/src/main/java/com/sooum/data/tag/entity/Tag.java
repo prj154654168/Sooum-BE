@@ -34,11 +34,19 @@ public class Tag extends BaseEntity {
     @Version
     private Long version;
 
-    @Builder
-    public Tag(String content, boolean isActive) {
+    @Builder(access = AccessLevel.PRIVATE)
+    private Tag(String content, boolean isActive, int count) {
         this.content = content;
         this.isActive = isActive;
-        this.count = 1;
+        this.count = count;
+    }
+
+    public static Tag ofFeed(String content, boolean isActive) {
+        return Tag.builder().content(content).isActive(isActive).count(1).build();
+    }
+
+    public static Tag ofComment(String content, boolean isActive) {
+        return Tag.builder().content(content).isActive(isActive).count(0).build();
     }
 
     public static void minusCount(Tag tag) {
