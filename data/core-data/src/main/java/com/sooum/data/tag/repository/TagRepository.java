@@ -13,8 +13,9 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
     @Query("SELECT t FROM Tag t " +
-            "WHERE t.isActive = true " +
-            "AND LOWER(t.content) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "WHERE (t.isActive = true " +
+            "   AND LOWER(t.content) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "   or (t.content = :keyword ) " +
             "ORDER BY t.count DESC")
     List<Tag> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
