@@ -18,6 +18,8 @@ import java.util.List;
 @Setter
 public class CommentDetailCardDto extends CardDto{
     private String previousCardId;
+    @JsonProperty(value = "isPreviousCardDelete")
+    private boolean isPreviousCardDelete;
     private Link previousCardImgLink;
     @JsonProperty(value = "isOwnCard")
     private boolean isOwnCard;
@@ -29,9 +31,10 @@ public class CommentDetailCardDto extends CardDto{
     private List<TagDto.ReadTagResponse> tags;
 
     @Builder
-    public CommentDetailCardDto(String id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, String previousCardId, Link previousCardImgLink, boolean isOwnCard, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags, Double distance, boolean isFeedCardStory) {
+    public CommentDetailCardDto(String id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, String previousCardId, boolean isPreviousCardDelete, Link previousCardImgLink, boolean isOwnCard, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags, Double distance, boolean isFeedCardStory) {
         super(id, content, createdAt, likeCnt, isLiked, commentCnt, isCommentWritten, backgroundImgUrl, font, fontSize);
         this.previousCardId = previousCardId;
+        this.isPreviousCardDelete = isPreviousCardDelete;
         this.previousCardImgLink = previousCardImgLink;
         this.isOwnCard = isOwnCard;
         this.member = member;
