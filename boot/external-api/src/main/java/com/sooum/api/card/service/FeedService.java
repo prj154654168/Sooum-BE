@@ -90,7 +90,7 @@ public class FeedService {
             cardImgService.updateCardImg(feedCard, cardDto.getImgName());
         }
 
-        List<Tag> tagContents = saveTags(cardDto);
+        List<Tag> tagContents = saveFeedTags(cardDto);
         List<FeedTag> feedTagList = tagContents.stream()
                 .map(tag -> FeedTag.builder().feedCard(feedCard).tag(tag).build())
                 .toList();
@@ -128,7 +128,7 @@ public class FeedService {
             cardImgService.updateCardImg(commentCard, cardDto.getImgName());
         }
 
-        List<Tag> tagContents = saveTags(cardDto);
+        List<Tag> tagContents = saveCommentTags(cardDto);
         List<CommentTag> commentTagList = tagContents.stream()
                 .map(tag -> CommentTag.builder().commentCard(commentCard).tag(tag).build())
                 .toList();
@@ -185,7 +185,7 @@ public class FeedService {
         }
     }
 
-    private List<Tag> saveTags(CreateCardDto cardDto){
+    private List<Tag> saveFeedTags(CreateCardDto cardDto){
         if (!hasTags(cardDto)) {
             return List.of();
         }
@@ -197,7 +197,7 @@ public class FeedService {
         cardDto.getTags().removeAll(alreadyExistTagContents);
 
         List<Tag> newTagsToSave = cardDto.getTags().stream()
-                .map(tagContent -> Tag.builder().content(tagContent).isActive(badWordFiltering.checkBadWord(tagContent)).build())
+                .map(tagContent -> Tag.ofFeed(tagContent,badWordFiltering.checkBadWord(tagContent)))
                 .toList();
 
         tagService.saveAll(newTagsToSave);
@@ -205,6 +205,26 @@ public class FeedService {
 
         return alreadyExistsTag;
    }
+
+    private List<Tag> saveCommentTags(CreateCardDto cardDto){
+        if (!hasTags(cardDto)) {
+            return List.of();
+        }
+
+        List<Tag> alreadyExistsTag = tagService.findTagList(cardDto.getTags());
+
+        List<String> alreadyExistTagContents = alreadyExistsTag.stream().map(Tag::getContent).toList();
+        cardDto.getTags().removeAll(alreadyExistTagContents);
+
+        List<Tag> newTagsToSave = cardDto.getTags().stream()
+                .map(tagContent -> Tag.ofComment(tagContent,badWordFiltering.checkBadWord(tagContent)))
+                .toList();
+
+        tagService.saveAll(newTagsToSave);
+        alreadyExistsTag.addAll(newTagsToSave);
+
+        return alreadyExistsTag;
+    }
 
     private void validateUserImage(CreateCardDto cardDto) {
         if(!imgService.isCardImgSaved(cardDto.getImgName())) {
