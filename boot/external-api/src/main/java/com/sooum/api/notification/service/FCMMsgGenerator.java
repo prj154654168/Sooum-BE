@@ -90,15 +90,9 @@ class FCMMsgGenerator {
     }
 
     private Message generateSystemMsgByAndroid(FCMDto.SystemFcm fcmDto) {
-        HashMap<String, String> data = generateSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
+        HashMap<String, String> data = generateCommonSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
 
         return Message.builder()
-                .setNotification(
-                        Notification.builder()
-                                .setTitle(TITLE)
-                                .setBody(generateSystemMsgBody(fcmDto.getNotificationType()))
-                                .build()
-                )
                 .setAndroidConfig(AndroidConfig.builder()
                         .setNotification(AndroidNotification.builder()
                                 .setClickAction(fcmDto.getNotificationType().name())
@@ -111,7 +105,7 @@ class FCMMsgGenerator {
     }
 
     private Message generateSystemMsgByIos(FCMDto.SystemFcm fcmDto) {
-        HashMap<String, String> data = generateSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
+        HashMap<String, String> data = generateCommonSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
 
         return Message.builder()
                 .setNotification(
@@ -125,11 +119,19 @@ class FCMMsgGenerator {
                 .build();
     }
 
-    private static HashMap<String, String> generateSystemFcmData(Long notificationId, NotificationType notificationType) {
+    private static HashMap<String, String> generateCommonSystemFcmData(Long notificationId, NotificationType notificationType) {
         HashMap<String, String> data = new HashMap<>();
         data.put("notificationId", notificationId.toString());
         data.put("targetCardId", null);
         data.put("notificationType", notificationType.name());
+        data.put("title", TITLE);
+        data.put("body", generateSystemMsgBody(notificationType));
+        return data;
+    }
+
+    private static HashMap<String, String> generateAndroidSystemFcmData(Long notificationId, NotificationType notificationType) {
+        HashMap<String, String> data = generateCommonSystemFcmData(notificationId, notificationType);
+        data
         return data;
     }
 
