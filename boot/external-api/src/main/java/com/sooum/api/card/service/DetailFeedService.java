@@ -61,7 +61,7 @@ public class DetailFeedService {
             Optional<FeedCard> optMasterCard = feedCardService.findOptFeedCard(commentCard.getParentCardPk());
             boolean isMasterCardStory = optMasterCard.map(FeedCard::isStory).orElse(false);
 
-            String previousCardId = resolvePreviousCardPk(parentCard, commentCard.getParentCardPk());
+            boolean isParentCardDelete = isParentDelete(parentCard, commentCard.getParentCardPk());
             Link previousCardImgLink = parentCard != null ?
                     imgService.findCardImgUrl(parentCard.getImgType(),parentCard.getImgName()) : null;
 
@@ -76,7 +76,8 @@ public class DetailFeedService {
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
                     .tags(tagUseCase.readTags(card))
-                    .previousCardId(previousCardId)
+                    .isPreviousCardDelete(isParentCardDelete)
+                    .previousCardId(commentCard.getParentCardPk().toString())
                     .previousCardImgLink(previousCardImgLink)
                     .isFeedCardStory(isMasterCardStory)
                     .build();
@@ -84,13 +85,13 @@ public class DetailFeedService {
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
     }
 
-    private String resolvePreviousCardPk(Card parentCard, Long parentPk) {
+    private boolean isParentDelete(Card parentCard, Long parentPk) {
         if (parentCard == null && parentPk != null) {
-            return "-1";
+            return true;
         }
         if (parentCard != null) {
-            return parentCard.getPk().toString();
+            return false;
         }
-        return null;
+        return false;
     }
 }
