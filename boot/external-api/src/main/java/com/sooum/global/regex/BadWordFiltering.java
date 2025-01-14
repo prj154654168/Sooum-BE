@@ -31,12 +31,12 @@ public class BadWordFiltering implements BadWords {
         return delimiterBuilder.toString();
     }
 
-    public boolean checkBadWord(String input) {
+    public boolean isBadWord(String input) {
         for (Pattern pattern : badWordPatterns.values()) {
             if (pattern.matcher(input).find()) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }

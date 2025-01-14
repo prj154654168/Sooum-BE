@@ -5,6 +5,7 @@ import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
 import com.sooum.data.card.entity.imgtype.CardImgType;
+import com.sooum.data.common.deactivatewords.DeactivateWords;
 import com.sooum.data.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -43,6 +45,7 @@ public class CreateFeedCardDto extends CreateCardDto {
                 .location(this.isDistanceShared()
                         ? new GeometryFactory().createPoint(new Coordinate(this.getLongitude(), this.getLatitude()))
                         : null)
+                .isFeedActive(DeactivateWords.deactivateWordsList.stream().noneMatch(word -> feedTags.contains(word)))
                 .writer(member).build();
     }
 

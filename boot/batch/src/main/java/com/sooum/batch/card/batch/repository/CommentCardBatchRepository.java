@@ -17,6 +17,7 @@ public interface CommentCardBatchRepository extends CommentCardRepository {
     @Query("select fc from CommentCard cc inner join FeedCard fc on fc.pk = cc.masterCard " +
             "where fc.isStory = false " +
                 "and fc.isPublic = true " +
+                "and fc.isFeedActive = true " +
                 "and fc.createdAt >= (current_timestamp - 2 day) " +
             "group by cc.masterCard " +
                 "having count(distinct cc.writer) >= 2" +

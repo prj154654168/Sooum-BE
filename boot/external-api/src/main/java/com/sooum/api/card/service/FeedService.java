@@ -12,6 +12,7 @@ import com.sooum.data.card.entity.*;
 import com.sooum.data.card.entity.imgtype.CardImgType;
 import com.sooum.data.card.entity.parenttype.CardType;
 import com.sooum.data.card.service.*;
+import com.sooum.data.common.deactivatewords.DeactivateWords;
 import com.sooum.data.img.service.CardImgService;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.entity.Role;
@@ -197,7 +198,7 @@ public class FeedService {
         cardDto.getTags().removeAll(alreadyExistTagContents);
 
         List<Tag> newTagsToSave = cardDto.getTags().stream()
-                .map(tagContent -> Tag.ofFeed(tagContent,badWordFiltering.checkBadWord(tagContent)))
+                .map(tagContent -> Tag.ofFeed(tagContent, isActiveWords(tagContent)))
                 .toList();
 
         tagService.saveAll(newTagsToSave);
@@ -205,6 +206,10 @@ public class FeedService {
 
         return alreadyExistsTag;
    }
+
+    private boolean isActiveWords(String tagContent) {
+        return !(badWordFiltering.isBadWord(tagContent) || DeactivateWords.deactivateWordsList.contains(tagContent));
+    }
 
     private List<Tag> saveCommentTags(CreateCardDto cardDto){
         if (!hasTags(cardDto)) {
@@ -217,7 +222,7 @@ public class FeedService {
         cardDto.getTags().removeAll(alreadyExistTagContents);
 
         List<Tag> newTagsToSave = cardDto.getTags().stream()
-                .map(tagContent -> Tag.ofComment(tagContent,badWordFiltering.checkBadWord(tagContent)))
+                .map(tagContent -> Tag.ofComment(tagContent,isActiveWords(tagContent)))
                 .toList();
 
         tagService.saveAll(newTagsToSave);
