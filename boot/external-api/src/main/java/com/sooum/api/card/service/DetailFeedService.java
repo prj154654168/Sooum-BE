@@ -51,6 +51,7 @@ public class DetailFeedService {
                     .font(card.getFont())
                     .fontSize(card.getFontSize())
                     .isOwnCard(memberPk.equals(card.getWriter().getPk()))
+                    .isFeedCard(true)
                     .member(memberInfoService.getDefaultMember(card.getWriter()))
                     .tags(tagUseCase.readTags(card))
                     .build();
