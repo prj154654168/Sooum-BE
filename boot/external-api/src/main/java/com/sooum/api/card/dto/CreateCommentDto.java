@@ -23,7 +23,7 @@ public class CreateCommentDto extends CreateCardDto{
         this.commentTags = commentTags;
     }
 
-    public CommentCard of(CardType parentCardType, Long parentCardPk, Long masterCardPk, Member member) {
+    public CommentCard of(CardType parentCardType, Long parentCardPk, Long masterCardPk, Member member, String writerIp) {
         return CommentCard.builder()
                 .parentCardType(parentCardType)
                 .masterCard(masterCardPk)
@@ -36,7 +36,9 @@ public class CreateCommentDto extends CreateCardDto{
                 .location(this.isDistanceShared()
                         ? new GeometryFactory().createPoint(new Coordinate(this.getLongitude(), this.getLatitude()))
                         : null)
-                .writer(member).build();
+                .writer(member)
+                .writerIp(writerIp)
+                .build();
     }
 
     @Override

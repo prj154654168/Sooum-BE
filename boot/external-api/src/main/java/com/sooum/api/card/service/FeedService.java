@@ -84,7 +84,7 @@ public class FeedService {
             validateUserImage(cardDto);
         }
 
-        FeedCard feedCard = cardDto.of(member);
+        FeedCard feedCard = cardDto.of(member, getWriterIp(request));
         feedCardService.saveFeedCard(feedCard);
 
         if (isUserImage(cardDto)){
@@ -122,7 +122,7 @@ public class FeedService {
 
         validateTagsNotAllowedForMasterCardStory(cardDto, masterCardPk);
 
-        CommentCard commentCard = cardDto.of(parentCardType, parentCard.getPk(), masterCardPk, member);
+        CommentCard commentCard = cardDto.of(parentCardType, parentCard.getPk(), masterCardPk, member, getWriterIp(request));
         commentCardService.saveComment(commentCard);
 
         if (isUserImage(cardDto)){
@@ -151,6 +151,14 @@ public class FeedService {
                                 .build());
             }
         }
+    }
+
+    private static String getWriterIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            return ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 
     private Card getParentCard(Long cardPk) {

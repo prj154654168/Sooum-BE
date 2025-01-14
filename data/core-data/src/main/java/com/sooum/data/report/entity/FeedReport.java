@@ -24,12 +24,12 @@ public class FeedReport extends BaseEntity {
     private ReportType reportType;
 
     @NotNull
-    @JoinColumn(name = "TARGET_CARD")
+    @JoinColumn(name = "TARGET_CARD", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne(fetch = FetchType.LAZY)
     private FeedCard targetCard;
 
     @NotNull
-    @JoinColumn(name = "REPORTER")
+    @JoinColumn(name = "REPORTER",foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne(fetch = FetchType.LAZY)
     private Member reporter;
 

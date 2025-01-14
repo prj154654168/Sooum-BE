@@ -34,7 +34,7 @@ public class CreateFeedCardDto extends CreateCardDto {
         this.feedTags = feedTags;
     }
 
-    public FeedCard of(Member member) {
+    public FeedCard of(Member member, String writerIp) {
         return FeedCard.builder()
                 .content(this.getContent())
                 .font(this.getFont())
@@ -47,7 +47,9 @@ public class CreateFeedCardDto extends CreateCardDto {
                         ? new GeometryFactory().createPoint(new Coordinate(this.getLongitude(), this.getLatitude()))
                         : null)
                 .isFeedActive(Objects.isNull(this.feedTags) || DeactivateWords.deactivateWordsList.stream().noneMatch(word -> feedTags.contains(word)))
-                .writer(member).build();
+                .writer(member)
+                .writerIp(writerIp)
+        .build();
     }
 
     @Override
