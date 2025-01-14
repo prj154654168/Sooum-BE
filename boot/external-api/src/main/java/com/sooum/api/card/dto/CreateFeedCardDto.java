@@ -15,6 +15,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -45,7 +46,7 @@ public class CreateFeedCardDto extends CreateCardDto {
                 .location(this.isDistanceShared()
                         ? new GeometryFactory().createPoint(new Coordinate(this.getLongitude(), this.getLatitude()))
                         : null)
-                .isFeedActive(DeactivateWords.deactivateWordsList.stream().noneMatch(word -> feedTags.contains(word)))
+                .isFeedActive(Objects.isNull(this.feedTags) || DeactivateWords.deactivateWordsList.stream().noneMatch(word -> feedTags.contains(word)))
                 .writer(member).build();
     }
 
