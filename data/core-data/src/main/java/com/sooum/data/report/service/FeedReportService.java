@@ -8,6 +8,7 @@ import com.sooum.data.report.repository.FeedReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,6 +29,7 @@ public class FeedReportService {
                 .reporter(member)
                 .targetCard(feedCard)
                 .reportType(reportType)
+                .writerIp(feedCard.getWriterIp())
                 .build());
     }
 
@@ -39,7 +41,7 @@ public class FeedReportService {
         feedReportRepository.deleteAllInBatch(reports);
     }
 
-    public void deleteAllFeedReports(Long memberPk) {
-        feedReportRepository.deleteAllFeedReports(memberPk);
+    public void deleteAllBefore6Month() {
+        feedReportRepository.deleteAfter6Month(LocalDateTime.now().minusMonths(6));
     }
 }

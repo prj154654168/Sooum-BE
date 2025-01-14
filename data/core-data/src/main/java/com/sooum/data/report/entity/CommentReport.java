@@ -33,10 +33,15 @@ public class CommentReport extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member reporter;
 
+    @NotNull
+    @Column
+    private String writerIp;
+
     @Builder
-    public CommentReport(ReportType reportType, CommentCard targetCard, Member reporter) {
+    public CommentReport(ReportType reportType, CommentCard targetCard, Member reporter, String writerIp) {
         this.reportType = reportType;
         this.targetCard = targetCard;
         this.reporter = reporter;
+        this.writerIp = writerIp;
     }
 }
