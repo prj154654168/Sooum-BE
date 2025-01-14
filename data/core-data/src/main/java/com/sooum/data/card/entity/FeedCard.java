@@ -29,8 +29,8 @@ public class FeedCard extends Card {
     private boolean isFeedActive;
 
     @Builder
-    public FeedCard(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, boolean isStory, boolean isPublic, boolean isFeedActive) {
-        super(content, fontSize, font, location, imgType, imgName, writer);
+    public FeedCard(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, boolean isStory, boolean isPublic, boolean isFeedActive, String writerIp) {
+        super(content, fontSize, font, location, imgType, imgName, writer, writerIp);
         this.isStory = isStory;
         this.isPublic = isPublic;
         this.isFeedActive = isFeedActive;

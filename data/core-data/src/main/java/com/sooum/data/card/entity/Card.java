@@ -51,11 +51,15 @@ public abstract class Card extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member writer;
 
+    @NotNull
+    @Column(name = "WRITER_IP")
+    private String writerIp;
+
     public void changeDeleteStatus() {
         this.isDeleted = true;
     }
 
-    public Card(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer) {
+    public Card(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, String writerIp) {
         this.content = content;
         this.fontSize = fontSize;
         this.font = font;
@@ -63,6 +67,7 @@ public abstract class Card extends BaseEntity {
         this.imgType = imgType;
         this.imgName = imgName;
         this.writer = writer;
+        this.writerIp = writerIp;
     }
 
     public boolean isWriter(Long compareMemberPk) {

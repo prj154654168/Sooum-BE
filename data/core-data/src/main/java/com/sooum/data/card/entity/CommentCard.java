@@ -33,8 +33,8 @@ public class CommentCard extends Card {
     private Long masterCard;
 
     @Builder
-    public CommentCard(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, CardType parentCardType, Long parentCardPk, Long masterCard) {
-        super(content, fontSize, font, location, imgType, imgName, writer);
+    public CommentCard(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, CardType parentCardType, Long parentCardPk, Long masterCard, String writerIp) {
+        super(content, fontSize, font, location, imgType, imgName, writer, writerIp);
         this.parentCardType = parentCardType;
         this.parentCardPk = parentCardPk;
         this.masterCard = masterCard;

@@ -10,8 +10,7 @@ import com.sooum.data.member.entity.Blacklist;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.entity.Role;
 import com.sooum.data.member.service.*;
-import com.sooum.data.report.service.CommentReportService;
-import com.sooum.data.report.service.FeedReportService;
+import com.sooum.data.notification.service.NotificationHistoryService;
 import com.sooum.data.suspended.entity.Suspended;
 import com.sooum.data.suspended.service.SuspendedService;
 import com.sooum.data.tag.service.CommentTagService;
@@ -41,8 +40,6 @@ public class MemberWithdrawalService {
     private final FeedLikeService feedLikeService;
     private final CommentLikeService commentLikeService;
     private final FavoriteTagService favoriteTagService;
-    private final FeedReportService feedReportService;
-    private final CommentReportService commentReportService;
     private final PopularFeedService popularFeedService;
     private final CardImgService cardImgService;
     private final FollowService followService;
@@ -54,6 +51,7 @@ public class MemberWithdrawalService {
     private final AccountTransferService accountTransferService;
     private final FeedTagService feedTagService;
     private final CommentTagService commentTagService;
+    private final NotificationHistoryService notificationHistoryService;
 
     private final RedisTemplate<String, String> redisStringTemplate;
 
@@ -73,9 +71,6 @@ public class MemberWithdrawalService {
 
         favoriteTagService.deleteAllFavoriteTag(memberPk);
 
-        feedReportService.deleteAllFeedReports(memberPk);
-        commentReportService.deleteAllCommentReports(memberPk);
-
         feedTagService.deleteFeedTag(memberPk);
         commentTagService.deleteCommentTag(memberPk);
 
@@ -90,8 +85,9 @@ public class MemberWithdrawalService {
         refreshTokenService.deleteRefreshToken(memberPk);
         accountTransferService.deleteAccountTransfer(memberPk);
         profileImgService.updateProfileImgNull(memberPk);
+        notificationHistoryService.deleteAllNotificationHistory(memberPk);
+
         memberService.deleteMember(memberPk);
-        //TODO: notification_history delete
     }
 
     private void handleSuspendedUser(Member member) {

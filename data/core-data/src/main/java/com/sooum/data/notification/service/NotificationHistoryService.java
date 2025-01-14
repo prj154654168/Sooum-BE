@@ -115,4 +115,8 @@ public class NotificationHistoryService {
     public void deletePreviousBlockedHistories(Long memberPk) {
         notificationHistoryRepository.deletePreviousBlockedHistories(memberPk);
     }
+
+    public void deleteAllNotificationHistory(Long memberPk) {
+        notificationHistoryRepository.deleteAllNotificationHistory(memberPk);
+    }
 }
