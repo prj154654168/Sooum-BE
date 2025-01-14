@@ -94,9 +94,13 @@ public class MemberWithdrawalService {
         Suspended.SuspendedBuilder suspendedBuilder = Suspended.builder()
                 .deviceId(member.getDeviceId());
         if (member.getRole().equals(Role.BANNED)) {
-            suspendedBuilder.untilBan(member.getUntilBan());
+            suspendedBuilder
+                    .untilBan(member.getUntilBan())
+                    .isBanUser(true);
         } else {
-            suspendedBuilder.untilBan(LocalDateTime.now().plusDays(7));
+            suspendedBuilder
+                    .untilBan(LocalDateTime.now().plusDays(7))
+                    .isBanUser(false);
         }
         suspendedService.save(suspendedBuilder.build());
     }

@@ -21,6 +21,7 @@ public class SuspendedController {
 
     @PostMapping
     public ResponseEntity<?> checkSuspendedMember(@RequestBody SuspensionDto suspensionDto) {
+        //TODO: 정지이력 유저/계정탈퇴 유저 구분하여 반환값 변경
         Optional<LocalDateTime> suspensionUntil = suspendedUseCase.checkMemberSuspension(suspensionDto.getEncryptedDeviceId());
 
         if (suspensionUntil.isEmpty()) {
