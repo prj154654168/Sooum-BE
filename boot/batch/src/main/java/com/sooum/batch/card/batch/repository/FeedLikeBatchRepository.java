@@ -16,6 +16,7 @@ public interface FeedLikeBatchRepository extends FeedLikeRepository {
     @Query("select fl.targetCard from FeedLike fl inner join fl.targetCard f " +
             "where f.isStory = false " +
                 "and f.isPublic = true " +
+                "and f.isFeedActive = true " +
                 "and fl.targetCard.createdAt >= (current_timestamp - 2 day) " +
             "group by fl.targetCard.pk " +
                 "having count(fl.likedMember.pk) >= 2 " +

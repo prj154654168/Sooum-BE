@@ -25,11 +25,15 @@ public class FeedCard extends Card {
     @Column(name = "IS_PUBLIC")
     private boolean isPublic;
 
+    @Column(name = "IS_FEED_ACTIVE")
+    private boolean isFeedActive;
+
     @Builder
-    public FeedCard(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, boolean isStory, boolean isPublic) {
+    public FeedCard(String content, FontSize fontSize, Font font, Point location, CardImgType imgType, String imgName, Member writer, boolean isStory, boolean isPublic, boolean isFeedActive) {
         super(content, fontSize, font, location, imgType, imgName, writer);
         this.isStory = isStory;
         this.isPublic = isPublic;
+        this.isFeedActive = isFeedActive;
     }
 
     @Override

@@ -27,9 +27,11 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "where t not in :excludeTags " +
             "   and (t.count > 0) " +
             "   and t.isActive = true " +
-            "   and t.content != '19금' " +
+            "   and t.content not in :deactivateWords " +
             "order by t.count desc")
-    List<Tag> findRecommendTagList(@Param("excludeTags") List<Tag> excludeTags, Pageable pageable);
+    List<Tag> findRecommendTagList(@Param("excludeTags") List<Tag> excludeTags,
+                                   @Param("deactivateWords") List<String> deactivateWords,
+                                   Pageable pageable);
 
     @Modifying
     @Transactional

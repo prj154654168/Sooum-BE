@@ -82,7 +82,7 @@ public class ProfileService {
 
     public ProfileDto.NicknameAvailable verifyNicknameAvailable(String nickname) {
         return ProfileDto.NicknameAvailable.builder()
-                .isAvailable(badWordFiltering.checkBadWord(nickname))
+                .isAvailable(!badWordFiltering.isBadWord(nickname))
                 .build();
     }
 

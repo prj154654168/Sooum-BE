@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TagUseCase {
     private final TagService tagService;
-    private final FeedTagService feedTagService;
     private final FavoriteTagService favoriteTagService;
 
     public List<TagDto.RelatedTag> findRelatedTags(String keyword, Integer size) {

@@ -3,6 +3,7 @@ package com.sooum.data.tag.service;
 import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
+import com.sooum.data.common.deactivatewords.DeactivateWords;
 import com.sooum.data.tag.entity.FavoriteTag;
 import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.repository.CommentTagRepository;
@@ -55,7 +56,7 @@ public class TagService {
     }
 
     public List<Tag> findRecommendTags(List<Tag> excludeTags) {
-        return tagRepository.findRecommendTagList(excludeTags, PageRequest.ofSize(10));
+        return tagRepository.findRecommendTagList(excludeTags, DeactivateWords.deactivateWordsList, PageRequest.ofSize(10));
     }
     public boolean isExistFavoriteTag(Long tagPk, Long memberPk) {
         return favoriteTagRepository.existsByTag_PkAndMember_Pk(tagPk, memberPk);
