@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface FeedReportRepository extends JpaRepository<FeedReport, Long> {
@@ -25,4 +26,9 @@ public interface FeedReportRepository extends JpaRepository<FeedReport, Long> {
     @Transactional
     @Query("delete from FeedReport f where f.reporter.pk = :memberPk or f.targetCard.writer.pk = :memberPk")
     void deleteAllFeedReports(@Param("memberPk") Long memberPk);
+
+    @Transactional
+    @Modifying
+    @Query("delete from FeedReport f where f.createdAt < :before6Month")
+    void deleteAfter6Month(@Param("before6Month") LocalDateTime before6Month);
 }

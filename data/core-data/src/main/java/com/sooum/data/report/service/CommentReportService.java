@@ -8,6 +8,7 @@ import com.sooum.data.report.repository.CommentReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,15 +25,12 @@ public class CommentReportService {
                 .reporter(member)
                 .targetCard(card)
                 .reportType(reportType)
+                .writerIp(card.getWriterIp())
                 .build());
     }
 
     public void deleteReport(CommentCard cardPk) {
         commentReportRepository.deleteAllByCommentCardPk(cardPk);
-    }
-
-    public void deleteAllCommentReports(Long memberPk) {
-        commentReportRepository.deleteAllCommentReports(memberPk);
     }
 
     public List<CommentReport> findCommentReports(Long cardPk) {
@@ -41,5 +39,9 @@ public class CommentReportService {
 
     public void deleteAllCommentReports(List<CommentReport> reports) {
         commentReportRepository.deleteAllInBatch(reports);
+    }
+
+    public void deleteAllBefore6Month() {
+        commentReportRepository.deleteAfter6Month(LocalDateTime.now().minusMonths(6));
     }
 }

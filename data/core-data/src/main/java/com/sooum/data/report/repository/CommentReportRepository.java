@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CommentReportRepository extends JpaRepository<CommentReport, Long> {
@@ -26,4 +27,9 @@ public interface CommentReportRepository extends JpaRepository<CommentReport, Lo
     @Transactional
     @Query("delete from CommentReport c where c.reporter.pk = :memberPk or c.targetCard.writer.pk = :memberPk")
     void deleteAllCommentReports(@Param("memberPk") Long memberPk);
+
+    @Transactional
+    @Modifying
+    @Query("delete from CommentReport c where c.createdAt < :before6Month")
+    void deleteAfter6Month(@Param("before6Month") LocalDateTime before6Month);
 }

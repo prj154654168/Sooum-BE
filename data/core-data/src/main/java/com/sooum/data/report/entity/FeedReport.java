@@ -33,10 +33,15 @@ public class FeedReport extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member reporter;
 
+    @NotNull
+    @Column
+    private String writerIp;
+
     @Builder
-    public FeedReport(ReportType reportType, FeedCard targetCard, Member reporter) {
+    public FeedReport(ReportType reportType, FeedCard targetCard, Member reporter, String writerIp) {
         this.reportType = reportType;
         this.targetCard = targetCard;
         this.reporter = reporter;
+        this.writerIp = writerIp;
     }
 }
