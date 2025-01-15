@@ -24,6 +24,7 @@ public class CommentReportService {
         commentReportRepository.save(CommentReport.builder()
                 .reporter(member)
                 .targetCard(card)
+                .targetCardContent(card.getContent())
                 .reportType(reportType)
                 .writerIp(card.getWriterIp())
                 .build());

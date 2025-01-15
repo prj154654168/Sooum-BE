@@ -29,18 +29,23 @@ public class FeedReport extends BaseEntity {
     private FeedCard targetCard;
 
     @NotNull
+    @Column
+    private String targetCardContent;
+
+    @NotNull
     @JoinColumn(name = "REPORTER",foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne(fetch = FetchType.LAZY)
     private Member reporter;
 
     @NotNull
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String writerIp;
 
     @Builder
-    public FeedReport(ReportType reportType, FeedCard targetCard, Member reporter, String writerIp) {
+    public FeedReport(ReportType reportType, FeedCard targetCard, String targetCardContent, Member reporter, String writerIp) {
         this.reportType = reportType;
         this.targetCard = targetCard;
+        this.targetCardContent = targetCardContent;
         this.reporter = reporter;
         this.writerIp = writerIp;
     }
