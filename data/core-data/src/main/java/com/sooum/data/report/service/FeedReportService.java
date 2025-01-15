@@ -28,6 +28,7 @@ public class FeedReportService {
         feedReportRepository.save(FeedReport.builder()
                 .reporter(member)
                 .targetCard(feedCard)
+                .targetCardContent(feedCard.getContent())
                 .reportType(reportType)
                 .writerIp(feedCard.getWriterIp())
                 .build());
