@@ -43,13 +43,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
             if(e.getClaims().getSubject().equals("AccessToken")) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 PrintWriter writer = response.getWriter();
                 writer.flush();
                 writer.close();
             }
-            else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            if (e.getClaims().getSubject().equals("RefreshToken")) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 PrintWriter writer = response.getWriter();
                 writer.flush();
                 writer.close();
