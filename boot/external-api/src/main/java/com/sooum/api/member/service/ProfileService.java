@@ -82,8 +82,12 @@ public class ProfileService {
 
     public ProfileDto.NicknameAvailable verifyNicknameAvailable(String nickname) {
         return ProfileDto.NicknameAvailable.builder()
-                .isAvailable(!badWordFiltering.isBadWord(nickname))
+                .isAvailable(isAvailableNickname(nickname))
                 .build();
+    }
+
+    private boolean isAvailableNickname(String nickname) {
+        return !badWordFiltering.isBadWord(nickname) && !nickname.isBlank();
     }
 
     @Transactional
