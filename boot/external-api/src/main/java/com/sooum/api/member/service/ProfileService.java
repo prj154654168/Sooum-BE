@@ -80,8 +80,8 @@ public class ProfileService {
         }
     }
 
-    public ProfileDto.NicknameAvailable verifyNicknameAvailable(String nickname) {
-        return ProfileDto.NicknameAvailable.builder()
+    public ProfileDto.NicknameAvailableResponse verifyNicknameAvailable(String nickname) {
+        return ProfileDto.NicknameAvailableResponse.builder()
                 .isAvailable(isAvailableNickname(nickname))
                 .build();
     }

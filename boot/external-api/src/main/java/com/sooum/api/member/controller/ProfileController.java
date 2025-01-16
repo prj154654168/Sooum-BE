@@ -55,9 +55,9 @@ public class ProfileController {
     }
 
     @PostMapping("/nickname/available")
-    public ResponseEntity<ResponseEntityModel<ProfileDto.NicknameAvailable>> verifyNicknameAvailable(@RequestBody String nickname) {
+    public ResponseEntity<ResponseEntityModel<ProfileDto.NicknameAvailableResponse>> verifyNicknameAvailable(@RequestBody ProfileDto.NicknameAvailableRequest requestDto) {
         return ResponseEntity.ok(
-                ResponseEntityModel.<ProfileDto.NicknameAvailable>builder()
+                ResponseEntityModel.<ProfileDto.NicknameAvailableResponse>builder()
                         .status(
                                 ResponseStatus.builder()
                                         .httpStatus(HttpStatus.OK)
@@ -65,7 +65,7 @@ public class ProfileController {
                                         .responseMessage("Verify nickname successfully")
                                         .build()
                         )
-                        .content(profileService.verifyNicknameAvailable(nickname))
+                        .content(profileService.verifyNicknameAvailable(requestDto.getNickname()))
                         .build()
         );
     }
