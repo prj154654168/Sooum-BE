@@ -26,12 +26,17 @@ public class Suspended extends BaseEntity {
     private String deviceId;
 
     @NotNull
+    @Column(name = "IS_BAN_USER")
+    private boolean isBanUser;
+
+    @NotNull
     @Column(name = "UNTIL_BAN")
     private LocalDateTime untilBan;
 
     @Builder
-    public Suspended(String deviceId, LocalDateTime untilBan) {
+    public Suspended(String deviceId, LocalDateTime untilBan, boolean isBanUser) {
         this.deviceId = deviceId;
         this.untilBan = untilBan;
+        this.isBanUser = isBanUser;
     }
 }

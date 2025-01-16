@@ -91,12 +91,18 @@ public class MemberWithdrawalService {
     }
 
     private void handleSuspendedUser(Member member) {
+        Suspended.SuspendedBuilder suspendedBuilder = Suspended.builder()
+                .deviceId(member.getDeviceId());
         if (member.getRole().equals(Role.BANNED)) {
-            Suspended suspended = Suspended.builder()
-                    .deviceId(member.getDeviceId())
-                    .untilBan(member.getUntilBan()).build();
-            suspendedService.save(suspended);
+            suspendedBuilder
+                    .untilBan(member.getUntilBan())
+                    .isBanUser(true);
+        } else {
+            suspendedBuilder
+                    .untilBan(LocalDateTime.now().plusDays(7))
+                    .isBanUser(false);
         }
+        suspendedService.save(suspendedBuilder.build());
     }
 
     private void addTokensToBlacklist(AuthDTO.Token token) throws InvalidTokenException {
