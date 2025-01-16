@@ -22,19 +22,25 @@ class FCMMsgGenerator {
     public Message generateGeneralMsg(FCMDto.GeneralFcm fcmDto) {
         return fcmDto.getTargetDeviceType().equals(DeviceType.IOS)
                 ? generateGeneralMsgByIos(fcmDto)
-                : generateGeneralMsgByAndroid(fcmDto);
+                : generateGeneralMsgByAos(fcmDto);
     }
 
     public Message generateSystemMsg(FCMDto.SystemFcm fcmDto) {
         return fcmDto.getTargetDeviceType().equals(DeviceType.IOS)
                 ? generateSystemMsgByIos(fcmDto)
-                : generateSystemMsgByAndroid(fcmDto);
+                : generateSystemMsgByAos(fcmDto);
     }
 
-    private Message generateGeneralMsgByAndroid(FCMDto.GeneralFcm fcmDto) {
-        HashMap<String, String> data = generateAndroidGeneralFcmData(fcmDto.getNotificationId(), fcmDto.getTargetCardPk(), fcmDto.getNotificationType(), fcmDto.getRequesterNickname());
+    private Message generateGeneralMsgByAos(FCMDto.GeneralFcm fcmDto) {
+        HashMap<String, String> data = generateGeneralFcmData(fcmDto.getNotificationId(), fcmDto.getTargetCardPk(), fcmDto.getNotificationType());
 
         return Message.builder()
+                .setNotification(
+                        Notification.builder()
+                                .setTitle(TITLE)
+                                .setBody(generateGeneralMsgBody(fcmDto.getRequesterNickname(), fcmDto.getNotificationType()))
+                                .build()
+                )
                 .setAndroidConfig(AndroidConfig.builder()
                         .setNotification(AndroidNotification.builder()
                                 .setClickAction(fcmDto.getNotificationType().name())
@@ -47,7 +53,7 @@ class FCMMsgGenerator {
     }
 
     private Message generateGeneralMsgByIos(FCMDto.GeneralFcm fcmDto) {
-        HashMap<String, String> data = generateCommonGeneralFcmData(fcmDto.getNotificationId(), fcmDto.getTargetCardPk(), fcmDto.getNotificationType());
+        HashMap<String, String> data = generateGeneralFcmData(fcmDto.getNotificationId(), fcmDto.getTargetCardPk(), fcmDto.getNotificationType());
 
         return Message.builder()
                 .setNotification(
@@ -61,7 +67,7 @@ class FCMMsgGenerator {
                 .build();
     }
 
-    private static HashMap<String, String> generateCommonGeneralFcmData(Long notificationId, Long targetCardPk, NotificationType notificationType) {
+    private static HashMap<String, String> generateGeneralFcmData(Long notificationId, Long targetCardPk, NotificationType notificationType) {
         HashMap<String, String> data = new HashMap<>();
         data.put("notificationId", notificationId.toString());
         data.put("targetCardId", targetCardPk.toString());
@@ -69,26 +75,25 @@ class FCMMsgGenerator {
         return data;
     }
 
-    private static HashMap<String, String> generateAndroidGeneralFcmData(Long notificationId, Long targetCardPk, NotificationType notificationType, String requesterNickname) {
-        HashMap<String, String> data = generateCommonGeneralFcmData(notificationId, targetCardPk, notificationType);
-        data.put("title", TITLE);
-        data.put("body", generateGeneralMsgBody(requesterNickname, notificationType));
-        return data;
-    }
-
     private static String generateGeneralMsgBody(String requesterName, NotificationType notificationType) {
         return requesterName +
                 switch (notificationType) {
-            case COMMENT_WRITE -> COMMENT_WRITE_SUFFIX;
-            case FEED_LIKE, COMMENT_LIKE -> LIKE_SUFFIX;
-            default -> throw new IllegalArgumentException();
-        };
+                    case COMMENT_WRITE -> COMMENT_WRITE_SUFFIX;
+                    case FEED_LIKE, COMMENT_LIKE -> LIKE_SUFFIX;
+                    default -> throw new IllegalArgumentException();
+                };
     }
 
-    private Message generateSystemMsgByAndroid(FCMDto.SystemFcm fcmDto) {
-        HashMap<String, String> data = generateAndroidSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
+    private Message generateSystemMsgByAos(FCMDto.SystemFcm fcmDto) {
+        HashMap<String, String> data = generateSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
 
         return Message.builder()
+                .setNotification(
+                        Notification.builder()
+                                .setTitle(TITLE)
+                                .setBody(generateSystemMsgBody(fcmDto.getNotificationType()))
+                                .build()
+                )
                 .setAndroidConfig(AndroidConfig.builder()
                         .setNotification(AndroidNotification.builder()
                                 .setClickAction(fcmDto.getNotificationType().name())
@@ -101,7 +106,7 @@ class FCMMsgGenerator {
     }
 
     private Message generateSystemMsgByIos(FCMDto.SystemFcm fcmDto) {
-        HashMap<String, String> data = generateCommonSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
+        HashMap<String, String> data = generateSystemFcmData(fcmDto.getNotificationId(), fcmDto.getNotificationType());
 
         return Message.builder()
                 .setNotification(
@@ -115,18 +120,11 @@ class FCMMsgGenerator {
                 .build();
     }
 
-    private static HashMap<String, String> generateCommonSystemFcmData(Long notificationId, NotificationType notificationType) {
+    private static HashMap<String, String> generateSystemFcmData(Long notificationId, NotificationType notificationType) {
         HashMap<String, String> data = new HashMap<>();
         data.put("notificationId", notificationId.toString());
         data.put("targetCardId", null);
         data.put("notificationType", notificationType.name());
-        return data;
-    }
-
-    private static HashMap<String, String> generateAndroidSystemFcmData(Long notificationId, NotificationType notificationType) {
-        HashMap<String, String> data = generateCommonSystemFcmData(notificationId, notificationType);
-        data.put("title", TITLE);
-        data.put("body", generateSystemMsgBody(notificationType));
         return data;
     }
 
