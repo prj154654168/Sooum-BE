@@ -29,6 +29,10 @@ public class CommentReport extends BaseEntity {
     private CommentCard targetCard;
 
     @NotNull
+    @Column(columnDefinition = "TEXT")
+    private String targetCardContent;
+
+    @NotNull
     @JoinColumn(name = "REPORTER", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     @ManyToOne(fetch = FetchType.LAZY)
     private Member reporter;
@@ -38,9 +42,10 @@ public class CommentReport extends BaseEntity {
     private String writerIp;
 
     @Builder
-    public CommentReport(ReportType reportType, CommentCard targetCard, Member reporter, String writerIp) {
+    public CommentReport(ReportType reportType, CommentCard targetCard, String targetCardContent, Member reporter, String writerIp) {
         this.reportType = reportType;
         this.targetCard = targetCard;
+        this.targetCardContent = targetCardContent;
         this.reporter = reporter;
         this.writerIp = writerIp;
     }

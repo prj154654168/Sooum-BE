@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 writer.flush();
                 writer.close();
             }
-            else {
+            if (e.getClaims().getSubject().equals("RefreshToken")) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 PrintWriter writer = response.getWriter();
                 writer.flush();
