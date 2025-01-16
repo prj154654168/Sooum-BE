@@ -17,8 +17,7 @@ public class SuspendedService {
         suspendedRepository.save(suspended);
     }
 
-    public Optional<LocalDateTime> findSuspensionUntilBan(String deviceId) {
-        return suspendedRepository.findByDeviceIdAndUntilBanAfter(deviceId, LocalDateTime.now())
-                .map(Suspended::getUntilBan);
+    public Optional<Suspended> findSuspensionUntilBan(String deviceId) {
+        return suspendedRepository.findByDeviceIdAndUntilBanAfter(deviceId, LocalDateTime.now());
     }
 }
