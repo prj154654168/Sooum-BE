@@ -6,7 +6,6 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,9 +30,6 @@ public class Tag extends BaseEntity {
     @Column(name = "IS_ACTIVE")
     private boolean isActive;
 
-    @Version
-    private Long version;
-
     @Builder(access = AccessLevel.PRIVATE)
     private Tag(String content, boolean isActive, int count) {
         this.content = content;
@@ -47,9 +43,5 @@ public class Tag extends BaseEntity {
 
     public static Tag ofComment(String content, boolean isActive) {
         return Tag.builder().content(content).isActive(isActive).count(0).build();
-    }
-
-    public static void minusCount(Tag tag) {
-        tag.count--;
     }
 }

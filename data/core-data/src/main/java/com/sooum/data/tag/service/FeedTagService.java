@@ -14,22 +14,21 @@ import java.util.List;
 public class FeedTagService {
 
     private final FeedTagRepository feedTagRepository;
+    private final TagService tagService;
 
     @Transactional
     public void deleteByFeedCardPk(Long cardPk) {
-        List<FeedTag> tags = feedTagRepository.findAllByFeedCardPk(cardPk);
+        List<FeedTag> feedTags = feedTagRepository.findAllByFeedCardPk(cardPk);
 
-        if(!tags.isEmpty()) {
-            tags.stream()
-                    .map(FeedTag::getTag)
-                    .forEach(Tag::minusCount);
+        if(!feedTags.isEmpty()) {
+            tagService.decrementTagCount(
+                    feedTags.stream()
+                            .map(FeedTag::getTag)
+                            .toList()
+            );
 
-            feedTagRepository.deleteAllInBatch(tags);
+            feedTagRepository.deleteAllInBatch(feedTags);
         }
-    }
-
-    public int getCountTagFeeds(Long tagPk) {
-        return feedTagRepository.countTagFeeds(tagPk);
     }
 
     public List<FeedTag> findTop5FeedTags(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
