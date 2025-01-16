@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.hateoas.Link;
 
@@ -37,13 +38,19 @@ public class ProfileDto {
     }
 
     @Getter
+    @NoArgsConstructor
+    public static class NicknameAvailableRequest {
+        private String nickname;
+    }
+
+    @Getter
     @Setter
-    public static class NicknameAvailable {
+    public static class NicknameAvailableResponse {
         @JsonProperty(value = "isAvailable")
         private boolean isAvailable;
 
         @Builder
-        public NicknameAvailable(boolean isAvailable) {
+        public NicknameAvailableResponse(boolean isAvailable) {
             this.isAvailable = isAvailable;
         }
     }
