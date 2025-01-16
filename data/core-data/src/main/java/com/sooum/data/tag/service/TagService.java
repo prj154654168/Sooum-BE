@@ -50,6 +50,10 @@ public class TagService {
         tagRepository.incrementTagCount(tags);
     }
 
+    public void decrementTagCount(List<Tag> tags){
+        tagRepository.decrementTagCount(tags);
+    }
+
     @Transactional
     public void saveAll(List<Tag> tags) {
         tagRepository.saveAll(tags);

@@ -19,7 +19,6 @@ public class CommentTagService {
         List<CommentTag> tags = commentTagRepository.findAllByCommentCardPk(cardPk);
 
         if(!tags.isEmpty()) {
-            updateCount(tags);
             commentTagRepository.deleteAllInBatch(tags);
         }
     }
@@ -28,15 +27,8 @@ public class CommentTagService {
         List<CommentTag> tags = commentTagRepository.findAllByCommentCards(commentCards);
 
         if(!tags.isEmpty()) {
-            updateCount(tags);
             commentTagRepository.deleteAllInBatch(tags);
         }
-    }
-
-    private void updateCount(List<CommentTag> tags) {
-        tags.stream()
-                .map(CommentTag::getTag)
-                .forEach(Tag::minusCount);
     }
 
     public void saveAll(List<CommentTag> commentTagList) {

@@ -37,4 +37,9 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Transactional
     @Query("update Tag t set t.count = t.count + 1 where t in :tags")
     void incrementTagCount(@Param("tags") List<Tag> tags);
+
+    @Modifying
+    @Transactional
+    @Query("update Tag t set t.count = t.count - 1 where t in :tags")
+    void decrementTagCount(@Param("tags") List<Tag> tags);
 }
