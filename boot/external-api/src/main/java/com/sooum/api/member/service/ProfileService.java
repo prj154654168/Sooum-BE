@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
@@ -26,6 +28,8 @@ public class ProfileService {
     private final ImgService imgService;
     private final BadWordFiltering badWordFiltering;
     private final ProfileImgService profileImgService;
+
+    private static final List<String> FORBIDDEN_NICKNAME = List.of("숨 운영자", "숨 운영진", "숨 관리자", "숨 관리진", "운영자", "운영진", "관리자", "관리진");
 
     @Transactional
     public ProfileDto.MyProfileInfoResponse findMyProfileInfo(Long memberPk) {
@@ -87,7 +91,7 @@ public class ProfileService {
     }
 
     private boolean isAvailableNickname(String nickname) {
-        return !badWordFiltering.isBadWord(nickname) && !nickname.isBlank();
+        return !nickname.isBlank() && !badWordFiltering.isBadWord(nickname) && !FORBIDDEN_NICKNAME.contains(nickname);
     }
 
     @Transactional
