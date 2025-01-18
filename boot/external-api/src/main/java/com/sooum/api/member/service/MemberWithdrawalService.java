@@ -20,6 +20,7 @@ import com.sooum.data.visitor.service.VisitorService;
 import com.sooum.global.config.jwt.InvalidTokenException;
 import com.sooum.global.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberWithdrawalService {
@@ -62,6 +64,36 @@ public class MemberWithdrawalService {
         handleSuspendedUser(member);
         addTokensToBlacklist(token);
 
+        popularFeedService.deletePopularCardByMemberPk(memberPk);
+
+        cardImgService.updateCardImgNull(memberPk);
+
+        feedLikeService.deleteAllMemberLikes(memberPk);
+        commentLikeService.deleteAllMemberLikes(memberPk);
+
+        favoriteTagService.deleteAllFavoriteTag(memberPk);
+
+        feedTagService.deleteFeedTag(memberPk);
+        commentTagService.deleteCommentTag(memberPk);
+
+        commentCardService.deleteCommentCardByMemberPk(memberPk);
+        feedCardService.deleteFeedCardByMemberPk(memberPk);
+
+        followService.deleteAllFollow(memberPk);
+        visitorService.handleVisitorOnMemberWithdraw(memberPk);
+        blockMemberService.deleteAllBlockMember(memberPk);
+
+        policyService.deletePolicyTerm(memberPk);
+        refreshTokenService.deleteRefreshToken(memberPk);
+        accountTransferService.deleteAccountTransfer(memberPk);
+        profileImgService.updateProfileImgNull(memberPk);
+        notificationHistoryService.deleteAllNotificationHistory(memberPk);
+
+        memberService.deleteMember(memberPk);
+    }
+
+    @Transactional
+    public void withdrawMember(Long memberPk) {
         popularFeedService.deletePopularCardByMemberPk(memberPk);
 
         cardImgService.updateCardImgNull(memberPk);

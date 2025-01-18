@@ -23,4 +23,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m.isAllowNotify from Member m where m.pk = :memberPk")
     boolean findMemberNotifyAllow(@Param("memberPk") Long memberPk);
+
+    @Modifying
+    @Transactional
+    @Query("update Member m set m.deviceId = :deviceId where m.pk = :memberPk")
+    void updateDeviceId(@Param("deviceId") String deviceId,@Param("memberPk") Long memberPk);
 }

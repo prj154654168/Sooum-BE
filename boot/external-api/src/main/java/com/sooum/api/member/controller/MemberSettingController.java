@@ -9,6 +9,7 @@ import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseEntityModel;
 import com.sooum.global.responseform.ResponseStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/settings")
+@Slf4j
 public class MemberSettingController {
     private final AccountTransferUseCase accountTransferUseCase;
     private final MemberUseCase memberUseCase;
@@ -34,7 +36,7 @@ public class MemberSettingController {
 
     @PostMapping("/transfer")
     public ResponseEntity<Void> transferAccount(@RequestBody AccountTransferDto.TransferAccount transferAccount) {
-        accountTransferUseCase.transferAccount(transferAccount);
+            accountTransferUseCase.transferAccount(transferAccount);
 
         return ResponseEntity.noContent().build();
     }
