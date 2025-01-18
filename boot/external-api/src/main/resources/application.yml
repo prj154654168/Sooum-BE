@@ -49,6 +49,8 @@ exclude-auth-path-patterns:
         method: GET
       - path-pattern: /settings/transfer
         method: POST
+      - path-pattern: /users/token
+        method: POST
 
 exclude-ratelimiter-path-patterns:
   paths:

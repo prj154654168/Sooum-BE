@@ -27,7 +27,7 @@ import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.service.CommentTagService;
 import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.data.tag.service.TagService;
-import com.sooum.global.config.jwt.InvalidTokenException;
+import com.sooum.global.config.jwt.exception.InvalidTokenException;
 import com.sooum.global.config.jwt.TokenProvider;
 import com.sooum.global.exceptionmessage.ExceptionMessage;
 import com.sooum.global.regex.BadWordFiltering;
