@@ -34,7 +34,7 @@ public class MemberSettingController {
 
     @PostMapping("/transfer")
     public ResponseEntity<Void> transferAccount(@RequestBody AccountTransferDto.TransferAccount transferAccount) {
-        accountTransferUseCase.transferAccount(transferAccount);
+            accountTransferUseCase.transferAccount(transferAccount);
 
         return ResponseEntity.noContent().build();
     }

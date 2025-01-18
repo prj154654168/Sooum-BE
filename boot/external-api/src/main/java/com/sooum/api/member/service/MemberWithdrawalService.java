@@ -90,6 +90,36 @@ public class MemberWithdrawalService {
         memberService.deleteMember(memberPk);
     }
 
+    @Transactional
+    public void withdrawMember(Long memberPk) {
+        popularFeedService.deletePopularCardByMemberPk(memberPk);
+
+        cardImgService.updateCardImgNull(memberPk);
+
+        feedLikeService.deleteAllMemberLikes(memberPk);
+        commentLikeService.deleteAllMemberLikes(memberPk);
+
+        favoriteTagService.deleteAllFavoriteTag(memberPk);
+
+        feedTagService.deleteFeedTag(memberPk);
+        commentTagService.deleteCommentTag(memberPk);
+
+        commentCardService.deleteCommentCardByMemberPk(memberPk);
+        feedCardService.deleteFeedCardByMemberPk(memberPk);
+
+        followService.deleteAllFollow(memberPk);
+        visitorService.handleVisitorOnMemberWithdraw(memberPk);
+        blockMemberService.deleteAllBlockMember(memberPk);
+
+        policyService.deletePolicyTerm(memberPk);
+        refreshTokenService.deleteRefreshToken(memberPk);
+        accountTransferService.deleteAccountTransfer(memberPk);
+        profileImgService.updateProfileImgNull(memberPk);
+        notificationHistoryService.deleteAllNotificationHistory(memberPk);
+
+        memberService.deleteMember(memberPk);
+    }
+
     private void handleSuspendedUser(Member member) {
         Suspended.SuspendedBuilder suspendedBuilder = Suspended.builder()
                 .deviceId(member.getDeviceId());

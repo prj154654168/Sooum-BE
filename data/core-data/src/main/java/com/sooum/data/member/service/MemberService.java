@@ -6,6 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,10 @@ public class MemberService {
     public Member findByDeviceId(String deviceId) {
         return memberRepository.findByDeviceId(deviceId)
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
+    }
+
+    public Optional<Member> findMemberOp(String deviceId) {
+        return memberRepository.findByDeviceId(deviceId);
     }
 
     public Member findMember(String deviceId) {
@@ -47,5 +53,9 @@ public class MemberService {
 
     public boolean findMemberNotifyAllow(Long memberPk) {
         return memberRepository.findMemberNotifyAllow(memberPk);
+    }
+
+    public void updateDeviceId(String deviceId, Long memberPk) {
+        memberRepository.updateDeviceId(deviceId, memberPk);
     }
 }
