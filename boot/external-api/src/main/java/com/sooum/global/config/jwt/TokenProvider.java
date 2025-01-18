@@ -2,6 +2,7 @@ package com.sooum.global.config.jwt;
 
 import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.data.member.entity.Role;
+import com.sooum.global.config.jwt.exception.InvalidTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -86,8 +87,6 @@ public class TokenProvider {
                     .build()
                     .parseClaimsJws(jwtToken);  // Decode
             return true;
-        } catch (ExpiredJwtException e) {
-            throw e;
         } catch (Exception e) {
             return false;
         }
@@ -109,7 +108,13 @@ public class TokenProvider {
     }
 
     public boolean isAccessToken(String token) {
-        return getClaims(token).getSubject().equals(ACCESS_TOKEN_SUBJECT);
+        try {
+            return getClaims(token).getSubject().equals(ACCESS_TOKEN_SUBJECT);
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject().equals(ACCESS_TOKEN_SUBJECT);
+        } catch (Exception e) {
+            throw new InvalidTokenException();
+        }
     }
 
     public Optional<String> getToken(HttpServletRequest request) {
@@ -129,10 +134,6 @@ public class TokenProvider {
         return Optional.of(Role.getRole(getClaims(token).get(ROLE_CLAIM, String.class)));
     }
 
-    public LocalDateTime getExpiration(String token) {
-        return getClaims(token).getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-    }
-
     public LocalDateTime getExpirationAllowExpired(String token) {
         try {
             return getClaims(token).getExpiration()
@@ -144,6 +145,19 @@ public class TokenProvider {
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
+        } catch (Exception e) {
+            throw new InvalidTokenException();
+        }
+    }
+
+    public boolean isExpired(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8)))
+                    .build()
+                    .parseClaimsJws(token);  // Decode
+            return false;
+        } catch (ExpiredJwtException e) {
+            return true;
         } catch (Exception e) {
             throw new InvalidTokenException();
         }

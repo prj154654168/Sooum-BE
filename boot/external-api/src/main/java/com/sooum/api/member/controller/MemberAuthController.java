@@ -4,12 +4,14 @@ import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.api.member.dto.AuthDTO.*;
 import com.sooum.api.member.service.MemberInfoService;
 import com.sooum.api.rsa.service.RsaUseCase;
+import com.sooum.global.config.jwt.TokenProvider;
 import com.sooum.global.responseform.ResponseEntityModel;
 import com.sooum.global.responseform.ResponseStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +22,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class MemberAuthController {
-
     private final MemberInfoService memberInfoService;
     private final RsaUseCase rsaUseCase;
+    private final TokenProvider tokenProvider;
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
 
     @GetMapping("/key")
     public ResponseEntity<?> requestPublicKey() {

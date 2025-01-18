@@ -1,4 +1,4 @@
-package com.sooum.global.config.jwt;
+package com.sooum.global.config.jwt.exception;
 
 public class InvalidTokenException extends RuntimeException {
     public InvalidTokenException() {

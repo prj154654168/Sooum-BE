@@ -1,7 +1,6 @@
 package com.sooum.global.auth.interceptor;
 
 import com.sooum.api.member.service.BlackListUseCase;
-import com.sooum.global.auth.interceptor.exception.JwtBlacklistException;
 import com.sooum.global.config.jwt.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,11 +25,16 @@ public class JwtBlacklistInterceptor implements HandlerInterceptor {
         if(token == null)
             return true;
 
-        if ((tokenProvider.isAccessToken(token) && blackListUseCase.isAccessTokenExist(token))
-                || (!tokenProvider.isAccessToken(token) && blackListUseCase.isRefreshTokenExist(token))) {
+        if (isBlackListToken(token)) {
             response.setStatus(SC_UNAUTHORIZED);
-            throw new JwtBlacklistException();
+            return false;
         }
+
         return true;
+    }
+
+    private boolean isBlackListToken(String token) {
+        return (tokenProvider.isAccessToken(token) && blackListUseCase.isAccessTokenExist(token))
+                || (!tokenProvider.isAccessToken(token) && blackListUseCase.isRefreshTokenExist(token));
     }
 }

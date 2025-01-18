@@ -1,7 +1,7 @@
 package com.sooum.global.config.jwt;
 
+import com.sooum.global.config.jwt.exception.InvalidTokenException;
 import com.sooum.global.config.security.path.ExcludeAuthPathProperties;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-
             if (isExcludedPath(request)) {
                 filterChain.doFilter(request, response);
                 return;
@@ -41,20 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             },()-> {throw new InvalidTokenException();});
 
             filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException e) {
-            if(e.getClaims().getSubject().equals("AccessToken")) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                PrintWriter writer = response.getWriter();
-                writer.flush();
-                writer.close();
-            }
-            if (e.getClaims().getSubject().equals("RefreshToken")) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                PrintWriter writer = response.getWriter();
-                writer.flush();
-                writer.close();
-            }
-        }catch (InvalidTokenException e) {
+        } catch (InvalidTokenException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             PrintWriter writer = response.getWriter();
             writer.flush();

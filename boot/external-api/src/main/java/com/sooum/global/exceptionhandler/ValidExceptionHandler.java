@@ -1,6 +1,8 @@
 package com.sooum.global.exceptionhandler;
 
 import com.sooum.api.member.exception.BannedUserException;
+import com.sooum.global.config.jwt.exception.BlackListTokenException;
+import com.sooum.global.config.jwt.exception.ExpiredRefreshTokenException;
 import com.sooum.global.responseform.ResponseStatus;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -55,6 +57,30 @@ public class ValidExceptionHandler {
     public ResponseEntity<Void> internalServerException(Exception e) {
         return ResponseEntity.internalServerError()
                 .build();
+    }
+
+    @ExceptionHandler(BlackListTokenException.class)
+    public ResponseEntity<ResponseStatus> blackListTokenException(BlackListTokenException e) {
+        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
+                .body(
+                        ResponseStatus.builder()
+                                .httpCode(HttpStatus.I_AM_A_TEAPOT.value())
+                                .httpStatus(HttpStatus.I_AM_A_TEAPOT)
+                                .responseMessage(e.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(ExpiredRefreshTokenException.class)
+    public ResponseEntity<ResponseStatus> expiredRefreshTokenException(ExpiredRefreshTokenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(
+                        ResponseStatus.builder()
+                                .httpCode(HttpStatus.FORBIDDEN.value())
+                                .httpStatus(HttpStatus.FORBIDDEN)
+                                .responseMessage(e.getMessage())
+                                .build()
+                );
     }
 
     @ExceptionHandler(BannedUserException.class)

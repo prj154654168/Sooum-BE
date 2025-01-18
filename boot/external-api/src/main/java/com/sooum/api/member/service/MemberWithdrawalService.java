@@ -17,7 +17,8 @@ import com.sooum.data.tag.service.CommentTagService;
 import com.sooum.data.tag.service.FavoriteTagService;
 import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.data.visitor.service.VisitorService;
-import com.sooum.global.config.jwt.InvalidTokenException;
+import com.sooum.global.config.jwt.RedisTokenPathPrefix;
+import com.sooum.global.config.jwt.exception.InvalidTokenException;
 import com.sooum.global.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,6 +53,7 @@ public class MemberWithdrawalService {
     private final FeedTagService feedTagService;
     private final CommentTagService commentTagService;
     private final NotificationHistoryService notificationHistoryService;
+    private final BlackListUseCase blackListUseCase;
 
     private final RedisTemplate<String, String> redisStringTemplate;
 
@@ -92,6 +94,9 @@ public class MemberWithdrawalService {
 
     @Transactional
     public void withdrawMember(Long memberPk) {
+        String refreshToken = refreshTokenService.findRefreshToken(memberPk);
+        blackListUseCase.saveBlackListRefreshToken(refreshToken);
+
         popularFeedService.deletePopularCardByMemberPk(memberPk);
 
         cardImgService.updateCardImgNull(memberPk);
@@ -141,14 +146,14 @@ public class MemberWithdrawalService {
 
         if (accessTokenExpiredAt.isAfter(LocalDateTime.now())) {
             redisStringTemplate.opsForValue().set(
-                    "blacklist:access:withdraw", token.accessToken(),
+                    RedisTokenPathPrefix.ACCESS_TOKEN.getPrefix() + token.accessToken(), "",
                     Duration.between(LocalDateTime.now(), accessTokenExpiredAt)
             );
         }
 
         if (refreshTokenExpiredAt.isAfter(LocalDateTime.now())) {
             redisStringTemplate.opsForValue().set(
-                    "blacklist:refresh:withdraw", token.refreshToken(),
+                    RedisTokenPathPrefix.REFRESH_TOKEN.getPrefix() + token.refreshToken(), "",
                     Duration.between(LocalDateTime.now(), refreshTokenExpiredAt)
             );
         }

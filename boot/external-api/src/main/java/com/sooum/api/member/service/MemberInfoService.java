@@ -12,7 +12,9 @@ import com.sooum.data.member.entity.RefreshToken;
 import com.sooum.data.member.service.MemberService;
 import com.sooum.data.member.service.PolicyService;
 import com.sooum.data.member.service.RefreshTokenService;
-import com.sooum.global.config.jwt.InvalidTokenException;
+import com.sooum.global.config.jwt.exception.BlackListTokenException;
+import com.sooum.global.config.jwt.exception.ExpiredRefreshTokenException;
+import com.sooum.global.config.jwt.exception.InvalidTokenException;
 import com.sooum.global.config.jwt.TokenProvider;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +37,7 @@ public class MemberInfoService {
     private final ImgService imgService;
     private final MemberMapper memberMapper;
     private final PolicyMapper policyMapper;
+    private final BlackListUseCase blackListUseCase;
 
     @Transactional
     public LoginResponse login(Login dto) {
@@ -57,8 +60,17 @@ public class MemberInfoService {
         String refreshToken = tokenProvider.getToken(request)
                 .orElseThrow(InvalidTokenException::new);
 
-        if (tokenProvider.isAccessToken(refreshToken))    // 재발급은 리프래쉬로만 발급 가능
+        if (tokenProvider.isExpired(refreshToken)) {
+            throw new ExpiredRefreshTokenException();
+        }
+
+        if (tokenProvider.isAccessToken(refreshToken)) {    // 재발급은 리프래쉬로만 발급 가능
             throw new InvalidTokenException();
+        }
+
+        if (blackListUseCase.isRefreshTokenExist(refreshToken)) {
+            throw new BlackListTokenException();
+        }
 
         Member member = memberService.findMember(tokenProvider.getId(refreshToken).orElseThrow(NoSuchElementException::new));
         return new ReissuedToken(tokenProvider.createAccessToken(member.getPk(), member.getRole()));

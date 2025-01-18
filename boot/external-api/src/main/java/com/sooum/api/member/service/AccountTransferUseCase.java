@@ -7,6 +7,7 @@ import com.sooum.data.member.entity.AccountTransfer;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.service.AccountTransferService;
 import com.sooum.data.member.service.MemberService;
+import com.sooum.data.member.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,8 @@ public class AccountTransferUseCase {
     private final MemberService memberService;
     private final RsaUseCase rsaUseCase;
     private final MemberWithdrawalService memberWithdrawalService;
+    private final RefreshTokenService refreshTokenService;
+    private final BlackListUseCase blackListUseCase;
 
     @Transactional
     public ProfileDto.AccountTransferCodeResponse findOrSaveAccountTransferId(Long memberPk) {
@@ -57,10 +60,20 @@ public class AccountTransferUseCase {
         Long transferMemberPk = findAccountTransfer.getMember().getPk();
 
         String decryptedDeviceId = rsaUseCase.decodeDeviceId(transferAccount.getEncryptedDeviceId());
-        Optional<Member> requesterOp = memberService.findMemberOp(decryptedDeviceId);
-        requesterOp.ifPresent(member -> memberWithdrawalService.withdrawMember(member.getPk()));
+        withdrawRequesterIfPresent(decryptedDeviceId);
+        saveTransferMemberRefreshTokenInBlackList(transferMemberPk);
 
         memberService.updateDeviceId(decryptedDeviceId, transferMemberPk);
         accountTransferService.deleteAccountTransfer(transferMemberPk);
+    }
+
+    private void withdrawRequesterIfPresent(String decryptedDeviceId) {
+        Optional<Member> requesterOp = memberService.findMemberOp(decryptedDeviceId);
+        requesterOp.ifPresent(member -> memberWithdrawalService.withdrawMember(member.getPk()));
+    }
+
+    private void saveTransferMemberRefreshTokenInBlackList(Long transferMemberPk) {
+        String refreshToken = refreshTokenService.findRefreshToken(transferMemberPk);
+        blackListUseCase.saveBlackListRefreshToken(refreshToken);
     }
 }
