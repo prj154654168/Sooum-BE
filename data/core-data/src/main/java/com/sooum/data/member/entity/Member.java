@@ -6,11 +6,9 @@ import io.hypersistence.utils.hibernate.id.Tsid;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
-@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -95,10 +93,6 @@ public class Member extends BaseEntity {
 
     public void updateProfileImgName(String profileImgName) {
         this.profileImgName = profileImgName;
-    }
-
-    public void updateDeviceId(String deviceId) {
-        this.deviceId = deviceId;
     }
 
     public void updateFCMToken(String fcmToken) {

@@ -11,7 +11,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Slf4j
-@Profile({"prod","test"})
+@Profile("test")
 @Aspect
 @Component
 @RequiredArgsConstructor
