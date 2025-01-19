@@ -38,6 +38,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -71,13 +72,8 @@ public class FeedService {
 
         Member member = memberService.findMember(memberPk);
 
-        if(member.getRole() == Role.BANNED) {
-            String token = tokenProvider.getToken(request)
-                    .filter(tokenProvider::isAccessToken)
-                    .orElseThrow(InvalidTokenException::new);
-            blackListUseCase.save(token, member.getUntilBan());
-
-            throw new BannedUserException(ExceptionMessage.BANNED_USER.getMessage());
+        if(isBanPeriodExpired(member)){
+            member.unban();
         }
 
         if (isUserImage(cardDto)) {
@@ -96,6 +92,10 @@ public class FeedService {
                 .map(tag -> FeedTag.builder().feedCard(feedCard).tag(tag).build())
                 .toList();
         feedTagService.saveAll(feedTagList);
+    }
+
+    private static boolean isBanPeriodExpired(Member member) {
+        return member.getRole() == Role.BANNED && member.getUntilBan().isBefore(LocalDateTime.now());
     }
 
     @Transactional

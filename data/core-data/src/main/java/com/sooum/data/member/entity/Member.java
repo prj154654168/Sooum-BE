@@ -87,6 +87,11 @@ public class Member extends BaseEntity {
         return untilBan;
     }
 
+    public void unban() {
+        role = Role.USER;
+        untilBan = null;
+    }
+
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
