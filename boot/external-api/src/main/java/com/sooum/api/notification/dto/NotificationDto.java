@@ -1,5 +1,6 @@
 package com.sooum.api.notification.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
 import com.sooum.data.notification.entity.NotificationHistory;
@@ -27,6 +28,7 @@ public class NotificationDto {
     public abstract static class CommonNotificationInfo {
         Long notificationId;
         NotificationType notificationType;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
         LocalDateTime createTime;
 
     public CommonNotificationInfo(Long notificationId, NotificationType notificationType, LocalDateTime createTime) {
@@ -91,6 +93,7 @@ public class NotificationDto {
 
     @Getter
     public static class BlockedNotificationInfoResponse extends CommonNotificationInfo {
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
         LocalDateTime blockExpirationDateTime;
 
         @Builder

@@ -1,5 +1,6 @@
 package com.sooum.api.card.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
@@ -14,8 +15,10 @@ import java.time.LocalDateTime;
 @Getter
 public abstract class FeedCardDto extends RepresentationModel<FeedCardDto> {
     private long id;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime storyExpirationTime;
     private String content;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime createdAt;
     private int likeCnt;
     @JsonProperty(value = "isLiked")
