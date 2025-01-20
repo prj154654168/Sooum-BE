@@ -1,6 +1,7 @@
 package com.sooum.data.member.repository;
 
 import com.sooum.data.member.entity.Member;
+import com.sooum.data.member.entity.devicetype.DeviceType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +29,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Transactional
     @Query("update Member m set m.deviceId = :deviceId where m.pk = :memberPk")
     void updateDeviceId(@Param("deviceId") String deviceId,@Param("memberPk") Long memberPk);
+
+    @Modifying
+    @Transactional
+    @Query("update Member m set m.deviceType = :deviceType where m.pk = :memberPk")
+    void updateDeviceType(@Param("deviceType") DeviceType deviceType, @Param("memberPk") Long memberPk);
 }
