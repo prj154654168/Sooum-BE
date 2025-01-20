@@ -63,7 +63,7 @@ public class AccountTransferUseCase {
         withdrawRequesterIfPresent(decryptedDeviceId);
         saveTransferMemberRefreshTokenInBlackList(transferMemberPk);
 
-        memberService.updateDeviceId(decryptedDeviceId, transferMemberPk);
+        memberService.updateDeviceIdAndType(transferMemberPk, decryptedDeviceId, transferAccount.getDeviceType());
         accountTransferService.deleteAccountTransfer(transferMemberPk);
     }
 

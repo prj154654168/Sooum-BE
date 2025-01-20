@@ -1,6 +1,7 @@
 package com.sooum.data.member.service;
 
 import com.sooum.data.member.entity.Member;
+import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.member.repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +58,14 @@ public class MemberService {
 
     public void updateDeviceId(String deviceId, Long memberPk) {
         memberRepository.updateDeviceId(deviceId, memberPk);
+    }
+
+    public void updateDeviceType(DeviceType deviceType, Long memberPk) {
+        memberRepository.updateDeviceType(deviceType, memberPk);
+    }
+
+    public void updateDeviceIdAndType(Long memberPk, String deviceId, DeviceType deviceType) {
+        updateDeviceId(deviceId, memberPk);
+        updateDeviceType(deviceType, memberPk);
     }
 }
