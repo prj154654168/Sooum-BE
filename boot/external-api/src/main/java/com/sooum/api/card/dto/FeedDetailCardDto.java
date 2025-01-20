@@ -1,5 +1,6 @@
 package com.sooum.api.card.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.api.member.dto.MemberDto;
 import com.sooum.api.tag.dto.TagDto;
@@ -17,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 public class FeedDetailCardDto extends CardDto {
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime storyExpirationTime;
     @JsonProperty(value = "isOwnCard")
     private boolean isOwnCard;

@@ -1,5 +1,6 @@
 package com.sooum.api.card.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class DistanceCardDto extends CardDto {
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime storyExpirationTime;
     private Double distance;
 

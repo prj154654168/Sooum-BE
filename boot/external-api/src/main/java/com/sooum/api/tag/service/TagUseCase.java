@@ -4,7 +4,6 @@ import com.sooum.api.tag.dto.TagDto;
 import com.sooum.data.card.entity.Card;
 import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.service.FavoriteTagService;
-import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.data.tag.service.TagService;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;

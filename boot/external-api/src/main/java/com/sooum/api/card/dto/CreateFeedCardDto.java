@@ -13,7 +13,6 @@ import lombok.Setter;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 

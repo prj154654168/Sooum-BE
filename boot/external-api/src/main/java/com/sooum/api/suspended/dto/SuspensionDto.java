@@ -1,5 +1,6 @@
 package com.sooum.api.suspended.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class SuspensionDto {
     @Setter
     @NoArgsConstructor
     public static class SuspensionResponse {
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
         private LocalDateTime untilBan;
         @JsonProperty("isBanUser")
         private boolean isBanUser;

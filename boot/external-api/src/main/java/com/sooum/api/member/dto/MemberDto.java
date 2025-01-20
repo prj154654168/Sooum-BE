@@ -1,5 +1,6 @@
 package com.sooum.api.member.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class MemberDto {
     @Getter
     @NoArgsConstructor
     public static class MemberStatus {
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
         private LocalDateTime banEndAt;
 
         @Builder
