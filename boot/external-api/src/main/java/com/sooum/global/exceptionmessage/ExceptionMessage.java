@@ -22,7 +22,8 @@ public enum ExceptionMessage {
     ALREADY_Following("이미 팔로우하고 있는 사용자입니다."),
     ACCOUNT_TRANSFER_NOT_FOUND("계정 이관 코드를 존재하지 않습니다."),
     ALREADY_DELETE_CARD_LIKE("이미 삭제된 좋아요입니다."),
-    BANNED_USER("밴된 사용자는 글을 쓸 수 없습니다.");
+    BANNED_USER("밴된 사용자는 글을 쓸 수 없습니다."),
+    DUPLICATION_TOKEN_EXCEPTION("사용 정지된 토큰입니다.");
 
     private final String message;
 

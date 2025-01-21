@@ -1,6 +1,7 @@
 package com.sooum.api.member.service;
 
 import com.sooum.api.member.dto.AuthDTO;
+import com.sooum.api.member.exception.DuplicateTokenException;
 import com.sooum.data.block.service.BlockMemberService;
 import com.sooum.data.card.service.*;
 import com.sooum.data.follow.service.FollowService;
@@ -20,6 +21,7 @@ import com.sooum.data.visitor.service.VisitorService;
 import com.sooum.global.config.jwt.RedisTokenPathPrefix;
 import com.sooum.global.config.jwt.TokenProvider;
 import com.sooum.global.config.jwt.exception.InvalidTokenException;
+import com.sooum.global.exceptionmessage.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -59,6 +61,10 @@ public class MemberWithdrawalService {
 
     @Transactional
     public void withdrawMember(Long memberPk, AuthDTO.Token token) throws InvalidTokenException {
+        if(blackListUseCase.isRefreshTokenExist(token.refreshToken())) {
+            throw new DuplicateTokenException(ExceptionMessage.DUPLICATION_TOKEN_EXCEPTION.getMessage());
+        }
+
         Member member = memberService.findMember(memberPk);
 
         handleSuspendedUser(member);
