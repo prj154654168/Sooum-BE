@@ -1,6 +1,7 @@
 package com.sooum.global.exceptionhandler;
 
 import com.sooum.api.member.exception.BannedUserException;
+import com.sooum.api.member.exception.DuplicateTokenException;
 import com.sooum.global.config.jwt.exception.BlackListTokenException;
 import com.sooum.global.config.jwt.exception.ExpiredRefreshTokenException;
 import com.sooum.global.responseform.ResponseStatus;
@@ -90,6 +91,18 @@ public class ValidExceptionHandler {
                         ResponseStatus.builder()
                                 .httpCode(HttpStatus.LOCKED.value())
                                 .httpStatus(HttpStatus.LOCKED)
+                                .responseMessage(e.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(DuplicateTokenException.class)
+    public ResponseEntity<ResponseStatus> duplicateTokenException(DuplicateTokenException e) {
+        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT)
+                .body(
+                        ResponseStatus.builder()
+                                .httpCode(HttpStatus.I_AM_A_TEAPOT.value())
+                                .httpStatus(HttpStatus.I_AM_A_TEAPOT)
                                 .responseMessage(e.getMessage())
                                 .build()
                 );
