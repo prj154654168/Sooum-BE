@@ -24,7 +24,7 @@ public class Member extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private DeviceType deviceType;
 
-    @Column(name = "FIREBASE_TOKEN", columnDefinition = "VARBINARY(400) NOT NULL")
+    @Column(name = "FIREBASE_TOKEN", columnDefinition = "VARBINARY(400)")
     private String firebaseToken;
 
     @NotNull
