@@ -33,7 +33,7 @@ public class AuthDTO {
     public record MemberInfo(
             @NotEmpty String encryptedDeviceId,
             @NotNull DeviceType deviceType,
-            @NotEmpty String firebaseToken,
+            String firebaseToken,
             @NotNull Boolean isAllowNotify
     ) {}
 
