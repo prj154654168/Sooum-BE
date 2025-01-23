@@ -39,15 +39,15 @@ public class FeedReportUseCase {
     private void deleteFeedAndUpdateMemberBanIfReportOverLimit(FeedCard feedCard) {
         List<FeedReport> reports = feedReportService.findFeedReport(feedCard.getPk());
         if (isReportedOverLimit(reports)) {
-            deleteFeedAndAssociationsByReport(feedCard, reports);
+            deleteFeedAndAssociationsByReport(feedCard);
             writerBan(feedCard.getWriter());
         }
     }
 
-    private void deleteFeedAndAssociationsByReport(FeedCard feedCard, List<FeedReport> reports) {
+    private void deleteFeedAndAssociationsByReport(FeedCard feedCard) {
         Member writer = feedCard.getWriter();
 
-        cardService.deleteFeedAndAssociationsByReport(reports, feedCard);
+        cardService.deleteFeedAndAssociationsByReport(feedCard);
         Long notificationId = notificationUseCase.saveCardDeletedHistoryByReport(writer.getPk());
 
         if (writer.isAllowNotify()) {

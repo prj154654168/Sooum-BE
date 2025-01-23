@@ -1,7 +1,6 @@
 package com.sooum.api.card.service;
 
 import com.sooum.api.card.dto.CardSummary;
-import com.sooum.api.notification.service.NotificationUseCase;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.parenttype.CardType;
@@ -9,10 +8,6 @@ import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.CommentLikeService;
 import com.sooum.data.card.service.FeedCardService;
 import com.sooum.data.card.service.FeedLikeService;
-import com.sooum.data.report.entity.CommentReport;
-import com.sooum.data.report.entity.FeedReport;
-import com.sooum.data.report.service.CommentReportService;
-import com.sooum.data.report.service.FeedReportService;
 import com.sooum.data.tag.service.CommentTagService;
 import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.global.exceptionmessage.ExceptionMessage;
@@ -32,11 +27,8 @@ public class CardService {
     private final CommentLikeService commentLikeService;
     private final CommentCardService commentCardService;
     private final FeedCardService feedCardService;
-    private final FeedReportService feedReportService;
-    private final CommentReportService commentReportService;
     private final CommentTagService commentTagService;
     private final FeedTagService feedTagService;
-    private final NotificationUseCase notificationUseCase;
 
     public CardSummary findCardSummary(Long parentCardPk, Long memberPk) {
         int commentCnt = commentCardService.countComment(parentCardPk);
@@ -100,8 +92,7 @@ public class CardService {
     }
 
     @Transactional
-    public void deleteFeedAndAssociationsByReport(List<FeedReport> reports, FeedCard feedCard) {
-        feedReportService.deleteAllFeedReports(reports);
+    public void deleteFeedAndAssociationsByReport(FeedCard feedCard) {
         Long cardPk = feedCard.getPk();
 
         if(commentCardService.hasChildCard(cardPk)) {
@@ -118,9 +109,8 @@ public class CardService {
     }
 
     @Transactional
-    public void deleteCommentAndAssociationsByReport(List<CommentReport> reports, CommentCard commentCard) {
+    public void deleteCommentAndAssociationsByReport(CommentCard commentCard) {
         Long cardPk = commentCard.getPk();
-        commentReportService.deleteAllCommentReports(reports);
         commentTagService.deleteByCommentCardPk(cardPk);
         commentLikeService.deleteAllFeedLikes(cardPk);
 
