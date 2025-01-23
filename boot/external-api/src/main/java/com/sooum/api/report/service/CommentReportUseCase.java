@@ -39,15 +39,15 @@ public class CommentReportUseCase {
     private void deleteCommentAndUpdateMemberBanIfReportOverLimit(CommentCard commentCard, CommentCard card) {
         List<CommentReport> reports = commentReportService.findCommentReports(commentCard.getPk());
         if (isReportedOverLimit(reports)) {
-            deleteCommentAndAssociationsByReport(commentCard, reports);
+            deleteCommentAndAssociationsByReport(commentCard);
             writerBan(card.getWriter());
         }
     }
 
-    private void deleteCommentAndAssociationsByReport(CommentCard commentCard, List<CommentReport> reports) {
+    private void deleteCommentAndAssociationsByReport(CommentCard commentCard) {
         Member writer = commentCard.getWriter();
 
-        cardService.deleteCommentAndAssociationsByReport(reports, commentCard);
+        cardService.deleteCommentAndAssociationsByReport(commentCard);
         Long notificationId = notificationUseCase.saveCardDeletedHistoryByReport(writer.getPk());
 
         if (writer.isAllowNotify()) {

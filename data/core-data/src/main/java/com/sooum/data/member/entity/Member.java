@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Entity
@@ -105,5 +106,9 @@ public class Member extends BaseEntity {
 
     public void updateNotifyAllow(boolean isAllowNotify) {
         this.isAllowNotify = isAllowNotify;
+    }
+
+    public boolean isAllowNotify() {
+        return isAllowNotify && !Objects.isNull(firebaseToken);
     }
 }
