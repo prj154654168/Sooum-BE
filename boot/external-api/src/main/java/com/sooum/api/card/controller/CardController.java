@@ -2,6 +2,7 @@ package com.sooum.api.card.controller;
 
 import com.sooum.api.card.dto.CardSummary;
 import com.sooum.api.card.service.CardService;
+import com.sooum.api.card.service.DeleteCardUseCase;
 import com.sooum.api.card.service.FeedService;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseEntityModel;
@@ -20,6 +21,7 @@ import java.net.URI;
 public class CardController {
     private final CardService cardService;
     private final FeedService feedService;
+    private final DeleteCardUseCase deleteCardUseCase;
 
     @GetMapping("/current/{parentCardPk}/summary")
     public ResponseEntity<ResponseEntityModel<CardSummary>> countCommentsByParentCard(@PathVariable Long parentCardPk,
@@ -38,7 +40,7 @@ public class CardController {
 
     @DeleteMapping("/{cardPk}")
     public ResponseEntity<Void> deleteCard(@PathVariable("cardPk") Long cardPk, @CurrentUser Long memberPk) {
-        feedService.deleteCard(cardPk, memberPk);
+        deleteCardUseCase.deleteCard(cardPk, memberPk);
         return ResponseEntity.noContent().build();
     }
 

@@ -31,59 +31,6 @@ public class ProfileService {
 
     private static final List<String> FORBIDDEN_NICKNAME = List.of("숨 운영자", "숨 운영진", "숨 관리자", "숨 관리진", "운영자", "운영진", "관리자", "관리진");
 
-    @Transactional
-    public ProfileDto.MyProfileInfoResponse findMyProfileInfo(Long memberPk) {
-        Member profileOwner = memberService.findMember(memberPk);
-
-        Long totalVisitorCnt = memberService.findTotalVisitorCnt(profileOwner);
-        Long currentDateVisitorCnt = visitorService.findCurrentDateVisitorCnt(profileOwner);
-        Long feedCardCnt = feedCardService.findFeedCardCnt(profileOwner);
-        Long followerCnt = followService.findFollowerCnt(profileOwner);
-        Long followingCnt = followService.findFollowingCnt(profileOwner);
-
-        return ProfileDto.MyProfileInfoResponse.builder()
-                .nickname(profileOwner.getNickname())
-                .currentDayVisitors(String.valueOf(currentDateVisitorCnt))
-                .totalVisitorCnt(String.valueOf(totalVisitorCnt))
-                .profileImg(imgService.findProfileImgUrl(profileOwner.getProfileImgName()))
-                .cardCnt(String.valueOf(feedCardCnt))
-                .followerCnt(String.valueOf(followerCnt))
-                .followingCnt(String.valueOf(followingCnt))
-                .build();
-    }
-
-    @Transactional
-    public ProfileDto.ProfileInfoResponse findProfileInfo(Long profileOwnerPk, Long memberPk) {
-        Member profileOwner = memberService.findMember(profileOwnerPk);
-        Member visitor = memberService.findMember(memberPk);
-        saveVisitor(profileOwner, visitor);
-
-        Long totalVisitorCnt = memberService.findTotalVisitorCnt(profileOwner);
-        Long currentDateVisitorCnt = visitorService.findCurrentDateVisitorCnt(profileOwner);
-        Long feedCardCnt = feedCardService.findFeedCardCnt(profileOwner);
-        Long followerCnt = followService.findFollowerCnt(profileOwner);
-        Long followingCnt = followService.findFollowingCnt(profileOwner);
-        boolean alreadyFollowing = followService.isAlreadyFollowing(visitor, profileOwner);
-
-        return ProfileDto.ProfileInfoResponse.builder()
-                .nickname(profileOwner.getNickname())
-                .currentDayVisitors(String.valueOf(currentDateVisitorCnt))
-                .totalVisitorCnt(String.valueOf(totalVisitorCnt))
-                .profileImg(imgService.findProfileImgUrl(profileOwner.getProfileImgName()))
-                .cardCnt(String.valueOf(feedCardCnt))
-                .followerCnt(String.valueOf(followerCnt))
-                .followingCnt(String.valueOf(followingCnt))
-                .isFollowing(alreadyFollowing)
-                .build();
-    }
-
-    private void saveVisitor(Member profileOwner, Member visitor) {
-        boolean isNewVisitor = visitorService.saveVisitor(profileOwner, visitor);
-        if (isNewVisitor) {
-            memberService.incrementTotalVisitorCnt(profileOwner);
-        }
-    }
-
     public ProfileDto.NicknameAvailableResponse verifyNicknameAvailable(String nickname) {
         return ProfileDto.NicknameAvailableResponse.builder()
                 .isAvailable(isAvailableNickname(nickname))
