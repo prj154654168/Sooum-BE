@@ -2,7 +2,7 @@ package com.sooum.api.tag.controller;
 
 import com.sooum.api.tag.dto.TagDto;
 import com.sooum.api.tag.service.FavoriteTagUseCase;
-import com.sooum.api.tag.service.RecommendTagService;
+import com.sooum.api.tag.service.RecommendTagUseCase;
 import com.sooum.api.tag.service.TagUseCase;
 import com.sooum.data.tag.service.FavoriteTagService;
 import com.sooum.global.auth.annotation.CurrentUser;
@@ -25,7 +25,7 @@ public class TagController {
     private final FavoriteTagUseCase favoriteTagUseCase;
     private final FavoriteTagService favoriteTagService;
     private final TagUseCase tagUseCase;
-    private final RecommendTagService recommendTagService;
+    private final RecommendTagUseCase recommendTagUseCase;
 
     @GetMapping("/search")
     ResponseEntity<?> findRelatedTags(@RequestParam String keyword, @RequestParam Integer size) {
@@ -80,7 +80,7 @@ public class TagController {
 
     @GetMapping("/recommendation")
     ResponseEntity<?> findRecommendationsByTag(@CurrentUser Long memberPk) {
-        List<TagDto.RecommendTag> recommendedTags = recommendTagService.findRecommendedTags(memberPk);
+        List<TagDto.RecommendTag> recommendedTags = recommendTagUseCase.findRecommendedTags(memberPk);
         if (recommendedTags.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

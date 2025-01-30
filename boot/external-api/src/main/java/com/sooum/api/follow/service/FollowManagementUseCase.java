@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FollowManagementService {
+public class FollowManagementUseCase {
     private final FollowService followService;
     private final MemberService memberService;
 

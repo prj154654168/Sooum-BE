@@ -3,6 +3,7 @@ package com.sooum.api.member.controller;
 import com.sooum.api.follow.dto.FollowDto;
 import com.sooum.api.follow.service.FollowInfoService;
 import com.sooum.api.member.dto.ProfileDto;
+import com.sooum.api.member.service.ProfileInfoUseCase;
 import com.sooum.api.member.service.ProfileService;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProfileController {
     private final ProfileService profileService;
+    private final ProfileInfoUseCase profileInfoUseCase;
     private final FollowInfoService followInfoService;
 
     @GetMapping("/my")
@@ -35,7 +37,7 @@ public class ProfileController {
                         .httpCode(HttpStatus.OK.value())
                         .responseMessage("retrieve success")
                         .build())
-                .content(profileService.findMyProfileInfo(memberPk))
+                .content(profileInfoUseCase.findMyProfileInfo(memberPk))
                 .build());
     }
 
@@ -50,7 +52,7 @@ public class ProfileController {
                         .httpCode(HttpStatus.OK.value())
                         .responseMessage("retrieve success")
                         .build())
-                .content(profileService.findProfileInfo(profileOwnerPk, memberPk))
+                .content(profileInfoUseCase.findProfileInfo(profileOwnerPk, memberPk))
                 .build());
     }
 
