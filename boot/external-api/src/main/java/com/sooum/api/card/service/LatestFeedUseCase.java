@@ -9,8 +9,6 @@ import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.FeedCardService;
 import com.sooum.data.card.service.FeedLikeService;
-import com.sooum.global.util.CardUtils;
-import com.sooum.global.util.DistanceUtils;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,18 +49,13 @@ public class LatestFeedUseCase {
 
         return NextPageLinkGenerator.appendEachCardDetailLink(feedCards.stream()
                 .map(feedCard -> LatestFeedCardDto.builder()
-                        .id(feedCard.getPk().toString())
-                        .font(feedCard.getFont())
-                        .fontSize(feedCard.getFontSize())
-                        .content(feedCard.getContent())
-                        .isStory(feedCard.isStory())
-                        .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
+                        .memberPk(memberPk)
+                        .feedCard(feedCard)
+                        .latitude(latitude)
+                        .longitude(longitude)
                         .backgroundImgUrl(imgService.findCardImgUrl(feedCard.getImgType(),feedCard.getImgName()))
-                        .createdAt(feedCard.getCreatedAt())
-                        .isCommentWritten(CardUtils.isWrittenCommentCard(feedCard, commentCards, memberPk))
-                        .isLiked(CardUtils.isLiked(feedCard, feedLikes, memberPk))
-                        .likeCnt(CardUtils.countLikes(feedCard, feedLikes))
-                        .commentCnt(CardUtils.countComments(feedCard, commentCards))
+                        .commentCards(commentCards)
+                        .feedLikes(feedLikes)
                         .build()
                 )
                 .toList());

@@ -9,8 +9,6 @@ import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.FeedLikeService;
 import com.sooum.data.card.service.PopularFeedService;
-import com.sooum.global.util.CardUtils;
-import com.sooum.global.util.DistanceUtils;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,18 +36,13 @@ public class PopularRetrieveService {
 
         return NextPageLinkGenerator.appendEachCardDetailLink(popularFeeds.stream()
                 .map(feed -> PopularCardRetrieve.builder()
-                        .id(feed.getPk().toString())
-                        .content(feed.getContent())
-                        .isStory(feed.isStory())
-                        .backgroundImgUrl(imgService.findCardImgUrl(feed.getImgType(), feed.getImgName()))
-                        .font(feed.getFont())
-                        .fontSize(feed.getFontSize())
-                        .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))
-                        .createdAt(feed.getCreatedAt())
-                        .isLiked(CardUtils.isLiked(feed, feedLikes, memberPk))
-                        .likeCnt(CardUtils.countLikes(feed, feedLikes))
-                        .isCommentWritten(CardUtils.isWrittenCommentCard(feed, comments, memberPk))
-                        .commentCnt(CardUtils.countComments(feed, comments))
+                        .memberPk(memberPk)
+                        .feedCard(feed)
+                        .latitude(latitude)
+                        .longitude(longitude)
+                        .backgroundImgUrl(imgService.findCardImgUrl(feed.getImgType(),feed.getImgName()))
+                        .commentCards(comments)
+                        .feedLikes(feedLikes)
                         .build()
                 )
                 .toList());
