@@ -9,8 +9,6 @@ import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.FeedCardService;
 import com.sooum.data.card.service.FeedLikeService;
-import com.sooum.global.util.CardUtils;
-import com.sooum.global.util.DistanceUtils;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -4,13 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.FeedLike;
-import com.sooum.data.card.entity.font.Font;
-import com.sooum.data.card.entity.fontsize.FontSize;
-import com.sooum.global.util.CardUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.locationtech.jts.geom.Point;
 import org.springframework.hateoas.Link;
 
 import java.time.LocalDateTime;

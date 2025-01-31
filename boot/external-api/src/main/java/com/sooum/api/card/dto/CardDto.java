@@ -2,7 +2,6 @@ package com.sooum.api.card.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sooum.data.card.entity.Card;
 import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.FeedCard;
 import com.sooum.data.card.entity.FeedLike;

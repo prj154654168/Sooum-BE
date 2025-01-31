@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.api.member.dto.MemberDto;
 import com.sooum.api.tag.dto.TagDto;
-import com.sooum.data.card.entity.CommentCard;
-import com.sooum.data.card.entity.FeedCard;
-import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.entity.font.Font;
 import com.sooum.data.card.entity.fontsize.FontSize;
 import lombok.Builder;
@@ -16,7 +13,6 @@ import org.springframework.hateoas.Link;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 
 @Getter
