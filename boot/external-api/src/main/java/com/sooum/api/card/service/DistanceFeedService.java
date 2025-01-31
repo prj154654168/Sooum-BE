@@ -10,6 +10,7 @@ import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.FeedCardService;
 import com.sooum.data.card.service.FeedLikeService;
+import com.sooum.global.util.CardUtils;
 import com.sooum.global.util.DistanceUtils;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.sooum.api.card.service.FeedService.*;
 
 @RequiredArgsConstructor
 @Service
@@ -55,10 +55,10 @@ public class DistanceFeedService {
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
                         .backgroundImgUrl(imgService.findCardImgUrl(feedCard.getImgType(),feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
-                        .isCommentWritten(isWrittenCommentCard(feedCard, commentCardList, memberPk))
-                        .isLiked(isLiked(feedCard, feedLikeList, memberPk))
-                        .likeCnt(countLikes(feedCard, feedLikeList))
-                        .commentCnt(countComments(feedCard, commentCardList))
+                        .isCommentWritten(CardUtils.isWrittenCommentCard(feedCard, commentCardList, memberPk))
+                        .isLiked(CardUtils.isLiked(feedCard, feedLikeList, memberPk))
+                        .likeCnt(CardUtils.countLikes(feedCard, feedLikeList))
+                        .commentCnt(CardUtils.countComments(feedCard, commentCardList))
                         .build()
                 )
                 .toList());

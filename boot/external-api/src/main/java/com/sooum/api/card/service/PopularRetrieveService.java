@@ -9,6 +9,7 @@ import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.FeedLikeService;
 import com.sooum.data.card.service.PopularFeedService;
+import com.sooum.global.util.CardUtils;
 import com.sooum.global.util.DistanceUtils;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +46,10 @@ public class PopularRetrieveService {
                         .fontSize(feed.getFontSize())
                         .distance(DistanceUtils.calculate(feed.getLocation(), latitude, longitude))
                         .createdAt(feed.getCreatedAt())
-                        .isLiked(FeedService.isLiked(feed, feedLikes, memberPk))
-                        .likeCnt(FeedService.countLikes(feed, feedLikes))
-                        .isCommentWritten(FeedService.isWrittenCommentCard(feed, comments, memberPk))
-                        .commentCnt(FeedService.countComments(feed, comments))
+                        .isLiked(CardUtils.isLiked(feed, feedLikes, memberPk))
+                        .likeCnt(CardUtils.countLikes(feed, feedLikes))
+                        .isCommentWritten(CardUtils.isWrittenCommentCard(feed, comments, memberPk))
+                        .commentCnt(CardUtils.countComments(feed, comments))
                         .build()
                 )
                 .toList());

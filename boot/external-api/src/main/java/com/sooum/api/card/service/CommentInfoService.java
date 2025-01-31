@@ -9,6 +9,7 @@ import com.sooum.data.card.entity.CommentCard;
 import com.sooum.data.card.entity.CommentLike;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.CommentLikeService;
+import com.sooum.global.util.CardUtils;
 import com.sooum.global.util.DistanceUtils;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -50,10 +51,10 @@ public class CommentInfoService {
                         .fontSize(comment.getFontSize())
                         .distance(DistanceUtils.calculate(comment.getLocation(), latitude, longitude))
                         .createdAt(comment.getCreatedAt())
-                        .isLiked(FeedService.isLiked(comment, commentLikes, memberPk))
-                        .likeCnt(FeedService.countLikes(comment, commentLikes))
-                        .isCommentWritten(FeedService.isWrittenCommentCard(comment, childComments, memberPk))
-                        .commentCnt(FeedService.countComments(comment, childComments))
+                        .isLiked(CardUtils.isLiked(comment, commentLikes, memberPk))
+                        .likeCnt(CardUtils.countLikes(comment, commentLikes))
+                        .isCommentWritten(CardUtils.isWrittenCommentCard(comment, childComments, memberPk))
+                        .commentCnt(CardUtils.countComments(comment, childComments))
                         .build())
                 .toList());
     }
