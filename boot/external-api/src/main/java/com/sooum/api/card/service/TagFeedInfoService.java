@@ -10,6 +10,7 @@ import com.sooum.data.card.entity.FeedLike;
 import com.sooum.data.card.service.CommentCardService;
 import com.sooum.data.card.service.FeedLikeService;
 import com.sooum.data.card.service.TagFeedService;
+import com.sooum.global.util.CardUtils;
 import com.sooum.global.util.DistanceUtils;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
@@ -51,10 +52,10 @@ public class TagFeedInfoService {
                         .distance(DistanceUtils.calculate(feedCard.getLocation(), latitude, longitude))
                         .backgroundImgUrl(imgService.findCardImgUrl(feedCard.getImgType(), feedCard.getImgName()))
                         .createdAt(feedCard.getCreatedAt())
-                        .isCommentWritten(FeedService.isWrittenCommentCard(feedCard, commentCards, memberPk))
-                        .isLiked(FeedService.isLiked(feedCard, feedLikes, memberPk))
-                        .likeCnt(FeedService.countLikes(feedCard, feedLikes))
-                        .commentCnt(FeedService.countComments(feedCard, commentCards))
+                        .isCommentWritten(CardUtils.isWrittenCommentCard(feedCard, commentCards, memberPk))
+                        .isLiked(CardUtils.isLiked(feedCard, feedLikes, memberPk))
+                        .likeCnt(CardUtils.countLikes(feedCard, feedLikes))
+                        .commentCnt(CardUtils.countComments(feedCard, commentCards))
                         .build()
                 )
                 .toList());
