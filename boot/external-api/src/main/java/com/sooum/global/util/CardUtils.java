@@ -3,6 +3,7 @@ package com.sooum.global.util;
 import com.sooum.data.card.entity.*;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class CardUtils {
     public static boolean isWrittenCommentCard(Card card, List<CommentCard> commentCardList, Long memberPk) {
