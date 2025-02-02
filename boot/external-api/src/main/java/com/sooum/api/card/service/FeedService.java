@@ -4,7 +4,6 @@ import com.sooum.api.card.dto.CreateCardDto;
 import com.sooum.api.card.dto.CreateCommentDto;
 import com.sooum.api.card.dto.CreateFeedCardDto;
 import com.sooum.api.img.service.ImgService;
-import com.sooum.api.member.exception.BannedUserException;
 import com.sooum.api.member.service.BlackListUseCase;
 import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.api.notification.service.NotificationUseCase;
@@ -28,7 +27,6 @@ import com.sooum.data.tag.service.CommentTagService;
 import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.data.tag.service.TagService;
 import com.sooum.global.config.jwt.TokenProvider;
-import com.sooum.global.config.jwt.exception.InvalidTokenException;
 import com.sooum.global.exceptionmessage.ExceptionMessage;
 import com.sooum.global.regex.BadWordFiltering;
 import jakarta.persistence.EntityNotFoundException;
@@ -53,8 +51,6 @@ public class FeedService {
     private final CommentTagService commentTagService;
     private final CardImgService cardImgService;
     private final BadWordFiltering badWordFiltering;
-    private final TokenProvider tokenProvider;
-    private final BlackListUseCase blackListUseCase;
     private final NotificationUseCase notificationUseCase;
     private final ApplicationEventPublisher sendFCMEventPublisher;
 
@@ -100,13 +96,8 @@ public class FeedService {
 
         Member member = memberService.findMember(memberPk);
 
-        if(member.getRole() == Role.BANNED) {
-            String token = tokenProvider.getToken(request)
-                    .filter(tokenProvider::isAccessToken)
-                    .orElseThrow(InvalidTokenException::new);
-            blackListUseCase.save(token, member.getUntilBan());
-
-            throw new BannedUserException(ExceptionMessage.BANNED_USER.getMessage());
+        if(isBanPeriodExpired(member)){
+            member.unban();
         }
 
         Card parentCard = getParentCard(cardPk);
