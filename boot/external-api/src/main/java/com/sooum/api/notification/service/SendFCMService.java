@@ -34,4 +34,9 @@ public class SendFCMService {
         Message message = fcmMsgGenerator.generateSystemMsg(fcmDto);
         fcmSender.send(message);
     }
+
+    public void sendTransferSuccessMsg(FCMDto.SystemFcm fcmDto) {
+        Message message = fcmMsgGenerator.generateSystemMsg(fcmDto);
+        fcmSender.send(message);
+    }
 }
