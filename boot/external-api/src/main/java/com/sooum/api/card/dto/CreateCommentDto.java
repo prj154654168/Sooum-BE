@@ -33,7 +33,7 @@ public class CreateCommentDto extends CreateCardDto{
                 .fontSize(FontSize.NONE)
                 .imgType(this.getImgType())
                 .imgName(this.getImgName())
-                .location(this.isDistanceShared()
+                .location(isDistanceExist()
                         ? new GeometryFactory().createPoint(new Coordinate(this.getLongitude(), this.getLatitude()))
                         : null)
                 .writer(member)

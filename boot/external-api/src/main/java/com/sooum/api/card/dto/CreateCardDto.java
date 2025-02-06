@@ -35,5 +35,9 @@ public abstract class CreateCardDto extends RepresentationModel<CreateCardDto> {
         this.imgName = imgName;
     }
 
+    protected boolean isDistanceExist() {
+        return this.isDistanceShared() && this.getLatitude() != 0 && this.getLongitude() != 0;
+    }
+
     public abstract List<String> getTags();
 }
