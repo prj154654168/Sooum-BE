@@ -124,7 +124,7 @@ class FCMMsgGenerator {
     private static HashMap<String, String> generateSystemFcmData(Long notificationId, NotificationType notificationType) {
         HashMap<String, String> data = new HashMap<>();
         data.put("notificationId", notificationId.toString());
-        data.put("targetCardId", null);
+        data.put("targetCardId", "null");
         data.put("notificationType", notificationType.name());
         return data;
     }
