@@ -19,6 +19,7 @@ public class FCMEventListener {
         switch (fcmDto.getNotificationType()) {
             case BLOCKED -> sendFCMService.sendBlockedMsg(fcmDto);
             case DELETED -> sendFCMService.sendCardDeletedMsgByReport(fcmDto);
+            case TRANSFER_SUCCESS -> sendFCMService.sendTransferSuccessMsg(fcmDto);
         }
     }
 
