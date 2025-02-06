@@ -18,6 +18,7 @@ class FCMMsgGenerator {
     private static final String LIKE_SUFFIX = "님이 카드에 공감했습니다.";
     private static final String BLOCKED_BODY = "지속적인 신고로 글쓰기 제한됐습니다.";
     private static final String DELETED_BODY = "신고로 인해 카드가 삭제 처리됐습니다.";
+    private static final String TRANSFER_SUCCESS_BODY = "계정이관이 성공적으로 완료되었습니다.";
 
     public Message generateGeneralMsg(FCMDto.GeneralFcm fcmDto) {
         return fcmDto.getTargetDeviceType().equals(DeviceType.IOS)
@@ -132,6 +133,7 @@ class FCMMsgGenerator {
         return switch (notificationType) {
             case BLOCKED -> BLOCKED_BODY;
             case DELETED -> DELETED_BODY;
+            case TRANSFER_SUCCESS -> TRANSFER_SUCCESS_BODY;
             default -> throw new IllegalArgumentException();
         };
     }
