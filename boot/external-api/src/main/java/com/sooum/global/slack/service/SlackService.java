@@ -32,14 +32,18 @@ public class SlackService {
     public void sendSlackErrorMsg(Exception e, RequestDto requestDto) {
         try {
             slack.send(url, payload(p -> p.attachments(List.of(createSlackMsg(e, requestDto)))));
-        } catch (IOException ignored) {
+        } catch (IOException ioE) {
+            log.error(ioE.getMessage(), ioE);
+            log.error(Arrays.toString(ioE.getStackTrace()));
         }
     }
 
     public void sendSlackFCMMsg() {
         try {
             slack.send(url, payload(p -> p.attachments(List.of(createFcmSlackMsg()))));
-        } catch (IOException ignored) {
+        } catch (IOException ioE) {
+            log.error(ioE.getMessage(), ioE);
+            log.error(Arrays.toString(ioE.getStackTrace()));
         }
     }
 
