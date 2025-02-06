@@ -42,7 +42,7 @@ public class CreateFeedCardDto extends CreateCardDto {
                 .imgType(this.getImgType())
                 .imgName(this.getImgName())
                 .isPublic(this.isPublic())
-                .location(this.isDistanceShared()
+                .location(isDistanceExist()
                         ? new GeometryFactory().createPoint(new Coordinate(this.getLongitude(), this.getLatitude()))
                         : null)
                 .isFeedActive(Objects.isNull(this.feedTags) || DeactivateWords.deactivateWordsList.stream().noneMatch(word -> feedTags.contains(word)))
