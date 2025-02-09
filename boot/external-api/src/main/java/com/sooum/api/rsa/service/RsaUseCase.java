@@ -22,11 +22,11 @@ public class RsaUseCase {
         try {
             newPublicKey = redisStringTemplate.opsForValue().get("rsa:public-key:new");
             if (newPublicKey == null) {
-                Rsa rsa = rsaService.findRsaKey();
+                Rsa rsa = rsaService.findLatestRsaKey();
                 newPublicKey = rsa.getPublicKey();
             }
         } catch (Exception e) {
-            Rsa rsa = rsaService.findRsaKey();
+            Rsa rsa = rsaService.findLatestRsaKey();
             newPublicKey = rsa.getPublicKey();
         }
 
@@ -43,12 +43,12 @@ public class RsaUseCase {
             newPrivateKey = redisStringTemplate.opsForValue().get("rsa:private-key:new");
             oldPrivateKey = redisStringTemplate.opsForValue().get("rsa:private-key:old");
             if (newPrivateKey == null) {
-                Rsa rsa = rsaService.findRsaKey();
+                Rsa rsa = rsaService.findLatestRsaKey();
                 newPrivateKey = rsa.getPrivateKey();
                 oldPrivateKey = rsa.getPrivateKey();
             }
         } catch (Exception e) {
-            Rsa rsa = rsaService.findRsaKey();
+            Rsa rsa = rsaService.findLatestRsaKey();
             newPrivateKey = rsa.getPrivateKey();
             oldPrivateKey = rsa.getPrivateKey();
         }

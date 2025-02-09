@@ -10,11 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface RsaRepository extends JpaRepository<Rsa, Long> {
 
-    @Query("select r from Rsa r where r.expiredAt > :currentDate order by r.id desc")
-    List<Rsa> findRsa(@Param("currentDate") LocalDateTime currentDate, Pageable pageable);
+    @Query("select r from Rsa r where r.expiredAt > :currentDate order by r.id desc limit 1")
+    Optional<Rsa> findLatestRsaKey(@Param("currentDate") LocalDateTime currentDate);
+
+    @Query("select r from Rsa r order by r.id desc limit 1")
+    Optional<Rsa> findLastGeneratedRsaKey();
 
     @Modifying
     @Transactional

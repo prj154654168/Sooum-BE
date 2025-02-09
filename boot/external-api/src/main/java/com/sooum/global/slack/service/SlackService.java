@@ -5,10 +5,12 @@ import com.slack.api.model.Attachment;
 import com.slack.api.model.block.ContextBlock;
 import com.slack.api.model.block.SectionBlock;
 import com.slack.api.model.block.composition.MarkdownTextObject;
+import com.sooum.data.common.event.SlackEvent;
 import com.sooum.global.slack.dto.RequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,17 @@ public class SlackService {
     @Value("${slack.webhook.url}")
     private String url;
     private final Slack slack = Slack.getInstance();
+
+    @Async
+    @EventListener
+    public void onSlackEvent(SlackEvent event) {
+        try {
+            slack.send(url, event.getEventMsg());
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            log.error(Arrays.toString(e.getStackTrace()));
+        }
+    }
 
     @Async
     public void sendSlackErrorMsg(Exception e, RequestDto requestDto) {
