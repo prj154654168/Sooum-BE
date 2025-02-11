@@ -8,7 +8,7 @@ public class SlackEvent {
     private final String eventMsg;
 
     @Builder
-    public SlackEvent(String eventMsg, String exceptionMsg) {
+    public SlackEvent(String eventMsg) {
         this.eventMsg = eventMsg;
     }
 }
