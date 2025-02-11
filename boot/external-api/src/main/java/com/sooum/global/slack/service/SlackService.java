@@ -34,7 +34,7 @@ public class SlackService {
     @EventListener
     public void onSlackEvent(SlackEvent event) {
         try {
-            slack.send(url, event.getEventMsg());
+            slack.send(url, payload(payloadBuilder -> payloadBuilder.text(event.getEventMsg())));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             log.error(Arrays.toString(e.getStackTrace()));
