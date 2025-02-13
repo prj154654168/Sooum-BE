@@ -11,6 +11,9 @@ endif::[]
 
 [[users-key]]
 == Rsa Public Key API
+include::api/member/auth/Auth.adoc[]
 
-include::api/auth/Auth.adoc[]
+[[users-key]]
+== 내 프로필 정보 조회
+include::api/member/profile/Profile.adoc[]
 

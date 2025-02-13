@@ -4,15 +4,13 @@ import com.sooum.api.docs.RestDocsSupport;
 import com.sooum.api.member.controller.MemberAuthController;
 import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.api.member.service.MemberInfoService;
-import com.sooum.api.member.service.MemberUseCase;
 import com.sooum.api.rsa.service.RsaUseCase;
 import com.sooum.global.config.jwt.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.restdocs.payload.JsonFieldType;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -25,7 +23,7 @@ public class MemberAuthControllerDocs extends RestDocsSupport {
     private final RsaUseCase rsaUseCase = mock(RsaUseCase.class);
     private final TokenProvider tokenProvider = mock(TokenProvider.class);
     @Override
-    protected Object initController() {
+    protected Object controllerInitializer() {
         return new MemberAuthController(
                 memberInfoService,
                 rsaUseCase,
@@ -37,14 +35,14 @@ public class MemberAuthControllerDocs extends RestDocsSupport {
     @Test
     void requestPublicKey() throws Exception {
 
-        BDDMockito.given(rsaUseCase.findPublicKey())
+        given(rsaUseCase.findPublicKey())
                 .willReturn(new AuthDTO.Key("MIGfMA0GCSqGSIb3DQEBAQUAA4GNA" +
                         "DCBiQKBgQCiJ96gHv22oSSezF1v1tRE6uEESgjH0e9Gr3CX2rkvt1H1NIzR" +
                         "piFrCY27+16Z7QIPr4ZxhHbDqvaOh8ZpQ+HXpn5tJO7/yi4bB0bY+60mWSe" +
                         "OW2c3YDASYbMmS/sPity6WyvrctgBpq14JPeJQRLjOoagxupXo1aBfPEJ28zD/QIDAQAB")
                 );
 
-        mvc.perform(get("/users/key"))
+        mockMvc.perform(get("/users/key"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("users-key",

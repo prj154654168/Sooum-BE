@@ -1,0 +1,8 @@
+
+==== HTTP Request
+include::{snippets}/profile/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/profile/http-response.adoc[]
+
+include::{snippets}/users-key/response-fields.adoc[]
