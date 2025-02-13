@@ -33,6 +33,8 @@ slack:
 
 exclude-auth-path-patterns:
     paths:
+      - path-pattern: /docs/index.html
+        method: GET
       - path-pattern: /health-check
         method: GET
       - pathPattern: /users/key

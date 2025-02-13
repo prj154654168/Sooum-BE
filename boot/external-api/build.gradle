@@ -1,11 +1,15 @@
 plugins {
     id 'java'
+    id 'org.asciidoctor.jvm.convert' version '4.0.2'
 }
 
 group = 'com.sooum'
 version = '0.0.1-SNAPSHOT'
 
-bootJar { enabled = true }
+
+configurations {
+    asciidoctorExt
+}
 jar { enabled = false }
 
 repositories {
@@ -49,8 +53,36 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    //restDocs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
 test {
     useJUnitPlatform()
+    outputs.dir snippetsDir
+}
+
+asciidoctor {
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+
+    sources { // 특정 파일만 html로 만든다.
+        include("**/index.adoc")
+    }
+    baseDirFollowsSourceFile()
+    dependsOn test
+}
+
+bootJar {
+    enabled = true
+    dependsOn asciidoctor
+    from("${asciidoctor.outputDir}"){
+        into 'static/docs'
+    }
 }
