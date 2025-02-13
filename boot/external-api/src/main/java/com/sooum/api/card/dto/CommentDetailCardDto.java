@@ -1,5 +1,6 @@
 package com.sooum.api.card.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sooum.api.member.dto.MemberDto;
 import com.sooum.api.tag.dto.TagDto;
@@ -26,12 +27,14 @@ public class CommentDetailCardDto extends CardDto{
     private Double distance;
     @JsonProperty(value = "isFeedCardStory")
     private boolean isFeedCardStory;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+    private LocalDateTime storyExpirationTime;
 
     private MemberDto.DefaultMemberResponse member;
     private List<TagDto.ReadTagResponse> tags;
 
     @Builder
-    public CommentDetailCardDto(String id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, String previousCardId, boolean isPreviousCardDelete, Link previousCardImgLink, boolean isOwnCard, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags, Double distance, boolean isFeedCardStory) {
+    public CommentDetailCardDto(String id, String content, LocalDateTime createdAt, int likeCnt, boolean isLiked, int commentCnt, boolean isCommentWritten, Link backgroundImgUrl, Font font, FontSize fontSize, String previousCardId, boolean isPreviousCardDelete, Link previousCardImgLink, boolean isOwnCard, MemberDto.DefaultMemberResponse member, List<TagDto.ReadTagResponse> tags, Double distance, boolean isFeedCardStory, LocalDateTime storyExpirationTime) {
         super(id, content, createdAt, likeCnt, isLiked, commentCnt, isCommentWritten, backgroundImgUrl, font, fontSize);
         this.previousCardId = previousCardId;
         this.isPreviousCardDelete = isPreviousCardDelete;
@@ -41,5 +44,6 @@ public class CommentDetailCardDto extends CardDto{
         this.tags = tags;
         this.distance = distance;
         this.isFeedCardStory = isFeedCardStory;
+        this.storyExpirationTime = storyExpirationTime;
     }
 }

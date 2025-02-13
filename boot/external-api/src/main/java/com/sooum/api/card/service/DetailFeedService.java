@@ -18,6 +18,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -59,8 +60,10 @@ public class DetailFeedService {
         if (card instanceof CommentCard commentCard) {
             Card parentCard = feedService.findParentCard(commentCard);
 
-            Optional<FeedCard> optMasterCard = feedCardService.findOptFeedCard(commentCard.getParentCardPk());
+            Optional<FeedCard> optMasterCard = feedCardService.findOptFeedCard(commentCard.getMasterCard());
+
             boolean isMasterCardStory = optMasterCard.map(FeedCard::isStory).orElse(false);
+            LocalDateTime masterCardStoryExpiredTime = optMasterCard.map(optCard -> optCard.getCreatedAt().plusDays(1)).orElse(null);
 
             boolean isParentCardDelete = isParentDelete(parentCard, commentCard.getParentCardPk());
             Link previousCardImgLink = parentCard != null ?
@@ -81,6 +84,7 @@ public class DetailFeedService {
                     .previousCardId(commentCard.getParentCardPk().toString())
                     .previousCardImgLink(previousCardImgLink)
                     .isFeedCardStory(isMasterCardStory)
+                    .storyExpirationTime(masterCardStoryExpiredTime)
                     .build();
         }
         throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
