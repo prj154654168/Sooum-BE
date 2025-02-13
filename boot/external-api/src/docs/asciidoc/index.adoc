@@ -1,0 +1,16 @@
+ifndef::snippets[]
+:snippets: ../../build/generated-snippets
+endif::[]
+= Sooum REST API 문서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[users-key]]
+== Rsa Public Key API
+
+include::api/auth/Auth.adoc[]
+

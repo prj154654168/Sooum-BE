@@ -1,0 +1,4 @@
+==== HTTP Response
+include::{snippets}/users-key/http-response.adoc[]
+
+include::{snippets}/users-key/response-fields.adoc[]
