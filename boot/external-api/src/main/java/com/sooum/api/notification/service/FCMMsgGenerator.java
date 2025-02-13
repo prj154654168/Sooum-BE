@@ -1,9 +1,6 @@
 package com.sooum.api.notification.service;
 
-import com.google.firebase.messaging.AndroidConfig;
-import com.google.firebase.messaging.AndroidNotification;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.*;
 import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.notification.entity.notificationtype.NotificationType;
@@ -116,6 +113,11 @@ class FCMMsgGenerator {
                                 .setBody(generateSystemMsgBody(fcmDto.getNotificationType()))
                                 .build()
                 )
+                .setApnsConfig(ApnsConfig.builder()
+                        .setAps(Aps.builder()
+                                .setContentAvailable(true)
+                                .build())
+                        .build())
                 .putAllData(data)
                 .setToken(fcmDto.getTargetFcmToken())
                 .build();
