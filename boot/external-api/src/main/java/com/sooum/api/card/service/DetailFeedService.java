@@ -61,7 +61,6 @@ public class DetailFeedService {
             Card parentCard = feedService.findParentCard(commentCard);
 
             Optional<FeedCard> optMasterCard = feedCardService.findOptFeedCard(commentCard.getMasterCard());
-
             boolean isMasterCardStory = optMasterCard.map(FeedCard::isStory).orElse(false);
             LocalDateTime masterCardStoryExpiredTime = optMasterCard.map(optCard -> optCard.getCreatedAt().plusDays(1)).orElse(null);
 
