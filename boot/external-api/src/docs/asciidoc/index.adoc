@@ -13,7 +13,10 @@ endif::[]
 == Rsa Public Key API
 include::api/member/auth/Auth.adoc[]
 
-[[users-key]]
+[[profile]]
 == 내 프로필 정보 조회
 include::api/member/profile/Profile.adoc[]
 
+[[Block]]
+== 사용자 차단 API
+include::api/block/Block.adoc[]

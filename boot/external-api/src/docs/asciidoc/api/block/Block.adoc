@@ -1,0 +1,7 @@
+==== HTTP Reqeust
+include::{snippets}/block/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/block/http-response.adoc[]
+
+include::{snippets}/block/response-fields.adoc[]
