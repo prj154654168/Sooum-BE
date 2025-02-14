@@ -1,7 +1,6 @@
 package com.sooum.data.tag.service;
 
 import com.sooum.data.tag.entity.FeedTag;
-import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.repository.FeedTagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +30,10 @@ public class FeedTagService {
         }
     }
 
-    public List<FeedTag> findTop5FeedTagsV1(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
+    public List<FeedTag> findTop5FeedTags(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
         return blockedMemberPks.isEmpty()
                 ? feedTagRepository.findTop5FeedTagsWithoutBlock(favoriteTagPks)
                 : feedTagRepository.findTop5FeedTagsWithBlock(favoriteTagPks, blockedMemberPks);
-    }
-
-    public List<FeedTag> findTop5FeedTagsV2(List<Long> favoriteTagPks) {
-        return feedTagRepository.findTop5FeedTagsWithoutBlock(favoriteTagPks);
     }
 
     public List<FeedTag> findLoadFeedTagsIn(List<FeedTag> feedTags) {

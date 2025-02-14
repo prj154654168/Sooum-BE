@@ -23,26 +23,11 @@ public class FavoriteTagUseCase {
     private final FeedTagService feedTagService;
     private final FavoriteTagService favoriteTagService;
 
-    public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTagsV1(Long memberPk, Optional<Long> lastTagPk) {
-        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTagsV1(memberPk, lastTagPk);
+    public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTags(Long memberPk, Optional<Long> lastTagPk) {
         List<Long> blockedMemberPks = blockMemberService.findAllBlockMemberPks(memberPk);
+        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTags(memberPk, lastTagPk);
 
-        List<FeedTag> fullyLoadedFeedTags = findAndLoadTopFeedTagsV1(myFavoriteTagPks, blockedMemberPks);
-
-        Map<Tag, List<FeedTag>> feedTagsGroupedByTag = fullyLoadedFeedTags.stream().collect(Collectors.groupingBy(FeedTag::getTag, Collectors.toList()));
-
-        List<TagDto.FavoriteTag> favoriteTagDtoList = feedTagsGroupedByTag.entrySet().stream()
-                .map(entry -> generateFavoriteTagDto(entry.getKey(), entry.getValue()))
-                .toList();
-
-        return NextPageLinkGenerator.appendEachFavoriteTagDetailLink(favoriteTagDtoList);
-    }
-
-    public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTagsV2(Long memberPk, Optional<Long> lastTagPk) {
-        List<Long> blockedMemberPks = blockMemberService.findAllBlockMemberPks(memberPk);
-        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTagsV2(memberPk, lastTagPk, blockedMemberPks);
-
-        List<FeedTag> fullyLoadedFeedTags = findAndLoadTopFeedTagsV2(myFavoriteTagPks);
+        List<FeedTag> fullyLoadedFeedTags = findAndLoadTopFeedTags(myFavoriteTagPks,blockedMemberPks);
 
         Map<Tag, List<FeedTag>> feedTagsGroupedByTag = fullyLoadedFeedTags.stream().collect(Collectors.groupingBy(FeedTag::getTag, LinkedHashMap::new, Collectors.toList()));
 
@@ -53,13 +38,8 @@ public class FavoriteTagUseCase {
         return NextPageLinkGenerator.appendEachFavoriteTagDetailLink(favoriteTagDtoList);
     }
 
-    private List<FeedTag> findAndLoadTopFeedTagsV1(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
-        List<FeedTag> proxyFeedTags = feedTagService.findTop5FeedTagsV1(favoriteTagPks, blockedMemberPks);
-        return feedTagService.findLoadFeedTagsIn(proxyFeedTags);
-    }
-
-    private List<FeedTag> findAndLoadTopFeedTagsV2(List<Long> favoriteTagPks) {
-        List<FeedTag> proxyFeedTags = feedTagService.findTop5FeedTagsV2(favoriteTagPks);
+    private List<FeedTag> findAndLoadTopFeedTags(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
+        List<FeedTag> proxyFeedTags = feedTagService.findTop5FeedTags(favoriteTagPks, blockedMemberPks);
         return feedTagService.findLoadFeedTagsIn(proxyFeedTags);
     }
 

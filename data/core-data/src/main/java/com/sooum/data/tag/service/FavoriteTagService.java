@@ -49,14 +49,9 @@ public class FavoriteTagService {
         tagService.deleteFavoriteTag(findFavoriteTag);
     }
 
-    public List<Long> findMyFavoriteTagsV1(Long memberPk, Optional<Long> lastTagPk) {
+    public List<Long> findMyFavoriteTags(Long memberPk, Optional<Long> lastTagPk) {
         Pageable pageRequest = PageRequest.ofSize(20);
-        return favoriteTagRepository.findMyFavoriteTagsV1(memberPk,lastTagPk.orElse(null), pageRequest);
-    }
-
-    public List<Long> findMyFavoriteTagsV2(Long memberPk, Optional<Long> lastTagPk, List<Long> blockedMemberPks) {
-        Pageable pageRequest = PageRequest.ofSize(20);
-        return favoriteTagRepository.findMyFavoriteTagsV2(memberPk, blockedMemberPks, lastTagPk.orElse(null), pageRequest);
+        return favoriteTagRepository.findMyFavoriteTags(memberPk, lastTagPk.orElse(null), pageRequest);
     }
 
     public void deleteAllFavoriteTag(Long memberPk) {
