@@ -31,10 +31,14 @@ public class FeedTagService {
         }
     }
 
-    public List<FeedTag> findTop5FeedTags(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
+    public List<FeedTag> findTop5FeedTagsV1(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
         return blockedMemberPks.isEmpty()
                 ? feedTagRepository.findTop5FeedTagsWithoutBlock(favoriteTagPks)
                 : feedTagRepository.findTop5FeedTagsWithBlock(favoriteTagPks, blockedMemberPks);
+    }
+
+    public List<FeedTag> findTop5FeedTagsV2(List<Long> favoriteTagPks) {
+        return feedTagRepository.findTop5FeedTagsWithoutBlock(favoriteTagPks);
     }
 
     public List<FeedTag> findLoadFeedTagsIn(List<FeedTag> feedTags) {

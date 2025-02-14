@@ -12,9 +12,7 @@ import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,14 +23,13 @@ public class FavoriteTagUseCase {
     private final FeedTagService feedTagService;
     private final FavoriteTagService favoriteTagService;
 
-    public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTags(Long memberPk, Optional<Long> lastTagPk) {
-
-        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTags(memberPk, lastTagPk);
+    public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTagsV1(Long memberPk, Optional<Long> lastTagPk) {
+        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTagsV1(memberPk, lastTagPk);
         List<Long> blockedMemberPks = blockMemberService.findAllBlockMemberPks(memberPk);
 
-        List<FeedTag> fullyLoadedFeedTags = findAndLoadTopFeedTags(myFavoriteTagPks, blockedMemberPks);
+        List<FeedTag> fullyLoadedFeedTags = findAndLoadTopFeedTagsV1(myFavoriteTagPks, blockedMemberPks);
 
-        Map<Tag, List<FeedTag>> feedTagsGroupedByTag = fullyLoadedFeedTags.stream().collect(Collectors.groupingBy(FeedTag::getTag));
+        Map<Tag, List<FeedTag>> feedTagsGroupedByTag = fullyLoadedFeedTags.stream().collect(Collectors.groupingBy(FeedTag::getTag, Collectors.toList()));
 
         List<TagDto.FavoriteTag> favoriteTagDtoList = feedTagsGroupedByTag.entrySet().stream()
                 .map(entry -> generateFavoriteTagDto(entry.getKey(), entry.getValue()))
@@ -41,13 +38,32 @@ public class FavoriteTagUseCase {
         return NextPageLinkGenerator.appendEachFavoriteTagDetailLink(favoriteTagDtoList);
     }
 
-    private List<FeedTag> findAndLoadTopFeedTags(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
-        List<FeedTag> proxyFeedTags = feedTagService.findTop5FeedTags(favoriteTagPks, blockedMemberPks);
+    public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTagsV2(Long memberPk, Optional<Long> lastTagPk) {
+        List<Long> blockedMemberPks = blockMemberService.findAllBlockMemberPks(memberPk);
+        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTagsV2(memberPk, lastTagPk, blockedMemberPks);
+
+        List<FeedTag> fullyLoadedFeedTags = findAndLoadTopFeedTagsV2(myFavoriteTagPks);
+
+        Map<Tag, List<FeedTag>> feedTagsGroupedByTag = fullyLoadedFeedTags.stream().collect(Collectors.groupingBy(FeedTag::getTag, LinkedHashMap::new, Collectors.toList()));
+
+        List<TagDto.FavoriteTag> favoriteTagDtoList = feedTagsGroupedByTag.entrySet().stream()
+                .map(entry -> generateFavoriteTagDto(entry.getKey(), entry.getValue()))
+                .toList();
+
+        return NextPageLinkGenerator.appendEachFavoriteTagDetailLink(favoriteTagDtoList);
+    }
+
+    private List<FeedTag> findAndLoadTopFeedTagsV1(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
+        List<FeedTag> proxyFeedTags = feedTagService.findTop5FeedTagsV1(favoriteTagPks, blockedMemberPks);
+        return feedTagService.findLoadFeedTagsIn(proxyFeedTags);
+    }
+
+    private List<FeedTag> findAndLoadTopFeedTagsV2(List<Long> favoriteTagPks) {
+        List<FeedTag> proxyFeedTags = feedTagService.findTop5FeedTagsV2(favoriteTagPks);
         return feedTagService.findLoadFeedTagsIn(proxyFeedTags);
     }
 
     private TagDto.FavoriteTag generateFavoriteTagDto(Tag tag, List<FeedTag> feedTagList) {
-
         List<FeedCard> feedCardList = feedTagList.stream()
                 .map(FeedTag::getFeedCard)
                 .toList();

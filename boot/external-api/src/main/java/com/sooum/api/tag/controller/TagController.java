@@ -98,9 +98,27 @@ public class TagController {
     }
 
     @GetMapping({"/favorites", "/favorites/{last}"})
-    ResponseEntity<?> findFavoriteTags(@PathVariable(required = false, value = "last") Optional<Long> last,
+    ResponseEntity<?> findFavoriteTagsV1(@PathVariable(required = false, value = "last") Optional<Long> last,
                                        @CurrentUser Long memberPk) {
-        List<TagDto.FavoriteTag> myFavoriteTags = favoriteTagUseCase.findTop5FeedByFavoriteTags(memberPk, last);
+        List<TagDto.FavoriteTag> myFavoriteTags = favoriteTagUseCase.findTop5FeedByFavoriteTagsV1(memberPk, last);
+        if (myFavoriteTags.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(ResponseCollectionModel.<TagDto.FavoriteTag>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("Favorite tags retrieved successfully.")
+                        .build()
+                ).content(myFavoriteTags)
+                .build()
+        );
+    }
+
+    @GetMapping({"v2/favorites", "v2/favorites/{last}"})
+    ResponseEntity<?> findFavoriteTagsV2(@PathVariable(required = false, value = "last") Optional<Long> last,
+                                       @CurrentUser Long memberPk) {
+        List<TagDto.FavoriteTag> myFavoriteTags = favoriteTagUseCase.findTop5FeedByFavoriteTagsV2(memberPk, last);
         if (myFavoriteTags.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
