@@ -1,7 +1,6 @@
 package com.sooum.data.tag.service;
 
 import com.sooum.data.tag.entity.FeedTag;
-import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.repository.FeedTagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
