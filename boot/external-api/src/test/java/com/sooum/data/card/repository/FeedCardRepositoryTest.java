@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
@@ -189,7 +188,8 @@ class FeedCardRepositoryTest extends DataJpaTestSupport {
 
     private FeedCard saveFeedCardBy(String content) {
         Member member = saveMember();
-        FeedCard feedCard = FeedCard.builder()
+
+        return feedCardRepository.save(FeedCard.builder()
                 .fontSize(FontSize.NONE)
                 .font(Font.PRETENDARD)
                 .imgType(CardImgType.DEFAULT)
@@ -198,18 +198,16 @@ class FeedCardRepositoryTest extends DataJpaTestSupport {
                 .isFeedActive(true)
                 .writerIp(UUID.randomUUID().toString())
                 .content(content)
-                .build();
-        feedCardRepository.save(feedCard);
-        return feedCard;
+                .build()
+        );
     }
     private Member saveMember() {
-        Member member = Member.builder()
+        return memberRepository.save(Member.builder()
                 .deviceId(UUID.randomUUID().toString())
                 .deviceType(DeviceType.IOS)
                 .nickname(UUID.randomUUID().toString())
-                .build();
-        memberRepository.save(member);
-        return member;
+                .build()
+        );
     }
 
 

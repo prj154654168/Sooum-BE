@@ -1,1 +1,52 @@
 #Do not delete this file.
+spring:
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      repositories:
+        enabled: false
+
+exclude-auth-path-patterns:
+  paths:
+    - path-pattern: /docs/index.html
+      method: GET
+    - path-pattern: /health-check
+      method: GET
+    - pathPattern: /users/key
+      method: GET
+    - pathPattern: /users/sign-up
+      method: POST
+    - pathPattern: /users/login
+      method: POST
+    - pathPattern: /profiles/nickname/available
+      method: POST
+    - pathPattern: /members/suspension
+      method: POST
+    - pathPattern: /app/version/**
+      method: GET
+    - path-pattern: /settings/transfer
+      method: POST
+    - path-pattern: /users/token
+      method: POST
+
+exclude-ratelimiter-path-patterns:
+  paths:
+    - path-pattern: /notifications/unread-cnt
+      method: GET
+    - path-pattern: /notifications/card/unread-cnt
+      method: GET
+    - path-pattern: /notifications/like/unread-cnt
+      method: GET
+    - path-pattern: /notifications/read
+      method: GET
+    - path-pattern: /notifications/unread
+      method: GET
+    - path-pattern: /notifications/card/read
+      method: GET
+    - path-pattern: /notifications/card/unread
+      method: GET
+    - path-pattern: /notifications/like/read
+      method: GET
+    - path-pattern: /notifications/like/unread
+      method: GET
