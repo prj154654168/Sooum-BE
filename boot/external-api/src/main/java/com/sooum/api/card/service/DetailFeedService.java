@@ -2,6 +2,7 @@ package com.sooum.api.card.service;
 
 import com.sooum.api.card.dto.CardDto;
 import com.sooum.api.card.dto.CommentDetailCardDto;
+import com.sooum.api.card.dto.CommentDetailCardDtoV2;
 import com.sooum.api.card.dto.FeedDetailCardDto;
 import com.sooum.api.img.service.ImgService;
 import com.sooum.api.member.service.MemberInfoService;
@@ -124,7 +125,7 @@ public class DetailFeedService {
             Link previousCardImgLink = parentCard != null ?
                     imgService.findCardImgUrl(parentCard.getImgType(),parentCard.getImgName()) : null;
 
-            return CommentDetailCardDto.builder()
+            return CommentDetailCardDtoV2.builder()
                     .id(card.getPk().toString())
                     .backgroundImgUrl(imgService.findCardImgUrl(card.getImgType(), card.getImgName()))
                     .createdAt(card.getCreatedAt())
