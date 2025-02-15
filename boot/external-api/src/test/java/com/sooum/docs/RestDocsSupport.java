@@ -1,4 +1,4 @@
-package com.sooum.api.docs;
+package com.sooum.docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
