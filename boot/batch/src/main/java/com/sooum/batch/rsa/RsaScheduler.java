@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Component
@@ -17,7 +18,7 @@ public class RsaScheduler {
     public void schedule() {
         try {
             log.info("========RsaScheduler start========");
-            rsaSchedulerService.save();
+            rsaSchedulerService.save(LocalDateTime.now());
         } catch (NoSuchAlgorithmException e) {
             log.info(e.getMessage());
         }

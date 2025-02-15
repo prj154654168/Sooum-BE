@@ -3,7 +3,7 @@ package com.sooum.batch.rsa.service;
 import com.sooum.data.rsa.entity.Rsa;
 import com.sooum.data.rsa.service.RsaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,49 +17,49 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class RsaSchedulerService {
-    private final RedisTemplate<String,String> redisStringTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
     private final RsaService rsaService;
     public final int KEY_SIZE = 1024;
 
     @Transactional
-    public void save() throws NoSuchAlgorithmException {
+    public void save(LocalDateTime currentDateTime) throws NoSuchAlgorithmException {
         HashMap<String, String> keyPair = generateKeyPair();
 
         // Save to RDB
-        LocalDateTime newKeyExpiredAt = LocalDateTime.now().plusDays(1).plusMinutes(10);
-        LocalDateTime oldKeyExpiredAt = LocalDateTime.now().plusMinutes(10);
+        LocalDateTime newKeyExpiredAt = currentDateTime.plusDays(1).plusMinutes(10);
+        LocalDateTime oldKeyExpiredAt = currentDateTime.plusMinutes(10);
         Rsa rsa = rsaService.save(keyPair, newKeyExpiredAt);
         rsaService.deleteExpiredRsaKey();
 
         // Save to Redis
-        String oldPublicKey = redisStringTemplate.opsForValue()
+        String oldPublicKey = stringRedisTemplate.opsForValue()
                 .get("rsa:public-key:new");
-        String oldPrivateKey = redisStringTemplate.opsForValue()
+        String oldPrivateKey = stringRedisTemplate.opsForValue()
                 .get("rsa:private-key:new");
 
-        redisStringTemplate.opsForValue()
+        stringRedisTemplate.opsForValue()
                 .set("rsa:public-key:new",
                         rsa.getPublicKey(),
-                        Duration.between(LocalDateTime.now(), newKeyExpiredAt)
+                        Duration.between(currentDateTime, newKeyExpiredAt)
                 );
 
-        redisStringTemplate.opsForValue()
+        stringRedisTemplate.opsForValue()
                 .set("rsa:private-key:new",
                         rsa.getPrivateKey(),
-                        Duration.between(LocalDateTime.now(), newKeyExpiredAt)
+                        Duration.between(currentDateTime, newKeyExpiredAt)
                 );
 
         if (!Objects.isNull(oldPrivateKey) || !Objects.isNull(oldPublicKey)) {
-            redisStringTemplate.opsForValue()
+            stringRedisTemplate.opsForValue()
                     .set("rsa:public-key:old",
                             Objects.requireNonNull(oldPublicKey),
-                            Duration.between(LocalDateTime.now(), oldKeyExpiredAt)
+                            Duration.between(currentDateTime, oldKeyExpiredAt)
                     );
 
-            redisStringTemplate.opsForValue()
+            stringRedisTemplate.opsForValue()
                     .set("rsa:private-key:old",
                             Objects.requireNonNull(oldPrivateKey),
-                            Duration.between(LocalDateTime.now(), oldKeyExpiredAt)
+                            Duration.between(currentDateTime, oldKeyExpiredAt)
                     );
         }
 

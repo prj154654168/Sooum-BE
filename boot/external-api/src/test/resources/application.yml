@@ -1,11 +1,4 @@
 #Do not delete this file.
-spring:
-  data:
-    redis:
-      port: 6379
-      host: localhost
-      repositories:
-        enabled: false
 
 exclude-auth-path-patterns:
   paths:

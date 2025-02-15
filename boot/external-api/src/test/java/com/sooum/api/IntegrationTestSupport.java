@@ -15,40 +15,52 @@ import com.sooum.global.config.warmer.ApplicationWarmer;
 import com.sooum.global.slack.service.SlackService;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.BDDMockito;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest
 public abstract class IntegrationTestSupport {
 
     @MockBean
-    S3Config s3Config;
+    protected S3Config s3Config;
     @MockBean
-    FcmConfig fcmConfig;
+    protected FcmConfig fcmConfig;
     @MockBean
-    RekognitionConfig rekognitionConfig;
+    protected RekognitionConfig rekognitionConfig;
 
     @MockBean
-    S3ImgPathProperties s3ImgPathProperties;
+    protected S3ImgPathProperties s3ImgPathProperties;
     @MockBean
-    JwtProperties jwtProperties;
+    protected JwtProperties jwtProperties;
 
     @MockBean
-    AWSImgService awsImgService;
+    protected AWSImgService awsImgService;
     @MockBean
-    SlackService slackService;
+    protected SlackService slackService;
     @MockBean
-    S3FCMService s3FCMService;
+    protected S3FCMService s3FCMService;
     @MockBean
-    RekognitionService rekognitionService;
+    protected RekognitionService rekognitionService;
     @MockBean
-    S3ImgService s3ImgService;
+    protected S3ImgService s3ImgService;
 
     @MockBean
-    ApplicationWarmer applicationWarmer;
+    protected ApplicationWarmer applicationWarmer;
+
+    @MockBean
+    protected RedisConfig redisConfig;
+    @MockBean
+    protected RedisConnectionFactory redisConnectionFactory;
+    @MockBean
+    protected RedisTemplate<String, LocalDateTime> stringLocalDateTimeRedisTemplate;
+    @MockBean
+    protected CacheManager cacheManager;
 
     @MockBean
     ExcludeAuthPathProperties excludeAuthPathProperties;
