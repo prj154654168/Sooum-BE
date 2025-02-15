@@ -1,6 +1,6 @@
-package com.sooum.api.docs.member;
+package com.sooum.docs.member;
 
-import com.sooum.api.docs.RestDocsSupport;
+import com.sooum.docs.RestDocsSupport;
 import com.sooum.api.member.controller.MemberAuthController;
 import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.api.member.service.MemberInfoService;

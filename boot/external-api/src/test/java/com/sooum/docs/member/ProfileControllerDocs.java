@@ -1,6 +1,6 @@
-package com.sooum.api.docs.member;
+package com.sooum.docs.member;
 
-import com.sooum.api.docs.RestDocsSupport;
+import com.sooum.docs.RestDocsSupport;
 import com.sooum.api.follow.service.FollowInfoService;
 import com.sooum.api.member.controller.ProfileController;
 import com.sooum.api.member.dto.ProfileDto;

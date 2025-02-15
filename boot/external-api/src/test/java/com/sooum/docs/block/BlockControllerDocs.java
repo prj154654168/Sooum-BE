@@ -1,8 +1,8 @@
-package com.sooum.api.docs.block;
+package com.sooum.docs.block;
 
 import com.sooum.api.block.controller.BlockController;
 import com.sooum.api.block.dto.BlockDto;
-import com.sooum.api.docs.RestDocsSupport;
+import com.sooum.docs.RestDocsSupport;
 import com.sooum.data.block.service.BlockMemberService;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
