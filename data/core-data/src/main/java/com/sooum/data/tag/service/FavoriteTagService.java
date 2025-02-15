@@ -49,9 +49,9 @@ public class FavoriteTagService {
         tagService.deleteFavoriteTag(findFavoriteTag);
     }
 
-    public List<Long> findMyFavoriteTags(Long memberPk, Optional<Long> lastTagPk) {
-        Pageable pageRequest = PageRequest.ofSize(20);
-        return favoriteTagRepository.findMyFavoriteTags(memberPk, lastTagPk.orElse(null), pageRequest);
+    public List<Long> findMyFavoriteTags(Long memberPk, Optional<Long> lastTagPk, Pageable pageable) {
+//        Pageable pageRequest = PageRequest.ofSize(20);
+        return favoriteTagRepository.findMyFavoriteTags(memberPk, lastTagPk.orElse(null), pageable);
     }
 
     public void deleteAllFavoriteTag(Long memberPk) {
