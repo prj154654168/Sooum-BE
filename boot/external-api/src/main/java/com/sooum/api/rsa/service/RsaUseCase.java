@@ -4,7 +4,7 @@ import com.sooum.data.rsa.entity.Rsa;
 import com.sooum.data.rsa.service.RsaService;
 import com.sooum.global.rsa.RsaProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import static com.sooum.api.member.dto.AuthDTO.Key;
@@ -14,13 +14,13 @@ import static com.sooum.api.member.dto.AuthDTO.Key;
 public class RsaUseCase {
     private final RsaService rsaService;
     private final RsaProvider rsaProvider;
-    private final RedisTemplate<String, String> redisStringTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     public Key findPublicKey() {
         String newPublicKey;
 
         try {
-            newPublicKey = redisStringTemplate.opsForValue().get("rsa:public-key:new");
+            newPublicKey = stringRedisTemplate.opsForValue().get("rsa:public-key:new");
             if (newPublicKey == null) {
                 Rsa rsa = rsaService.findLatestRsaKey();
                 newPublicKey = rsa.getPublicKey();
@@ -40,8 +40,8 @@ public class RsaUseCase {
         String oldPrivateKey;
 
         try {
-            newPrivateKey = redisStringTemplate.opsForValue().get("rsa:private-key:new");
-            oldPrivateKey = redisStringTemplate.opsForValue().get("rsa:private-key:old");
+            newPrivateKey = stringRedisTemplate.opsForValue().get("rsa:private-key:new");
+            oldPrivateKey = stringRedisTemplate.opsForValue().get("rsa:private-key:old");
             if (newPrivateKey == null) {
                 Rsa rsa = rsaService.findLatestRsaKey();
                 newPrivateKey = rsa.getPrivateKey();

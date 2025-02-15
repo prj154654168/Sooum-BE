@@ -23,7 +23,7 @@ import com.sooum.global.config.jwt.TokenProvider;
 import com.sooum.global.config.jwt.exception.InvalidTokenException;
 import com.sooum.global.exceptionmessage.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +57,7 @@ public class MemberWithdrawalService {
     private final NotificationHistoryService notificationHistoryService;
     private final BlackListUseCase blackListUseCase;
 
-    private final RedisTemplate<String, String> redisStringTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Transactional
     public void withdrawMember(Long memberPk, AuthDTO.Token token) throws InvalidTokenException {
@@ -151,14 +151,14 @@ public class MemberWithdrawalService {
         LocalDateTime refreshTokenExpiredAt = tokenProvider.getExpirationAllowExpired(token.refreshToken());
 
         if (accessTokenExpiredAt.isAfter(LocalDateTime.now())) {
-            redisStringTemplate.opsForValue().set(
+            stringRedisTemplate.opsForValue().set(
                     RedisTokenPathPrefix.ACCESS_TOKEN.getPrefix() + token.accessToken(), "",
                     Duration.between(LocalDateTime.now(), accessTokenExpiredAt)
             );
         }
 
         if (refreshTokenExpiredAt.isAfter(LocalDateTime.now())) {
-            redisStringTemplate.opsForValue().set(
+            stringRedisTemplate.opsForValue().set(
                     RedisTokenPathPrefix.REFRESH_TOKEN.getPrefix() + token.refreshToken(), "",
                     Duration.between(LocalDateTime.now(), refreshTokenExpiredAt)
             );
