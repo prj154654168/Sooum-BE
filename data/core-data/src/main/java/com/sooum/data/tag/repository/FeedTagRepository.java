@@ -60,7 +60,7 @@ public interface FeedTagRepository extends JpaRepository<FeedTag, Long> {
             "from FeedTag ft " +
             "join fetch ft.feedCard " +
             "join fetch ft.tag " +
-            "where ft in :feedTags order by ft.feedCard.pk desc")
+            "where ft in :feedTags order by ft.tag.pk desc")
     List<FeedTag> findLoadFeedTagsIn(@Param("feedTags") List<FeedTag> feedTags);
 
     @Modifying
