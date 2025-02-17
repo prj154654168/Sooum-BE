@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.filter.RequestContextFilter;
 
 import java.net.URI;
 import java.util.List;
@@ -31,7 +30,6 @@ public class FeedCardController {
     private final FeedService feedService;
     private final DetailFeedService detailFeedService;
     private final TagFeedInfoService tagFeedInfoService;
-    private final RequestContextFilter requestContextFilter;
 
     @GetMapping("/{cardId}/detail")
     public ResponseEntity<?> findFeedCardInfo(
@@ -39,6 +37,23 @@ public class FeedCardController {
             @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
             @PathVariable("cardId") @NotNull Long cardId, @CurrentUser Long memberPk) {
         CardDto detailFeedCard = detailFeedService.findDetailFeedCard(cardId, memberPk, latitude, longitude);
+        return ResponseEntity.ok(ResponseEntityModel.<CardDto>builder()
+                .status(ResponseStatus.builder()
+                        .httpStatus(HttpStatus.OK)
+                        .httpCode(HttpStatus.OK.value())
+                        .responseMessage("Card details retrieved successfully.")
+                        .build()
+                ).content(detailFeedCard)
+                .build()
+        );
+    }
+
+    @GetMapping("/{cardId}/detail/v2")
+    public ResponseEntity<?> findFeedCardInfoV2(
+            @RequestParam(required = false, value = "latitude") Optional<Double> latitude,
+            @RequestParam(required = false, value = "longitude") Optional<Double> longitude,
+            @PathVariable("cardId") @NotNull Long cardId, @CurrentUser Long memberPk) {
+        CardDto detailFeedCard = detailFeedService.findDetailFeedCardV2(cardId, memberPk, latitude, longitude);
         return ResponseEntity.ok(ResponseEntityModel.<CardDto>builder()
                 .status(ResponseStatus.builder()
                         .httpStatus(HttpStatus.OK)

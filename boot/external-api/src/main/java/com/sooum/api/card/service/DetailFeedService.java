@@ -2,6 +2,7 @@ package com.sooum.api.card.service;
 
 import com.sooum.api.card.dto.CardDto;
 import com.sooum.api.card.dto.CommentDetailCardDto;
+import com.sooum.api.card.dto.CommentDetailCardDtoV2;
 import com.sooum.api.card.dto.FeedDetailCardDto;
 import com.sooum.api.img.service.ImgService;
 import com.sooum.api.member.service.MemberInfoService;
@@ -62,13 +63,69 @@ public class DetailFeedService {
 
             Optional<FeedCard> optMasterCard = feedCardService.findOptFeedCard(commentCard.getMasterCard());
             boolean isMasterCardStory = optMasterCard.map(FeedCard::isStory).orElse(false);
-            LocalDateTime masterCardStoryExpiredTime = optMasterCard.map(optCard -> optCard.getCreatedAt().plusDays(1)).orElse(null);
 
             boolean isParentCardDelete = isParentDelete(parentCard, commentCard.getParentCardPk());
             Link previousCardImgLink = parentCard != null ?
                     imgService.findCardImgUrl(parentCard.getImgType(),parentCard.getImgName()) : null;
 
             return CommentDetailCardDto.builder()
+                    .id(card.getPk().toString())
+                    .backgroundImgUrl(imgService.findCardImgUrl(card.getImgType(), card.getImgName()))
+                    .createdAt(card.getCreatedAt())
+                    .content(card.getContent())
+                    .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))
+                    .font(card.getFont())
+                    .fontSize(card.getFontSize())
+                    .isOwnCard(memberPk.equals(card.getWriter().getPk()))
+                    .member(memberInfoService.getDefaultMember(card.getWriter()))
+                    .tags(tagUseCase.readTags(card))
+                    .isPreviousCardDelete(isParentCardDelete)
+                    .previousCardId(commentCard.getParentCardPk().toString())
+                    .previousCardImgLink(previousCardImgLink)
+                    .isFeedCardStory(isMasterCardStory)
+                    .build();
+        }
+        throw new IllegalArgumentException(ExceptionMessage.UNHANDLED_OBJECT.getMessage());
+    }
+
+    @Transactional(readOnly = true)
+    public CardDto findDetailFeedCardV2 (Long cardPk, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+        Card card = feedCardService.isExistFeedCard(cardPk)
+                ? feedCardService.findFeedCard(cardPk)
+                : commentCardService.findCommentCard(cardPk);
+
+        return createDetailCardDtoV2(card, memberPk, latitude, longitude);
+    }
+
+    public CardDto createDetailCardDtoV2(Card card, Long memberPk, Optional<Double> latitude, Optional<Double> longitude) {
+        if (card instanceof FeedCard feedCard) {
+            return FeedDetailCardDto.builder()
+                    .id(card.getPk().toString())
+                    .backgroundImgUrl(imgService.findCardImgUrl(card.getImgType(), card.getImgName()))
+                    .isStory(feedCard.isStory())
+                    .createdAt(card.getCreatedAt())
+                    .content(card.getContent())
+                    .distance(DistanceUtils.calculate(card.getLocation(), latitude, longitude))
+                    .font(card.getFont())
+                    .fontSize(card.getFontSize())
+                    .isOwnCard(memberPk.equals(card.getWriter().getPk()))
+                    .isFeedCard(true)
+                    .member(memberInfoService.getDefaultMember(card.getWriter()))
+                    .tags(tagUseCase.readTags(card))
+                    .build();
+        }
+        if (card instanceof CommentCard commentCard) {
+            Card parentCard = feedService.findParentCard(commentCard);
+
+            Optional<FeedCard> optMasterCard = feedCardService.findOptFeedCard(commentCard.getMasterCard());
+            boolean isMasterCardStory = optMasterCard.map(FeedCard::isStory).orElse(false);
+            LocalDateTime masterCardStoryExpiredTime = optMasterCard.map(optCard -> optCard.getCreatedAt().plusDays(1)).orElse(null);
+
+            boolean isParentCardDelete = isParentDelete(parentCard, commentCard.getParentCardPk());
+            Link previousCardImgLink = parentCard != null ?
+                    imgService.findCardImgUrl(parentCard.getImgType(),parentCard.getImgName()) : null;
+
+            return CommentDetailCardDtoV2.builder()
                     .id(card.getPk().toString())
                     .backgroundImgUrl(imgService.findCardImgUrl(card.getImgType(), card.getImgName()))
                     .createdAt(card.getCreatedAt())
