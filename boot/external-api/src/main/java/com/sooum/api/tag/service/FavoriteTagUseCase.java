@@ -10,6 +10,7 @@ import com.sooum.data.tag.service.FavoriteTagService;
 import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class FavoriteTagUseCase {
     private final BlockMemberService blockMemberService;
@@ -29,42 +31,17 @@ public class FavoriteTagUseCase {
 
     public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTags(Long memberPk, Optional<Long> lastTagPk) {
         List<Long> blockedMemberPks = blockMemberService.findAllBlockMemberPks(memberPk);
-//        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTags(memberPk, lastTagPk);
-        List<Long> myFavoriteTagPks = findMyFavoriteTags(memberPk, lastTagPk);
+        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTags(memberPk, lastTagPk, PageRequest.of(0, MAX_PAGE_SIZE));
 
         List<FeedTag> fullyLoadedFeedTags = findAndLoadTopFeedTags(myFavoriteTagPks,blockedMemberPks);
-
         Map<Tag, List<FeedTag>> feedTagsGroupedByTag = fullyLoadedFeedTags.stream().collect(Collectors.groupingBy(FeedTag::getTag, LinkedHashMap::new, Collectors.toList()));
 
         List<TagDto.FavoriteTag> favoriteTagDtoList = feedTagsGroupedByTag.entrySet().stream()
+                .limit(DEFAULT_PAGE_SIZE)
                 .map(entry -> generateFavoriteTagDto(entry.getKey(), entry.getValue()))
                 .toList();
 
         return NextPageLinkGenerator.appendEachFavoriteTagDetailLink(favoriteTagDtoList);
-    }
-
-    public List<Long> findMyFavoriteTags(Long memberPk, Optional<Long> lastTagPk) {
-        List<Long> resultTagPks = new ArrayList<>();
-        Long lastPk = lastTagPk.orElse(null);
-
-        while (resultTagPks.size() < MAX_PAGE_SIZE) {
-            Pageable pageRequest = PageRequest.ofSize(MAX_PAGE_SIZE);
-            List<Long> tagPks = favoriteTagService.findMyFavoriteTags(memberPk, lastTagPk, pageRequest);
-
-            if(tagPks.isEmpty()){
-                break;
-            }
-            resultTagPks.addAll(tagPks);
-            lastPk = tagPks.get(tagPks.size()-1);
-
-            if(tagPks.size()< MAX_PAGE_SIZE){
-                break;
-            }
-        }
-
-        return resultTagPks.size() > DEFAULT_PAGE_SIZE
-                ? resultTagPks.subList(0, Math.min(resultTagPks.size(), MAX_PAGE_SIZE))
-                : resultTagPks;
     }
 
     private List<FeedTag> findAndLoadTopFeedTags(List<Long> favoriteTagPks, List<Long> blockedMemberPks) {
