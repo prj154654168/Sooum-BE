@@ -5,6 +5,7 @@ import com.sooum.api.suspended.dto.SuspensionDto;
 import com.sooum.data.suspended.service.SuspendedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,5 +23,11 @@ public class SuspendedUseCase {
                         .isBanUser(suspended.isBanUser())
                         .untilBan(suspended.getUntilBan())
                         .build());
+    }
+
+    @Transactional
+    public void deleteMemberSuspensionForRejoin(String encryptedDeviceId) {
+        String deviceId = rsaUseCase.decodeDeviceId(encryptedDeviceId);
+        suspendedService.deleteByDeviceId(deviceId);
     }
 }
