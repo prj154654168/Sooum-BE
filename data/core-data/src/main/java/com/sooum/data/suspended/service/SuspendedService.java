@@ -20,4 +20,8 @@ public class SuspendedService {
     public Optional<Suspended> findSuspensionUntilBan(String deviceId) {
         return suspendedRepository.findByDeviceIdAndUntilBanAfter(deviceId, LocalDateTime.now());
     }
+
+    public void deleteByDeviceId(String deviceId) {
+        suspendedRepository.deleteByDeviceId(deviceId);
+    }
 }

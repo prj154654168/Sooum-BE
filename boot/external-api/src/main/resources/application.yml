@@ -53,6 +53,8 @@ exclude-auth-path-patterns:
         method: POST
       - path-pattern: /users/token
         method: POST
+      - path-pattern: /members/rejoin
+        method: POST
 
 exclude-ratelimiter-path-patterns:
   paths:

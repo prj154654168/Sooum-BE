@@ -8,6 +8,7 @@ import com.sooum.api.member.dto.AuthDTO;
 import com.sooum.api.member.dto.MemberDto;
 import com.sooum.api.member.service.MemberUseCase;
 import com.sooum.api.member.service.MemberWithdrawalService;
+import com.sooum.api.suspended.service.SuspendedUseCase;
 import com.sooum.global.auth.annotation.CurrentUser;
 import com.sooum.global.responseform.ResponseCollectionModel;
 import com.sooum.global.responseform.ResponseEntityModel;
@@ -29,6 +30,7 @@ public class MemberController {
     private final FeedCardUseCase feedCardUseCase;
     private final MemberWithdrawalService memberWithdrawalService;
     private final MemberUseCase memberUseCase;
+    private final SuspendedUseCase suspendedUseCase;
 
     @GetMapping(value = {"/feed-cards", "/{targetMemberId}/feed-cards"})
     public ResponseEntity<?> findMyFeedCards(@RequestParam(required = false) Optional<Long> lastId,
@@ -77,6 +79,12 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<?> withdrawMember(@CurrentUser Long memberPk, @RequestBody AuthDTO.Token token) {
         memberWithdrawalService.withdrawMember(memberPk, token);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/rejoin")
+    public ResponseEntity<Void> rejoinMember(@RequestParam String encryptedDeviceId) {
+        suspendedUseCase.deleteMemberSuspensionForRejoin(encryptedDeviceId);
         return ResponseEntity.noContent().build();
     }
 
