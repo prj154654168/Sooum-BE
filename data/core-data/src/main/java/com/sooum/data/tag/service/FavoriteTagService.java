@@ -6,7 +6,6 @@ import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.repository.FavoriteTagRepository;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +49,6 @@ public class FavoriteTagService {
     }
 
     public List<Long> findMyFavoriteTags(Long memberPk, Optional<Long> lastTagPk, Pageable pageable) {
-//        Pageable pageRequest = PageRequest.ofSize(20);
         return favoriteTagRepository.findMyFavoriteTags(memberPk, lastTagPk.orElse(null), pageable);
     }
 

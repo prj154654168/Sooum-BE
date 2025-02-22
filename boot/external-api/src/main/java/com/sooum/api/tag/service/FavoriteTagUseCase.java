@@ -12,7 +12,6 @@ import com.sooum.global.util.NextPageLinkGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -31,7 +30,7 @@ public class FavoriteTagUseCase {
 
     public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTags(Long memberPk, Optional<Long> lastTagPk) {
         List<Long> blockedMemberPks = blockMemberService.findAllBlockMemberPks(memberPk);
-        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTags(memberPk, lastTagPk, PageRequest.of(0, MAX_PAGE_SIZE));
+        List<Long> myFavoriteTagPks = favoriteTagService.findMyFavoriteTags(memberPk, lastTagPk, PageRequest.ofSize(MAX_PAGE_SIZE));
 
         List<FeedTag> fullyLoadedFeedTags = findAndLoadTopFeedTags(myFavoriteTagPks,blockedMemberPks);
         Map<Tag, List<FeedTag>> feedTagsGroupedByTag = fullyLoadedFeedTags.stream().collect(Collectors.groupingBy(FeedTag::getTag, LinkedHashMap::new, Collectors.toList()));
