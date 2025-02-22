@@ -78,7 +78,7 @@ public class ProfileDto {
 
     @Getter
     public static class ProfileUpdate {
-        @Size(min = 1, max = 8)
+        @Size(min = 1, max = 16)
         private final String nickname;
         private final String profileImg;
 
