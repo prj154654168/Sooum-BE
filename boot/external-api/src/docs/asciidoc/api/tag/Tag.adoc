@@ -1,5 +1,0 @@
-// ==== HTTP Request
-// include::{snippets}/favorite-tag/http-request.adoc[]
-//
-// ==== HTTP Response
-// include::{snippets}/favorite-tag/http-response.adoc[]
