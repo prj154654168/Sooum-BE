@@ -25,7 +25,7 @@ public class FavoriteTagUseCase {
     private final ImgService imgService;
     private final FeedTagService feedTagService;
     private final FavoriteTagService favoriteTagService;
-    private static final int MAX_PAGE_SIZE = 50;
+    private static final int MAX_PAGE_SIZE = 40;
     private static final int DEFAULT_PAGE_SIZE = 20;
 
     public List<TagDto.FavoriteTag> findTop5FeedByFavoriteTags(Long memberPk, Optional<Long> lastTagPk) {
