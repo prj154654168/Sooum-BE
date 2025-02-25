@@ -2,13 +2,6 @@ package com.sooum.api.card.service;
 
 import com.sooum.api.IntegrationTestSupport;
 import com.sooum.api.card.dto.LatestFeedCardDto;
-import com.sooum.api.img.service.AWSImgService;
-import com.sooum.client.aws.rekognition.RekognitionService;
-import com.sooum.client.aws.s3.S3FCMService;
-import com.sooum.client.aws.s3.S3ImgService;
-import com.sooum.client.aws.s3.imgproperties.S3ImgPathProperties;
-import com.sooum.config.aws.rekognition.RekognitionConfig;
-import com.sooum.config.aws.s3.S3Config;
 import com.sooum.data.block.entity.Block;
 import com.sooum.data.block.repository.BlockRepository;
 import com.sooum.data.card.entity.Card;
@@ -24,28 +17,18 @@ import com.sooum.data.card.repository.FeedLikeRepository;
 import com.sooum.data.member.entity.Member;
 import com.sooum.data.member.entity.devicetype.DeviceType;
 import com.sooum.data.member.repository.MemberRepository;
-import com.sooum.global.config.fcm.FcmConfig;
-import com.sooum.global.config.security.path.ExcludeAuthPathProperties;
-import com.sooum.global.config.warmer.ApplicationWarmer;
-import com.sooum.global.slack.service.SlackService;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class LatestFeedUseCaseTest extends IntegrationTestSupport {
