@@ -11,4 +11,10 @@ public interface AppVersionRepository extends JpaRepository<AppVersion, Long> {
     @Query("select a.latestVersion from AppVersion a where a.deviceType = com.sooum.data.member.entity.devicetype.DeviceType.IOS")
     String findIosLatestVersion();
 
+    @Query("select a from AppVersion a where a.deviceType = com.sooum.data.member.entity.devicetype.DeviceType.ANDROID")
+    AppVersion findAndroidVersionInfo();
+
+    @Query("select a from AppVersion a where a.deviceType = com.sooum.data.member.entity.devicetype.DeviceType.IOS")
+    AppVersion findIosVersionInfo();
+
 }
