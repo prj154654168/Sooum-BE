@@ -5,6 +5,7 @@ import com.sooum.data.member.entity.devicetype.DeviceType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,18 @@ public class AppVersion extends BaseEntity {
 
     @Column
     String latestVersion;
+
+    @Column
+    String pendingVersion;
+
+    @Column
+    String minVersion;
+
+    @Builder
+    public AppVersion(DeviceType deviceType, String latestVersion, String pendingVersion, String minVersion) {
+        this.deviceType = deviceType;
+        this.latestVersion = latestVersion;
+        this.pendingVersion = pendingVersion;
+        this.minVersion = minVersion;
+    }
 }
