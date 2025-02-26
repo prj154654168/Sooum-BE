@@ -1,5 +1,6 @@
 package com.sooum.api.suspended.service;
 
+import com.sooum.api.member.dto.MemberDto;
 import com.sooum.api.rsa.service.RsaUseCase;
 import com.sooum.api.suspended.dto.SuspensionDto;
 import com.sooum.data.suspended.service.SuspendedService;
@@ -26,8 +27,8 @@ public class SuspendedUseCase {
     }
 
     @Transactional
-    public void deleteMemberSuspensionForRejoin(String encryptedDeviceId) {
-        String deviceId = rsaUseCase.decodeDeviceId(encryptedDeviceId);
+    public void deleteMemberSuspensionForRejoin(MemberDto.ReJoinRequest reJoinRequest) {
+        String deviceId = rsaUseCase.decodeDeviceId(reJoinRequest.getEncryptedDeviceId());
         suspendedService.deleteByDeviceId(deviceId);
     }
 }
