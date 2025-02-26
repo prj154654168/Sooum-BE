@@ -65,4 +65,10 @@ public class MemberDto {
             this.isAllowNotify = isAllowNotify;
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class ReJoinRequest {
+        private String encryptedDeviceId;
+    }
 }
