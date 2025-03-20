@@ -1,4 +1,4 @@
-package com.sooum.batch.config;
+package com.sooum.batch.config.redis;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
