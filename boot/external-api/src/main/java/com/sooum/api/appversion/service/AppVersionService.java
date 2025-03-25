@@ -50,7 +50,7 @@ public class AppVersionService {
     }
 
     private boolean isPendingStatus(String pendingVersion, String latestVersion, String clientVersion) {
-        return (compareVersionParts(pendingVersion, latestVersion) == 0) && (compareVersionParts(latestVersion, clientVersion) == 1);
+        return (compareVersionParts(latestVersion,pendingVersion) == 1) && (compareVersionParts(pendingVersion, clientVersion) == 0);
     }
 
     private boolean isUpdateStatus(String minVersion, String clientVersion) {
