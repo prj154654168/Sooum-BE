@@ -31,7 +31,7 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 public class SendFcmBatch {
-    private static final int CHUNK_SIZE = 10;
+    private static final int CHUNK_SIZE = 100;
     private final PlatformTransactionManager transactionManager;
     private final JobLauncher jobLauncher;
     private final JobRepository jobRepository;
@@ -40,7 +40,7 @@ public class SendFcmBatch {
     private final FcmSchedulerService fcmSchedulerService;
 
 
-    @Scheduled(cron = "0 0 22 * * *")
+    @Scheduled(cron = "0 0 21 * * *")
     public void runJob() throws Exception {
         JobParameters jobParameters = new JobParametersBuilder()
                 .addLong("run.id", System.currentTimeMillis())
