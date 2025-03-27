@@ -28,7 +28,6 @@ public class SuspendedUseCase {
 
     @Transactional
     public void deleteMemberSuspensionForRejoin(MemberDto.ReJoinRequest reJoinRequest) {
-        String deviceId = rsaUseCase.decodeDeviceId(reJoinRequest.getEncryptedDeviceId());
-        suspendedService.deleteByDeviceId(deviceId);
+        suspendedService.deleteByDeviceId(reJoinRequest.getDeviceId());
     }
 }

@@ -69,6 +69,6 @@ public class MemberDto {
     @Getter
     @NoArgsConstructor
     public static class ReJoinRequest {
-        private String encryptedDeviceId;
+        private String deviceId;
     }
 }
