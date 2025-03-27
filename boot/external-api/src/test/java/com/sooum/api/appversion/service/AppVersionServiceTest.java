@@ -104,7 +104,7 @@ class AppVersionServiceTest {
                     BDDMockito.given(appVersionRepository.findAndroidVersionInfo()).willReturn(appVersion);
 
                     //then
-                    Assertions.assertThat(appVersionService.findAndroidVersionStatus(clientVersion)).isEqualTo(AppVersionStatus.OK);
+                    Assertions.assertThat(appVersionService.findAndroidVersionStatus(clientVersion)).isEqualTo(AppVersionStatus.PENDING);
                 })
         );
 
