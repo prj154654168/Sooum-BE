@@ -1,5 +1,6 @@
 package com.sooum.global.exceptionhandler;
 
+import com.sooum.api.card.exception.ParentCardDeletedException;
 import com.sooum.api.member.exception.BannedUserException;
 import com.sooum.api.member.exception.DuplicateTokenException;
 import com.sooum.global.config.jwt.exception.BlackListTokenException;
@@ -103,6 +104,18 @@ public class ValidExceptionHandler {
                         ResponseStatus.builder()
                                 .httpCode(HttpStatus.I_AM_A_TEAPOT.value())
                                 .httpStatus(HttpStatus.I_AM_A_TEAPOT)
+                                .responseMessage(e.getMessage())
+                                .build()
+                );
+    }
+
+    @ExceptionHandler(ParentCardDeletedException.class)
+    public ResponseEntity<ResponseStatus> parentCardDeletedException(ParentCardDeletedException e) {
+        return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED)
+                .body(
+                        ResponseStatus.builder()
+                                .httpCode(HttpStatus.PAYMENT_REQUIRED.value())
+                                .httpStatus(HttpStatus.PAYMENT_REQUIRED)
                                 .responseMessage(e.getMessage())
                                 .build()
                 );

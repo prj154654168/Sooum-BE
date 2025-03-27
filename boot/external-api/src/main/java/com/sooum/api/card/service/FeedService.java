@@ -3,8 +3,8 @@ package com.sooum.api.card.service;
 import com.sooum.api.card.dto.CreateCardDto;
 import com.sooum.api.card.dto.CreateCommentDto;
 import com.sooum.api.card.dto.CreateFeedCardDto;
+import com.sooum.api.card.exception.ParentCardDeletedException;
 import com.sooum.api.img.service.ImgService;
-import com.sooum.api.member.service.BlackListUseCase;
 import com.sooum.api.notification.dto.FCMDto;
 import com.sooum.api.notification.service.NotificationUseCase;
 import com.sooum.data.card.entity.Card;
@@ -26,7 +26,6 @@ import com.sooum.data.tag.entity.Tag;
 import com.sooum.data.tag.service.CommentTagService;
 import com.sooum.data.tag.service.FeedTagService;
 import com.sooum.data.tag.service.TagService;
-import com.sooum.global.config.jwt.TokenProvider;
 import com.sooum.global.exceptionmessage.ExceptionMessage;
 import com.sooum.global.regex.BadWordFiltering;
 import jakarta.persistence.EntityNotFoundException;
@@ -147,9 +146,13 @@ public class FeedService {
     }
 
     private Card getParentCard(Long cardPk) {
-        return feedCardService.isExistFeedCard(cardPk)
-                ? feedCardService.findFeedCard(cardPk)
-                : commentCardService.findCommentCard(cardPk);
+        if (feedCardService.isExistFeedCard(cardPk)) {
+            return feedCardService.findFeedCard(cardPk);
+        } else if (commentCardService.isExistCommentCard(cardPk)) {
+            return commentCardService.findCommentCard(cardPk);
+        } else {
+            throw new ParentCardDeletedException(ExceptionMessage.PARENT_CARD_DELETED_EXCEPTION.getMessage());
+        }
     }
 
     private CardType getCardType(Card card) {
