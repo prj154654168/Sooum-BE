@@ -9,16 +9,16 @@ spring:
           secretKey: ${secretKey}
       s3:
         img:
-          bucket: sooum-img
+          bucket: sooum-test-img
         fcm:
-          bucket: sooum-fcm
+          bucket: sooum-test-fcm
           sdk: ${FCM_SDK}
         credentials:
           accessKey: ${accessKey}
           secretKey: ${secretKey}
-        DEFAULT_CARD_IMG: test/card/default/
-        USER_CARD_IMG: test/card/user/
-        PROFILE_IMG: test/profile/
+        DEFAULT_CARD_IMG: card/default/
+        USER_CARD_IMG: card/user/
+        PROFILE_IMG: profile/
 
 ---
 
@@ -30,6 +30,10 @@ spring:
   cloud:
     aws:
       s3:
+        img:
+          bucket: sooum-img
+        fcm:
+          bucket: sooum-fcm
         DEFAULT_CARD_IMG: prod/card/default/
         USER_CARD_IMG: prod/card/user/
         PROFILE_IMG: prod/profile/
@@ -44,6 +48,10 @@ spring:
   cloud:
     aws:
       s3:
-        DEFAULT_CARD_IMG: test/card/default/
-        USER_CARD_IMG: test/card/user/
-        PROFILE_IMG: test/profile/
+        img:
+          bucket: sooum-test-img
+        fcm:
+          bucket: sooum-test-fcm
+        DEFAULT_CARD_IMG: card/default/
+        USER_CARD_IMG: card/user/
+        PROFILE_IMG: profile/
