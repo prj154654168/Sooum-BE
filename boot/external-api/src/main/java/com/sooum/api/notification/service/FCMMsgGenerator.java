@@ -60,6 +60,11 @@ class FCMMsgGenerator {
                                 .setBody(generateGeneralMsgBody(fcmDto.getRequesterNickname(), fcmDto.getNotificationType()))
                                 .build()
                 )
+                .setApnsConfig(
+                        ApnsConfig.builder()
+                                .putHeader("apns-collapse-id", fcmDto.getNotificationId().toString())
+                                .build()
+                )
                 .putAllData(data)
                 .setToken(fcmDto.getTargetFcmToken())
                 .build();
