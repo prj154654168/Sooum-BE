@@ -16,7 +16,7 @@ public class S3Config {
     private String accessKey;
     @Value("${spring.cloud.aws.s3.credentials.secretKey}")
     private String secretKey;
-    @Value("${spring.cloud.aws.region}")
+    @Value("${spring.cloud.aws.region.static}")
     private String region;
 
     @Bean

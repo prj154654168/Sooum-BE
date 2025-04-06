@@ -1,21 +1,27 @@
 spring:
+  config:
+    import: aws-parameterstore:/config/sooum/
+
   cloud:
     aws:
-      region: ap-northeast-2
-      stack.auto: false
+      credentials:
+        access-key: ${accessKey}
+        secret-key: ${secretKey}
+      region:
+        static: ap-northeast-2
       rekognition:
         credentials:
-          accessKey: ${accessKey}
-          secretKey: ${secretKey}
+          accessKey: ${rekognition.accessKey}
+          secretKey: ${rekognition.secretKey}
       s3:
         img:
           bucket: sooum-test-img
         fcm:
           bucket: sooum-test-fcm
-          sdk: ${FCM_SDK}
+          sdk: ${fcm.sdk}
         credentials:
-          accessKey: ${accessKey}
-          secretKey: ${secretKey}
+          accessKey: ${s3.accessKey}
+          secretKey: ${s3.secretKey}
         DEFAULT_CARD_IMG: card/default/
         USER_CARD_IMG: card/user/
         PROFILE_IMG: profile/

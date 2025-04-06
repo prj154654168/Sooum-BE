@@ -5,6 +5,7 @@ spring:
 
   config:
     import:
+      - aws-parameterstore:/config/sooum/
       - classpath:/application-core-data.yml
       - classpath:/application-cloud.yml
 
@@ -13,9 +14,11 @@ spring:
 
   data:
     redis:
-      port: ${REDIS_PORT}
-      host: ${REDIS_HOST}
+      port: ${redis.port}
+      host: ${redis.host}
 
 slack:
   webhook:
-    url: ${URL}
+    url: ${slack.url}
+
+# todo batch url, core url, test url로 파라미터 분리할 지 고민

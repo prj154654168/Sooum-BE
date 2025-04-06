@@ -15,7 +15,7 @@ public class RekognitionConfig {
     private String accessKey;
     @Value("${spring.cloud.aws.rekognition.credentials.secretKey}")
     private String secretKey;
-    @Value("${spring.cloud.aws.region}")
+    @Value("${spring.cloud.aws.region.static}")
     private String region;
 
     @Bean

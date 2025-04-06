@@ -1,13 +1,50 @@
 spring:
-  datasource:
-    username: ${USERNAME}
-    url: ${URL}
-    password: ${password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: default
+
+  datasource:
+    url: ${URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+
+---
+
+spring:
+  config:
+    import: aws-parameterstore:/config/sooum/
+
+    activate:
+      on-profile: test
+
+  datasource:
+    url: ${jdbc.url}
+    username: ${jdbc.username}
+    password: ${jdbc.password}
+
+---
+
+spring:
+  config:
+    import: aws-parameterstore:/config/sooum/
+
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${jdbc.url}
+    username: ${jdbc.username}
+    password: ${jdbc.password}

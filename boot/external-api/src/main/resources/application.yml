@@ -1,6 +1,7 @@
 spring:
   config:
     import:
+      - aws-parameterstore:/config/sooum/
       - classpath:/application-core-data.yml
       - classpath:/application-cloud.yml
 
@@ -9,27 +10,26 @@ spring:
 
   data:
     redis:
-      port: ${REDIS_PORT}
-      host: ${REDIS_HOST}
+      port: ${redis.port}
+      host: ${redis.host}
       repositories:
         enabled: false
 
 sooum:
   server:
     img:
-      path: ${IMG_PATH}
       default-size: 50
 
 jwt:
-  key: ${JWT_KEY}
+  key: ${jwt.key}
   access:
-    expiration: ${ACCESS_EXP}
+    expiration: ${jwt.access.exp}
   refresh:
-    expiration: ${REFRESH_EXP}
+    expiration: ${jwt.refresh.exp}
 
 slack:
   webhook:
-    url: ${URL}
+    url: ${slack.url}
 
 exclude-auth-path-patterns:
     paths:
