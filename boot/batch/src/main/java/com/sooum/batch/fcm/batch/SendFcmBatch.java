@@ -77,8 +77,8 @@ public class SendFcmBatch {
 
     @Bean
     public ItemWriter<String> fcmWriter() {
-        FcmSchedulerContent fcmSchedulerContent = fcmSchedulerContentRepository.findByPk(1L).orElseThrow(RuntimeException::new);
         return chunk -> {
+            FcmSchedulerContent fcmSchedulerContent = fcmSchedulerContentRepository.findByPk(1L).orElseThrow(RuntimeException::new);
             MulticastMessage message = MulticastMessage.builder()
                     .setNotification(
                             Notification.builder()
