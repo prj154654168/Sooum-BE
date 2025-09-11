@@ -47,7 +47,7 @@ public class MemberInfoService {
             Member member = memberService.findByDeviceId(deviceId);
             Token token = tokenProvider.createToken(member.getPk());
             RefreshToken refreshToken = refreshTokenService.findByPk(member.getPk());
-            refreshToken.update(refreshToken.getRefreshToken());
+            refreshToken.update(token.refreshToken());
 
             return new LoginResponse(true, token);
         } catch (EntityNotFoundException e) {
